@@ -1,0 +1,21 @@
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
+
+<suite name="LMS" verbose="2" parallel="false">
+
+	<test name="all">
+		<groups>
+			<run>
+				<include name="admin" />
+				<include name="Inv" />
+				<include name="lms.*" />
+				<include name="Service" />
+				<include name="Del" />
+			</run>
+		</groups>
+
+		<packages>
+			<package name="de.uplinkgmbh.lms.*" />
+		</packages>
+	</test>
+
+</suite>

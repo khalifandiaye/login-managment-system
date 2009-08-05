@@ -1,0 +1,52 @@
+body,html {
+	margin: 0;
+	padding: 0;
+	font: 8pt Arial;
+	background-color: white;
+	color: black;
+}
+
+.list td {
+	vertical-align: top;
+}
+
+.valid input {
+	font: 8pt Arial;
+	border: 1px solid #000;
+	background-color: #FFF;
+	color: #000;
+	width: 100%;
+}
+
+.invalid input {
+	font: 8pt Arial;
+	border: 1px solid #F00;
+	background-color: #FFF;
+	color: #000;
+	width: 100%;
+}
+
+.valid checkbox {
+	font: 8pt Arial;
+	border: 1px solid #000;
+	background-color: #FFF;
+	color: #000;
+	align: left;
+}
+
+.invalid checkbox {
+	font: 8pt Arial;
+	border: 1px solid #F00;
+	background-color: #FFF;
+	color: #000;
+}
+
+.folder {
+	font: 8pt Arial;
+	font-weight: bold;
+}
+
+.folder_arrows {
+	background-color: #000;
+	color: #FFF;
+}

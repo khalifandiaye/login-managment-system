@@ -1,0 +1,12 @@
+handler="de.axone.wash.handler.DefaultHandler
+
+service-0.name="test
+service-0.class="de.uplinkgmbh.lms.services.TestService
+service-1.name="login
+service-1.class="de.uplinkgmbh.lms.services.LoginService
+service-2.name="user
+service-2.class="de.uplinkgmbh.lms.services.UserService
+service-3.name="orga
+service-3.class="de.uplinkgmbh.lms.services.OrganisationService
+service-4.name="action
+service-4.class="de.uplinkgmbh.lms.services.ActionService
