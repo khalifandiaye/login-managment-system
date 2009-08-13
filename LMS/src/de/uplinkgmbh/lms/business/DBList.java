@@ -21,7 +21,6 @@ public class DBList {
 	private Query maxCountQuery = null;
 	private long maxCount = 0;
 
-	@SuppressWarnings("unchecked")
 	public void execute(){
 		
 		em.getTransaction().begin();
