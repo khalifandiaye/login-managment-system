@@ -12,7 +12,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import de.axone.tools.E;
 import de.axone.webtemplate.WebTemplate;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.WebTemplateFactory;
@@ -22,7 +21,6 @@ import de.axone.webtemplate.form.FormValue;
 import de.axone.webtemplate.form.WebFormImpl;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
-import de.uplinkgmbh.lms.business.DBList;
 import de.uplinkgmbh.lms.entitys.Action;
 import de.uplinkgmbh.lms.entitys.Application;
 import de.uplinkgmbh.lms.entitys.Role;
@@ -63,6 +61,7 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		response.setCharacterEncoding( "utf-8" );
@@ -273,6 +272,7 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 		private Query query = null;
 		private LMSToken token;
 		
+		@SuppressWarnings("unchecked")
 		public ApplicationListProvider( LMSToken token ){
 			this.token = token;
 			em.getTransaction().begin();
