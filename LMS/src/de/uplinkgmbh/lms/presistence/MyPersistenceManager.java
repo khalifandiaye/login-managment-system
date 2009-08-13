@@ -30,4 +30,5 @@ public class MyPersistenceManager {
 		entityManager = factory.createEntityManager();
 		return entityManager;
 	}
+	
 }
