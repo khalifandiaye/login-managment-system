@@ -4,8 +4,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.hibernate.ejb.EntityManagerFactoryImpl;
-
 public class MyPersistenceManager {
 	
 	private static MyPersistenceManager instance = null;

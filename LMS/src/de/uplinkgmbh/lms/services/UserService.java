@@ -1,11 +1,7 @@
 package de.uplinkgmbh.lms.services;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,7 +11,6 @@ import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 
 import de.axone.logging.Log;
-import de.axone.logging.LogLevel;
 import de.axone.logging.Logging;
 import de.axone.tools.E;
 import de.axone.wash.DefaultWash;
@@ -33,11 +28,8 @@ import de.uplinkgmbh.lms.entitys.Groups;
 import de.uplinkgmbh.lms.entitys.Organisation;
 import de.uplinkgmbh.lms.entitys.Role;
 import de.uplinkgmbh.lms.entitys.User;
-import de.uplinkgmbh.lms.exceptions.LoginException;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
-import de.uplinkgmbh.lms.servlets.WashServices;
 import de.uplinkgmbh.lms.user.AuthorizationsChecker;
-import de.uplinkgmbh.lms.user.Login;
 import de.uplinkgmbh.lms.utils.LMSToken;
 import de.uplinkgmbh.lms.utils.Tokenaizer;
 
@@ -116,6 +108,7 @@ public class UserService implements Service{
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	private Wash getTemplateUsers(Wash request) throws NotFoundException, WrongTypeException, DuplicateEntryException{
 		
 		Wash result = null;
