@@ -23,8 +23,6 @@ import de.axone.webtemplate.form.FormValue;
 import de.axone.webtemplate.form.WebFormImpl;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
-import de.uplinkgmbh.lms.business.DBList;
-import de.uplinkgmbh.lms.entitys.Application;
 import de.uplinkgmbh.lms.entitys.Groups;
 import de.uplinkgmbh.lms.entitys.Role;
 import de.uplinkgmbh.lms.entitys.User;
@@ -33,7 +31,6 @@ import de.uplinkgmbh.lms.user.AuthorizationsChecker;
 import de.uplinkgmbh.lms.utils.LMSToken;
 import de.uplinkgmbh.lms.utils.UserStatus;
 import de.uplinkgmbh.lms.webtemplate.Context;
-import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 import de.uplinkgmbh.lms.webtemplate.groups.GroupList;
 import de.uplinkgmbh.lms.webtemplate.role.RoleList;
 import de.uplinkgmbh.lms.webtemplate.user.UserList;
@@ -421,6 +418,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			em.getTransaction().commit();
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public Iterable<Groups> getList(int beginIndex, int count,
 				String sort) {
@@ -468,6 +466,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			em.getTransaction().commit();
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public Iterable<Role> getList(int beginIndex, int count,
 				String sort) {
@@ -511,6 +510,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			em.getTransaction().commit();
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public Iterable<User> getList(int beginIndex, int count,
 				String sort) {
@@ -550,6 +550,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			em.getTransaction().commit();
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public Iterable<User> getList(int beginIndex, int count,
 				String sort) {

@@ -22,16 +22,13 @@ import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.WebTemplateFactory;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
-import de.uplinkgmbh.lms.business.DBList;
 import de.uplinkgmbh.lms.entitys.Organisation;
-import de.uplinkgmbh.lms.entitys.User;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
 import de.uplinkgmbh.lms.servlets.forms.OrganisationForm;
 import de.uplinkgmbh.lms.user.AuthorizationsChecker;
 import de.uplinkgmbh.lms.utils.LMSToken;
 import de.uplinkgmbh.lms.webtemplate.Context;
 import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
-import de.uplinkgmbh.lms.webtemplate.user.UserList;
 
 
 /**
@@ -194,7 +191,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								em.persist( orga );
 								em.getTransaction().commit();
 								
-								// wenn user_id bei save mitkommt dann zurück zu User
+								// wenn user_id bei save mitkommt dann zurï¿½ck zu User
 								if( request.getParameter( "user_id" ) != null ){
 									HashMap<String, String> parameters = new HashMap<String,String>();
 									parameters.put( "organisation_id", ""+orga.getId() );
@@ -438,6 +435,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			em.getTransaction().commit();
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public Iterable<Organisation> getList(int beginIndex, int count,
 				String sort) {
