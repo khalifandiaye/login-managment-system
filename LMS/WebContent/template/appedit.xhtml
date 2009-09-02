@@ -1,0 +1,18 @@
+@Class:de.uplinkgmbh.lms.webtemplate.application.ApplicationEdit
+<form name="application_save" method="get" action="/LMS/Application.html">
+<table
+ style="text-align: left; border-style:solid; border-color:black; width: 100%;" border="1"
+ cellpadding="2" cellspacing="2">
+ <tbody>
+ 	<tr>
+ 		<td>Name: </td><td>__name__</td><td></td><td></td>
+ 	</tr>
+ 	<tr>		
+ 		<td><input type="submit" name="save" value="Save"></input>
+ 			<input type="hidden" value="__appid__" name="application_id" />
+ 			<input type="hidden" value="save" name="action" />
+ 		</td>
+ 	</tr>
+ </tbody>
+</table>
+</form>

@@ -1,0 +1,201 @@
+@Class:de.uplinkgmbh.lms.webtemplate.role.RolePage
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=7" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Language" content="de" />
+        
+    <title> __title__ </title>
+        
+    <meta name="Keywords" content="__keywords__" />
+    <meta name="Description" content="__description__" />
+        
+    <meta name="ROBOTS" content="ALL" />
+    <meta http-equiv="imagetoolbar" content="no" />
+    <meta name="MSSmartTagsPreventParsing" content="true" />
+    <meta name="Copyright" content="(c) 2008 __company__ " />
+       
+
+	<link rel="shortcut icon" href="/favicon.png" type="images/png" />
+
+	<script type="text/javascript">if (window.self != window.top) window.top.location = window.self.location; </script>
+
+	<link href="css/reset.css" rel="stylesheet" type="text/css" media="all" />
+	<link href="css/all_media.css" rel="stylesheet" type="text/css" media="all" />
+	<link href="css/lightbox.css" rel="stylesheet" type="text/css" media="screen" />
+
+	<script type="text/javascript" src="js/prototype.js"></script>
+	<script type="text/javascript" src="js/scriptaculous.js?load=effects,builder"></script>
+	<script type="text/javascript" src="js/lightbox.js"></script>
+
+	<!--[if IE 7]>
+	<link href="/css/ie7fixes.css" rel="stylesheet" type="text/css" media="all">
+	<![endif]-->
+
+</head>
+
+<body>
+
+	<div class="wrapper">
+
+		<div class="outer">
+			<div class="float-wrap">
+
+				<!-- TOPNAVIGATION, SUCHFELD, PFAD und Überschrift -->
+				<div class="nav_top">
+					<div class="nav_cat">
+						<ul>
+														<li class=" ">
+								<a href="Application.html"><span>Application</span></a>
+								__usermanagment__
+								__orgamanagment__
+							</li>
+														
+													</ul>
+						<div class="search to-right">
+						<!-- 
+							<form action="Product.html" method="get">
+								<p>
+									Suche
+									<input name="action" value="show" type="hidden">
+									<input tabindex="1" type="text" name="productSnr" accesskey="s">
+									<button class="search_submit" type="submit"></button>
+								</p>
+							</form>
+						 -->
+						</div>
+					</div><!-- end .nav_cat -->
+
+					<div class="path">
+										__path__
+										</div>
+
+					<div class="heading">
+						<h1 class="to-left">__message__</h1>
+						<div class="nav_site to-right">
+							<ul>
+								<li><a href="Login.html"><span>LogoOut</span></a></li>
+							</ul>
+						</div>
+					</div><!-- end .heading -->
+
+				</div><!-- end .nav_top -->
+
+
+
+				<!-- CONTENT (MITTLERE SPALTE) -->
+				<div class="content">
+				
+					<div class="teaser">
+					
+					
+										</div>
+
+					<div class="inhalt">
+					<table class="list">
+					  __rolelist__
+					</table>
+					  __rolelistpager__
+    
+    <br />
+    <a href="__newrolelink__" ><h1>New Role</h1></a>
+    <HR />
+    __role__
+    
+    <br class="clear" />
+
+    <br />
+    <table class="list">
+    __actionlisthead__
+    __actionlist__
+    __emptyaction__
+    </table>
+ 	__actionlistpager__
+ 	
+ <br />   
+     <table class="list">
+	<tr>
+		<td>
+		 <table class="list">
+		 <tr>
+			<td><h1 class="listtop">__activeusers__</h1></td>
+		</tr>
+    		__userlist__
+    	</table>
+    	__userlistpager__
+    	</td>
+    	<td>
+    		<img src="images/spacer.png" width="100px" height="1px"/>
+    	</td>
+    	<td>
+    	<table class="list">
+    	<tr>
+			<td><h1 class="listtop">__deactiveusers__</h1></td>
+		</tr>
+    		__userlistdeactiv__
+    	</table>	
+    	__userlistdeactivpager__
+    	</td>
+    </tr>
+    </table class="list">
+    <br />
+     <table>
+	<tr>
+		<td>
+		<table class="list">
+		<tr>
+			<td><h1 class="listtop">__activegroups__</h1></td>
+		</tr>
+    		__groupslist__
+    	</table>
+    	__groupslistpager__
+    	</td>
+    	<td>
+    		<img src="images/spacer.png" width="100px" height="1px"/>
+    	</td>
+    	<td>
+    	<table class="list">
+    	<tr>
+			<td><h1 class="listtop">__deactivegroups__</h1></td>
+		</tr>
+    		__groupslistdeactiv__
+    	</table>
+    	__groupslistdeactivpager__
+    	</td>
+    </tr>
+    </table>
+    <br>
+    <br>
+					
+					</div> <!-- end .content -->
+					
+				<!-- LINKEN SEITE, SUBNAVIGATION -->
+				<div class="left">
+					<div class="nav_subcat">
+						<img src="images/logo.png" alt="UP:LINK" />
+											</div><!-- end .container-left -->
+				</div> <!-- end .left -->
+
+			</div><!-- end .float-wrap -->
+
+				<div class="right">
+
+			</div> <!-- end .right -->
+
+			<br class="clear" />
+
+		</div><!-- end .outer -->
+
+ 
+ 		<!--
+		<div class="wide bottom clear">
+			<div class="footer">Hier Ã¶nnte man auch noch einen Footer reinsetzen.</div>
+		</div>
+		-->
+
+
+	</div><!-- end .wrapper -->
+
+</body></html>
