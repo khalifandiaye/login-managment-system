@@ -3,13 +3,13 @@ package de.uplinkgmbh.lms.servlets;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Map;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import de.axone.logging.Log;
-import de.axone.logging.Logging;
 import de.axone.wash.DefaultWash;
 import de.axone.wash.Wash;
 import de.axone.wash.WashTools;
@@ -25,7 +25,7 @@ import de.axone.wash.configuration.Configuration;
  public class WashServices extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
 	 
 	static final long serialVersionUID = 1L;
-	private static Log log = Logging.getLog( WashServices.class );
+	private static Logger log = Logger.getLogger( WashServices.class.getName() );
 	private Configuration configuration;
    
 	public WashServices() {
@@ -68,11 +68,11 @@ import de.axone.wash.configuration.Configuration;
 		try {
 			requestWash = buildWash( request );
 		} catch( WashException e1 ) {
-			log.error( "Cannot read input", e1 );
+			log.log( Level.ALL, "Cannot read input", e1 );
 			return new ErrorWash( requestWash, "Cannot read input", e1 );
 		}
 		
-		log.trace( "Wash-In:\n" + requestWash.serialize() );
+		log.log( Level.FINE, "Wash-In:\n" + requestWash.serialize() );
 		
 		
 		// Handle operation
@@ -82,17 +82,17 @@ import de.axone.wash.configuration.Configuration;
 			resultWash = configuration.getHandler().handle( requestWash, request );
 			
 		} catch( Exception e ) {
-			log.error( "Exception handling", e );
+			log.log( Level.ALL, "Exception handling", e );
 			return new ErrorWash( requestWash, "Exception handling", e );
 		} catch( Error er ) {
-			log.fatal( "Error handling", er );
+			log.log( Level.ALL, "Error handling", er );
 			return new ErrorWash( requestWash, "Error handling", er );
 		}
 		
 		
 		
 		// Log result
-		log.trace( "Wash-Out:\n" + resultWash.serialize() );
+		log.log( Level.FINE, "Wash-Out:\n" + resultWash.serialize() );
 		
 		return resultWash;
 	}
@@ -105,13 +105,11 @@ import de.axone.wash.configuration.Configuration;
 		String query = request.getParameter( "wash.q" );
 		if( query != null ) {
 			
-			if( log.isTrace() ) log.trace( "Got wash query: " + query );
-			else if( log.isDebug() ) log.debug( "Got wash query" );
+			log.log( Level.FINE,"Got wash query: " + query );
 			
 			wash.deserialize( query );
 			
-			if( log.isTrace() )
-				log.trace( "Deserialized to: " + wash.serialize() );
+			log.log( Level.FINE,"Deserialized to: " + wash.serialize() );
 		}
 
 		// Then process all other parametes 
@@ -122,7 +120,7 @@ import de.axone.wash.configuration.Configuration;
 			String name = (String)parameterName;
 			String value = request.getParameter( (String)parameterName );
 			
-			if( log.isTrace() ) log.trace( "parse " + name + " = " + value );
+			log.log( Level.FINE, "parse " + name + " = " + value );
 				
 			if( ! parameterName.equals( "wash.q" ) ) {
 				
