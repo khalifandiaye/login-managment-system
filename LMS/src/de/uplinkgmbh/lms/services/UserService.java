@@ -1,11 +1,7 @@
 package de.uplinkgmbh.lms.services;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,7 +11,6 @@ import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 
 import de.axone.logging.Log;
-import de.axone.logging.LogLevel;
 import de.axone.logging.Logging;
 import de.axone.tools.E;
 import de.axone.wash.DefaultWash;
@@ -33,11 +28,8 @@ import de.uplinkgmbh.lms.entitys.Groups;
 import de.uplinkgmbh.lms.entitys.Organisation;
 import de.uplinkgmbh.lms.entitys.Role;
 import de.uplinkgmbh.lms.entitys.User;
-import de.uplinkgmbh.lms.exceptions.LoginException;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
-import de.uplinkgmbh.lms.servlets.WashServices;
 import de.uplinkgmbh.lms.user.AuthorizationsChecker;
-import de.uplinkgmbh.lms.user.Login;
 import de.uplinkgmbh.lms.utils.LMSToken;
 import de.uplinkgmbh.lms.utils.Tokenaizer;
 
@@ -131,8 +123,7 @@ public class UserService implements Service{
 			}
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
-			EntityManager em = pm.getEntityManager();
-			
+
 			if( !AuthorizationsChecker.isAllowed( token, "APPLICATION", "user.getTemplateUsers", token.application ) ){
 				result = new DefaultWash();
 				result.addField( "STATUS", Type.BOOLEAN, false );
@@ -141,12 +132,13 @@ public class UserService implements Service{
 			}
 			
 			List<User> ul = null;
-			
+			EntityManager em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();	
 			Query q = em.createNamedQuery( "AllTemplateUser" );
 			ul = (List<User>)q.getResultList();
 			em.getTransaction().commit();
-			
+
 			String logstr = "User: getTemplateUsers ["+ul.size()+"]\n";
 			result = new DefaultWash();
 			result.addField( "STATUS", Type.BOOLEAN, true );
@@ -156,8 +148,11 @@ public class UserService implements Service{
 				result.addField( "TemplateUser-"+i+".LOGINNAME", Type.STRING, ul.get(i).getLoginname() );
 				logstr = logstr.concat( ul.get(i).getLoginname()+"\n" );
 			}
-			
 			log.debug( logstr );
+			}finally{
+				pm.closeEntityManager( em );
+			}
+			
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );
@@ -181,7 +176,6 @@ public class UserService implements Service{
 			}
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
-			EntityManager em = pm.getEntityManager();
 			
 			if( !AuthorizationsChecker.isAllowed( token, "APPLICATION", "user.getUsers", token.application ) ){
 				result = new DefaultWash();
@@ -192,7 +186,8 @@ public class UserService implements Service{
 			
 			Application app = null;
 			HashSet<User> ul = new HashSet<User>();
-			
+			EntityManager em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();	
 			Query q = em.createNamedQuery( "ApplicationFetchByName" );
 			q.setParameter( "name", token.application );
@@ -212,7 +207,6 @@ public class UserService implements Service{
 			}
 			
 			em.getTransaction().commit();
-			
 			
 			String logstr = "User: getUsers ["+ul.size()+"]\n";
 			result = new DefaultWash();
@@ -292,9 +286,13 @@ public class UserService implements Service{
 												
 				//logstr = logstr.concat( u.getLoginname()+"\n" );
 				i++;
+			
 			}
 			
 			log.debug( logstr );
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );
@@ -323,7 +321,7 @@ public class UserService implements Service{
 			em.getTransaction().begin();	
 			user = em.find( User.class, token.userId );
 			em.getTransaction().commit();
-			
+			try{
 			result = new DefaultWash();
 			result.addField( "STATUS", Type.BOOLEAN, true );
 			result.addField( "REASON", Type.STRING, "" );
@@ -391,7 +389,9 @@ public class UserService implements Service{
 				result.addField( "ORGASTREETNR", Type.STRING, "" );
 				result.addField( "ORGAWASHSTORE", Type.STRING, "" );
 			}
-			
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );
@@ -416,7 +416,6 @@ public class UserService implements Service{
 			}
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
-			EntityManager em = pm.getEntityManager();
 
 			if( !AuthorizationsChecker.isAllowed( token, "APPLICATION", "user.newUser", token.application ) ){
 				result = new DefaultWash();
@@ -424,6 +423,8 @@ public class UserService implements Service{
 				result.addField( "REASON", Type.STRING, "WRONG PERMISSION" );
 				return result;
 			}
+			EntityManager em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			
 			User newUser = null;
@@ -434,7 +435,7 @@ public class UserService implements Service{
 				newUser = (User)q.getSingleResult();
 			}catch( NoResultException e ){}
 			em.getTransaction().commit();
-			
+	
 			if( newUser != null ){
 				result = new DefaultWash();
 				result.addField( "STATUS", Type.BOOLEAN, false );
@@ -445,12 +446,13 @@ public class UserService implements Service{
 			newUser = new User();
 			newUser.setLoginname( request.getString( "LOGINNAME" ) );
 			newUser.setPassword( request.getString( "PASSWORD" ) );
+			em = pm.getEntityManager();
 			em.getTransaction().begin();
 			em.persist( newUser );
 			em.getTransaction().commit();
-			
+	
 			if( !request.getString( "TEMPLATELOGINNAME" ).equals( "" ) ){
-				
+				em = pm.getEntityManager();
 				em.getTransaction().begin();
 				User templateUser = null;
 				q = em.createNamedQuery( "UserFetchByLoginname" );
@@ -466,7 +468,7 @@ public class UserService implements Service{
 					return result;
 				}
 				em.getTransaction().commit();
-				
+		
 				newUser.setCountry( templateUser.getCountry() );
 				newUser.setLanguage( templateUser.getLanguage() );
 				newUser.getGroupList().addAll( templateUser.getGroupList() );
@@ -491,7 +493,7 @@ public class UserService implements Service{
 			if( !request.getString( "MOBILE" ).equals( "" ) )
 				newUser.setMobile( request.getString( "MOBILE" ) );
 			if( request.getString( "ORGANAME" ) != null && !request.getString( "ORGANAME" ).equals( "" ) ){
-				
+				em = pm.getEntityManager();
 				em.getTransaction().begin();
 				Organisation orga = null;
 				q = em.createNamedQuery( "OrgaFetchByName" );
@@ -507,6 +509,7 @@ public class UserService implements Service{
 					return result;
 				}
 				em.getTransaction().commit();
+			
 				newUser.setOrganisation( orga );
 			}
 			if( !request.getString( "PHONEPRIV" ).equals( "" ) )
@@ -527,7 +530,7 @@ public class UserService implements Service{
 				newUser.setCountry( new Locale( request.getString( "COUNTRY" ).trim() ) );
 			if( !request.getString( "LANGUAGE" ).equals( "" ) )
 				newUser.setLanguage( new Locale( request.getString( "LANGUAGE" ).toLowerCase() ) );
-			
+			em = pm.getEntityManager();
 			em.getTransaction().begin();
 			em.merge( newUser );
 			em.getTransaction().commit();
@@ -535,7 +538,9 @@ public class UserService implements Service{
 			result = new DefaultWash();
 			result.addField( "STATUS", Type.BOOLEAN, true );
 			result.addField( "REASON", Type.STRING, "" );
-			
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );
@@ -558,7 +563,7 @@ public class UserService implements Service{
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			EntityManager em = pm.getEntityManager();
-			
+			try{
 			User user = null;
 			Application app = null;
 			em.getTransaction().begin();	
@@ -567,7 +572,7 @@ public class UserService implements Service{
 			q.setParameter( "name", token.application );
 			app = (Application) q.getSingleResult();
 			em.getTransaction().commit();
-			
+			em.close();
 			if( app.getGroupList().size() > 0 ){
 				for( Groups g: app.getGroupList() ){
 					g.getUserList().remove( user );
@@ -579,21 +584,26 @@ public class UserService implements Service{
 					r.getUserList().remove( user );
 				}
 			}
+			em = pm.getEntityManager();
 			em.getTransaction().begin();
 			em.merge( app );
 			em.refresh( user );
 			em.getTransaction().commit();
-			
+			em.close();
 			if( user.getGroupList().size() == 0 && user.getRoleList().size() == 0 ){
+				em = pm.getEntityManager();
 				em.getTransaction().begin();
 				em.remove( user );
 				em.getTransaction().commit();
+				em.close();
 			}
 			
 			result = new DefaultWash();
 			result.addField( "STATUS", Type.BOOLEAN, true );
 			result.addField( "REASON", Type.STRING, "" );
-			
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );
@@ -618,7 +628,7 @@ public class UserService implements Service{
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			EntityManager em = pm.getEntityManager();
-
+			try{
 			em.getTransaction().begin();
 			
 			User newUser = null;
@@ -638,10 +648,11 @@ public class UserService implements Service{
 			}
 	
 			E.rr( token.userId );
+			em = pm.getEntityManager();
 			em.getTransaction().begin();
 			newUser = em.find( User.class, token.userId );
 			em.getTransaction().commit();
-
+		
 			E.rr( newUser );
 			newUser.setLoginname( request.getString( "LOGINNAME" ) );
 			newUser.setPassword( request.getString( "PASSWORD" ) );
@@ -659,7 +670,7 @@ public class UserService implements Service{
 			if( !request.getString( "MOBILE" ).equals( "" ) )
 				newUser.setMobile( request.getString( "MOBILE" ) );
 			if( request.getString( "ORGANAME" ) != null && !request.getString( "ORGANAME" ).equals( "" ) ){
-				
+				em = pm.getEntityManager();
 				em.getTransaction().begin();
 				Organisation orga = null;
 				q = em.createNamedQuery( "OrgaFetchByName" );
@@ -675,6 +686,7 @@ public class UserService implements Service{
 					return result;
 				}
 				em.getTransaction().commit();
+				
 				newUser.setOrganisation( orga );
 			}
 			if( !request.getString( "PHONEPRIV" ).equals( "" ) )
@@ -695,7 +707,7 @@ public class UserService implements Service{
 				newUser.setCountry( new Locale( request.getString( "COUNTRY" ).trim() ) );
 			if( !request.getString( "LANGUAGE" ).equals( "" ) )
 				newUser.setLanguage( new Locale( request.getString( "LANGUAGE" ).toLowerCase() ) );
-			
+			em = pm.getEntityManager();
 			em.getTransaction().begin();
 			em.merge( newUser );
 			em.getTransaction().commit();
@@ -703,7 +715,9 @@ public class UserService implements Service{
 			result = new DefaultWash();
 			result.addField( "STATUS", Type.BOOLEAN, true );
 			result.addField( "REASON", Type.STRING, "" );
-			
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );

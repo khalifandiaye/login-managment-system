@@ -1,8 +1,5 @@
 package de.uplinkgmbh.lms.services;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -15,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import de.axone.logging.Log;
 import de.axone.logging.Logging;
-import de.axone.tools.E;
 import de.axone.wash.DefaultWash;
 import de.axone.wash.Wash;
 import de.axone.wash.Wash.DuplicateEntryException;
@@ -26,14 +22,11 @@ import de.axone.wash.Wash.WrongTypeException;
 import de.axone.wash.handler.Handler.HandlerException;
 import de.axone.wash.handler.Handler.OperationNotFoundException;
 import de.axone.wash.service.Service;
-import de.uplinkgmbh.lms.exceptions.LoginException;
+import de.uplinkgmbh.lms.entitys.Organisation;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
-import de.uplinkgmbh.lms.servlets.WashServices;
 import de.uplinkgmbh.lms.user.AuthorizationsChecker;
-import de.uplinkgmbh.lms.user.Login;
 import de.uplinkgmbh.lms.utils.LMSToken;
 import de.uplinkgmbh.lms.utils.Tokenaizer;
-import de.uplinkgmbh.lms.entitys.Organisation;
 
 public class OrganisationService implements Service{
 	
@@ -116,7 +109,6 @@ public class OrganisationService implements Service{
 			}
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
-			EntityManager em = pm.getEntityManager();
 			
 			if( !AuthorizationsChecker.isAllowed( token, "APPLICATION", "organisation.getOrgas", token.application ) ){
 				result = new DefaultWash();
@@ -125,6 +117,8 @@ public class OrganisationService implements Service{
 				return result;
 			}
 			
+			EntityManager em = pm.getEntityManager();
+			try{
 			List<Organisation> ol = null;
 			em.getTransaction().begin();
 			Query q = em.createNamedQuery( "AllOrganisation" );
@@ -161,7 +155,9 @@ public class OrganisationService implements Service{
 				result.addField( "Orga-"+i+".ORGAWASHSTORE", Type.STRING, o.getWashstore() );
 				i++;
 			}
-			
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );
@@ -186,7 +182,6 @@ public class OrganisationService implements Service{
 			}
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
-			EntityManager em = pm.getEntityManager();
 			
 			if( !AuthorizationsChecker.isAllowed( token, "APPLICATION", "organisation.newOrga", token.application ) ){
 				result = new DefaultWash();
@@ -200,6 +195,8 @@ public class OrganisationService implements Service{
 			 * ORGAZIP	string	ORGASTREET	string	ORGASTREETNR	string	ORGAWASHSTORE	string
 			 */
 			Organisation orga = null;
+			EntityManager em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			Query q = em.createNamedQuery( "OrgaFetchByName" );
 			q.setParameter( "name", request.getString( "ORGANAME" ) );
@@ -207,6 +204,7 @@ public class OrganisationService implements Service{
 				orga = (Organisation) q.getSingleResult();
 			}catch( NoResultException e ){}
 			em.getTransaction().commit();
+			
 			if( orga != null ){
 				result = new DefaultWash();
 				result.addField( "STATUS", Type.BOOLEAN, false );
@@ -244,15 +242,17 @@ public class OrganisationService implements Service{
 				orga.setWashstore( request.getString( "ORGAWASHSTORE" ) );
 			if( !request.getString( "ORGAZIP" ).equals( "" ) )
 				orga.setZip( request.getString( "ORGAZIP" ) );
-			
+			em = pm.getEntityManager();
 			em.getTransaction().begin();
 			em.persist( orga );
 			em.getTransaction().commit();
-			
+
 			result = new DefaultWash();
 			result.addField( "STATUS", Type.BOOLEAN, true );
 			result.addField( "REASON", Type.STRING, "" );
-			
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );

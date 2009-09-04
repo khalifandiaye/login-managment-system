@@ -2,7 +2,6 @@ package de.uplinkgmbh.lms.user;
 
 import java.util.List;
 
-import de.axone.tools.E;
 import de.uplinkgmbh.lms.business.DBList;
 import de.uplinkgmbh.lms.entitys.Action;
 import de.uplinkgmbh.lms.entitys.Role;
@@ -22,7 +21,7 @@ public abstract class AuthorizationsChecker {
 		List<Role> rolelist = (List<Role>) list.getResultList();
 		
 		for( Role r : rolelist ){
-			for( Action a : (List<Action>) r.getActionList() ){
+			for( Action a : r.getActionList() ){
 				//E.rr( target+" "+a.getTarget()+" "+action+" "+a.getAction()+" "+state+" "+a.getState() );
 				if( target.matches( a.getTarget() ) 
 						&& action.matches( a.getAction() ) 

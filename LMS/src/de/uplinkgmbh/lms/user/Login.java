@@ -41,51 +41,59 @@ public class Login {
 		this.application = application;
 		
 		MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		EntityManager em = pm.getEntityManager();
-		
-		em.getTransaction().begin();
-		Query q = em.createNamedQuery( "UserFetchByLoginname" );
-		q.setParameter( "loginname", username );
+		EntityManager em = null;
 		try{
-			user = (User)q.getSingleResult();	
-		}catch( NoResultException e ){
-			throw new LoginException( LoginException.WRONGUSERNAME );
-		}
-		em.getTransaction().commit();
-		
-		if( ! user.getPassword().equals( Password.processIt( password ) ) ){
-			allowed = false;
-			throw new LoginException( LoginException.WRONGPASSWORD );
-		}
-		
-		List<Groups> list = user.getGroupList();
-		List<Role> list2 = user.getRoleList();
-		
-		if( list.size() == 0 && list2.size() == 0 ){
-			allowed = false;
-			throw new LoginException( LoginException.USERHASNOGROUPORROLE );
-		}
-		
-		if( list.size() > 0 ){
-			for( Groups gr : list ){
+			em = pm.getEntityManager();
+			em.getTransaction().begin();
+			Query q = em.createNamedQuery( "UserFetchByLoginname" );
+			q.setParameter( "loginname", username );
+			try{
+				user = (User)q.getSingleResult();	
+			}catch( NoResultException e ){
+				throw new LoginException( LoginException.WRONGUSERNAME );
+			}
+			em.getTransaction().commit();
+			
+			if( ! user.getPassword().equals( Password.processIt( password ) ) ){
+				allowed = false;
+			
+				throw new LoginException( LoginException.WRONGPASSWORD );
+			}
+			
+			List<Groups> list = user.getGroupList();
+			List<Role> list2 = user.getRoleList();
+			
+			if( list.size() == 0 && list2.size() == 0 ){
+				allowed = false;
 				
-				if( gr.getApplication().getName().equals( application ) ){
-					allowed = user.isActiv();
-					return;
+				throw new LoginException( LoginException.USERHASNOGROUPORROLE );
+			}
+			
+			if( list.size() > 0 ){
+				for( Groups gr : list ){
+					
+					if( gr.getApplication().getName().equals( application ) ){
+						allowed = user.isActiv();
+						return;
+					}
 				}
 			}
-		}
-		if( list2.size() > 0 ){
-			for( Role r : list2 ){
-				
-				if( r.getApplication().getName().equals( application ) ){
-					allowed = user.isActiv();
-					return;
+			if( list2.size() > 0 ){
+				for( Role r : list2 ){
+					
+					if( r.getApplication().getName().equals( application ) ){
+						allowed = user.isActiv();
+						
+						return;
+					}
 				}
 			}
-		}
+		
 		allowed = false;
 		throw new LoginException( LoginException.WRONGAPPLICATION );
+		}finally{
+			pm.closeEntityManager( em );
+		}
 	}
 	
 	/**
@@ -102,11 +110,13 @@ public class Login {
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			EntityManager em = pm.getEntityManager();
-			
+		try{	
 			em.getTransaction().begin();
 			em.merge( user );
 			em.getTransaction().commit();
-			
+		}finally{
+			if( em != null && em.isOpen() ) em.close();
+		}
 			return Tokenaizer.buildAESToken( application, user.getId() );
 			
 		}else return null;
@@ -120,10 +130,13 @@ public class Login {
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			EntityManager em = pm.getEntityManager();
-			
+		try{	
 			em.getTransaction().begin();
 			em.merge( user );
 			em.getTransaction().commit();
+		}finally{
+			pm.closeEntityManager( em );
+		}
 		}
 	}
 	
@@ -135,14 +148,18 @@ public class Login {
 		}
 		MyPersistenceManager pm = MyPersistenceManager.getInstance();
 		EntityManager em = pm.getEntityManager();
-		
+		try{
 		em.getTransaction().begin();
 		try{
 			user = em.find( User.class, token.userId );
 		}catch( NoResultException e ){
+			em.close();
 			return false;
 		}
 		em.getTransaction().commit();
+		}finally{
+			pm.closeEntityManager( em );
+		}
 		logOut();
 		return true;
 	}

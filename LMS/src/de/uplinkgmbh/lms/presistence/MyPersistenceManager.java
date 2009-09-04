@@ -4,13 +4,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.hibernate.ejb.EntityManagerFactoryImpl;
+import de.axone.tools.E;
 
 public class MyPersistenceManager {
 	
 	private static MyPersistenceManager instance = null;
 	private EntityManagerFactory factory = null;
-	private EntityManager entityManager = null;
 	
 	private MyPersistenceManager(){
 		
@@ -26,9 +25,17 @@ public class MyPersistenceManager {
     }
 
 	public EntityManager getEntityManager() {
+
+		return factory.createEntityManager();
+	}
+	
+	public void closeEntityManager( EntityManager em ){
 		
-		entityManager = factory.createEntityManager();
-		return entityManager;
+		if( em != null ){
+			if( em.getTransaction().isActive() )
+				em.getTransaction().rollback();
+			em.close();
+		}
 	}
 	
 }

@@ -3,8 +3,8 @@ package de.uplinkgmbh.lms.servlets;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +32,7 @@ import de.axone.wash.configuration.Configuration;
 		super();
 	}   	
 	
+	@Override
 	public void init( javax.servlet.ServletConfig config ) throws ServletException {
 		
 		super.init( config );
@@ -41,6 +42,7 @@ import de.axone.wash.configuration.Configuration;
 		configuration = new Configuration( pathToConfig );
 	}
 	
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Do all the work
 		Wash result = process( request );
@@ -57,6 +59,7 @@ import de.axone.wash.configuration.Configuration;
 		out.print( rawResult );
 	}  	
 	
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet( request, response );
 	}

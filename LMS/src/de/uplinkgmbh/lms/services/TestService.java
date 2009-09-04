@@ -1,5 +1,8 @@
 package de.uplinkgmbh.lms.services;
 
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 
 import de.axone.wash.DefaultWash;
@@ -12,6 +15,9 @@ import de.axone.wash.Wash.WrongTypeException;
 import de.axone.wash.handler.Handler.HandlerException;
 import de.axone.wash.handler.Handler.OperationNotFoundException;
 import de.axone.wash.service.Service;
+import de.uplinkgmbh.lms.entitys.User;
+import de.uplinkgmbh.lms.exceptions.LoginException;
+import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
 
 public class TestService implements Service{
 
@@ -29,14 +35,51 @@ public class TestService implements Service{
 		if( ! "test".equals( operation ) )
 			throw new OperationNotFoundException();
 		
-		Wash result = makemyday( request );
+		Wash result = new DefaultWash();
+		try {
+			result = makemyday( request );
+		} catch (LoginException e) {
+			
+			result = new DefaultWash();
+			try {
+				result.addField( "STATUS", Type.BOOLEAN, false );
+				result.addField( "REASON", Type.STRING, "USER NOT EXIST" );
+			} catch (DuplicateEntryException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (WrongTypeException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (NotFoundException e1) {
+				e1.printStackTrace();
+			}
+			
+		}
 
 		return result;
 	}
 
-	public Wash makemyday( Wash request ){
+	public Wash makemyday( Wash request ) throws LoginException{
 		
 		System.out.println( "mein ausgabechen " +request.serialize() );
+		
+		MyPersistenceManager pm = MyPersistenceManager.getInstance();
+		EntityManager em = null;
+		try{
+			em = pm.getEntityManager();
+			em.getTransaction().begin();
+			Query q = em.createNamedQuery( "UserFetchByLoginname" );
+			q.setParameter( "loginname", "a.kre" );
+			try{
+				User user = (User)q.getSingleResult();	
+			}catch( NoResultException e ){
+				throw new LoginException( LoginException.WRONGUSERNAME );
+			}
+			em.getTransaction().commit();
+			
+		}finally{
+			pm.closeEntityManager( em );
+		}
 		
 		DefaultWash dw = new DefaultWash();
 

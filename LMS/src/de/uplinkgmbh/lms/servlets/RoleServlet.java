@@ -27,7 +27,6 @@ import de.axone.webtemplate.form.FormValue;
 import de.axone.webtemplate.form.WebFormImpl;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
-import de.uplinkgmbh.lms.business.DBList;
 import de.uplinkgmbh.lms.entitys.Action;
 import de.uplinkgmbh.lms.entitys.Groups;
 import de.uplinkgmbh.lms.entitys.Role;
@@ -39,7 +38,6 @@ import de.uplinkgmbh.lms.utils.LMSToken;
 import de.uplinkgmbh.lms.utils.UserStatus;
 import de.uplinkgmbh.lms.webtemplate.Context;
 import de.uplinkgmbh.lms.webtemplate.action.ActionList;
-import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 import de.uplinkgmbh.lms.webtemplate.groups.GroupList;
 import de.uplinkgmbh.lms.webtemplate.role.RoleList;
 import de.uplinkgmbh.lms.webtemplate.user.UserList;
@@ -93,6 +91,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			response.sendRedirect( request.getContextPath()+"/" );
 			return;
 		}
+		MyPersistenceManager pm = MyPersistenceManager.getInstance();
+		EntityManager em = pm.getEntityManager();
+		try{
 		
 		try {
 			
@@ -108,13 +109,10 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			if( request.getParameter( "application_id" ) != null  ){
 				
 				de.uplinkgmbh.lms.entitys.Application app = null;
-				MyPersistenceManager pm = MyPersistenceManager.getInstance();
-				EntityManager em = pm.getEntityManager();
-
+			
 				em.getTransaction().begin();	
 				app = em.find( de.uplinkgmbh.lms.entitys.Application.class, new Long( request.getParameter( "application_id" ) ) );
 				em.getTransaction().commit();
-				
 				template.setParameter( "path", app.getName()+" - Role" );
 				
 				if( ! AuthorizationsChecker.isAllowed( token, "ADMIN", "DOALL", app.getName() ) ){
@@ -147,7 +145,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								em.getTransaction().begin();	
 								r = em.find( de.uplinkgmbh.lms.entitys.Role.class, new Long( request.getParameter( "role_id" ) ) );
 								em.getTransaction().commit();
-								
 								// zur sicherheit ob die übergebene role id auch zur erlaubten app gehört
 								if( ! r.getApplication().getName().equals( app.getName() ) ){
 									response.sendRedirect( request.getContextPath()+"/" );
@@ -161,11 +158,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								ac.setSort( aform.getSort() );
 								ac.setState( aform.getState() );
 								ac.setTarget( aform.getTarget() );
-								
 								em.getTransaction().begin();	
 								em.persist( ac );
 								em.getTransaction().commit();
-								
 								HashMap<String, String> parameters = new HashMap<String,String>();
 								parameters.put( "role_id", ""+r.getId() );
 								parameters.put( "application_id", ""+app.getId() );
@@ -187,7 +182,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								em.getTransaction().begin();	
 								r = em.find( Role.class, new Long (request.getParameter( "role_id" ) ) );
 								em.getTransaction().commit();
-								
 								roleShowTemp.setParameter( "id", r.getId() );
 								roleShowTemp.setParameter( "name", r.getName() );
 								roleShowTemp.setParameter( "sort", r.getSort() );
@@ -265,18 +259,17 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 									em.getTransaction().begin();	
 									ac = em.find( de.uplinkgmbh.lms.entitys.Action.class, new Long( request.getParameter( "action_id" ) ) );
 									em.getTransaction().commit();
-									
+									em.close();
 									ac.setName( aform.getName() );
 									ac.setAction( aform.getAction() );
 									ac.setRule( aform.getRule() );
 									ac.setSort( aform.getSort() );
 									ac.setState( aform.getState() );
 									ac.setTarget( aform.getTarget() );
-									
+									em = pm.getEntityManager();
 									em.getTransaction().begin();	
 									em.merge( ac );
 									em.getTransaction().commit();
-									
 									HashMap<String, String> parameters = new HashMap<String,String>();
 									parameters.put( "role_id", request.getParameter( "role_id" ) );
 									parameters.put( "application_id", ""+app.getId() );
@@ -298,7 +291,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 									em.getTransaction().begin();	
 									r = em.find( Role.class, new Long (request.getParameter( "role_id" ) ) );
 									em.getTransaction().commit();
-									
 									roleShowTemp.setParameter( "id", r.getId() );
 									roleShowTemp.setParameter( "name", r.getName() );
 									roleShowTemp.setParameter( "sort", r.getSort() );
@@ -362,7 +354,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						em.getTransaction().begin();
 						em.remove( ac );
 						em.getTransaction().commit();
-						
 						HashMap<String, String> parameters = new HashMap<String,String>();
 						parameters.put( "role_id", request.getParameter( "role_id" ) );
 						parameters.put( "application_id", ""+app.getId() );
@@ -389,7 +380,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								r.setName( form.getName() );
 								r.setSort( form.getSort() );
 								r.setApplication( app );
-								
 								em.getTransaction().begin();	
 								em.persist( r );
 								em.getTransaction().commit();
@@ -444,7 +434,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						em.getTransaction().begin();	
 						r = em.find( Role.class, new Long (request.getParameter( "role_id" ) ) );
 						em.getTransaction().commit();
-						
 						roleShowTemp.setParameter( "id", r.getId() );
 						roleShowTemp.setParameter( "name", r.getName() );
 						roleShowTemp.setParameter( "sort", r.getSort() );
@@ -562,7 +551,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						em.getTransaction().begin();
 						em.merge( r );
 						em.getTransaction().commit();
-						
 						HashMap<String, String> parameters = new HashMap<String,String>();
 						parameters.put( "role_id", ""+request.getParameter( "role_id" ) );
 						parameters.put( "application_id", ""+app.getId() );
@@ -590,7 +578,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						em.getTransaction().begin();
 						em.merge( r );
 						em.getTransaction().commit();
-						
 						HashMap<String, String> parameters = new HashMap<String,String>();
 						parameters.put( "role_id", ""+request.getParameter( "role_id" ) );
 						parameters.put( "application_id", ""+app.getId() );
@@ -618,7 +605,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						em.getTransaction().begin();
 						em.merge( r );
 						em.getTransaction().commit();
-						
 						HashMap<String, String> parameters = new HashMap<String,String>();
 						parameters.put( "role_id", ""+request.getParameter( "role_id" ) );
 						parameters.put( "application_id", ""+app.getId() );
@@ -646,7 +632,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						em.getTransaction().begin();
 						em.merge( r );
 						em.getTransaction().commit();
-						
 						HashMap<String, String> parameters = new HashMap<String,String>();
 						parameters.put( "role_id", ""+request.getParameter( "role_id" ) );
 						parameters.put( "application_id", ""+app.getId() );
@@ -669,7 +654,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						em.getTransaction().begin();	
 						r = em.find( Role.class, new Long (request.getParameter( "role_id" ) ) );
 						em.getTransaction().commit();
-						
 						form.setName( r.getName() );
 						form.setSort( ((Long)r.getSort()).intValue() );
 						
@@ -708,7 +692,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 					
 						em.remove( r );
 						em.getTransaction().commit();
-
 						HashMap<String, String> parameters = new HashMap<String,String>();
 						parameters.put( "application_id", ""+app.getId() );
 						parameters.put( "action", "" );
@@ -720,7 +703,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						return;
 					}
 				}
-				em.clear();
+				
 				
 				String roleList = context.getServletContext().getRealPath( "/template/RoleListItem.xhtml" );
 				File roleListFile = new File( roleList );
@@ -739,7 +722,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 				
 				template.render( token, request, response, null );
 			}
-			
+		}finally{
+			pm.closeEntityManager( em );
+		}
 		} catch (WebTemplateException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -792,8 +777,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 	private static class ActionListProvider implements ListProvider<Action> {
 		
 		private List<Action> list;
-		private MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		private EntityManager em = pm.getEntityManager();
 		private Query countQuery = null;
 		private Query query = null;
 		private Long maxResults = 0L;
@@ -823,7 +806,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		private List<Role> list = new LinkedList<Role>();
 		private MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		private EntityManager em = pm.getEntityManager();
+		private EntityManager em = null;
 		private Query countQuery = null;
 		private Query query = null;
 		private Long maxResults = 0L;
@@ -832,17 +815,23 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		public RoleListProvider( String appname ){
 			this.appname = appname;
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			countQuery = em.createNamedQuery( "RoleFetchByAppnameCount" );
 			countQuery.setParameter( "appname", appname );
 			maxResults = (Long) countQuery.getSingleResult();
 			em.getTransaction().commit();
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}
 
 		@Override
 		public Iterable<Role> getList(int beginIndex, int count,
 				String sort) {
-			
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			query = em.createNamedQuery( "RoleFetchByAppname" );
 			query.setParameter( "appname", appname );
@@ -850,7 +839,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			query.setMaxResults( count );
 			list = query.getResultList();
 			em.getTransaction().commit();
-	
+			}finally{
+				pm.closeEntityManager( em );
+			}
 			return (Iterable<Role>) list;
 		}
 
@@ -865,7 +856,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		private List<User> list = new LinkedList<User>();
 		private MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		private EntityManager em = pm.getEntityManager();
+		private EntityManager em = null;
 		private Query countQuery = null;
 		private Query query = null;
 		private Long maxResults = 0L;
@@ -874,17 +865,23 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		public UserListProvider( long roleId ){
 			this.roleId = roleId;
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			countQuery = em.createNamedQuery( "AllUserByRoleIdCount" );
 			countQuery.setParameter( "roleId", roleId );
 			maxResults = (Long) countQuery.getSingleResult();
 			em.getTransaction().commit();
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}
 
 		@Override
 		public Iterable<User> getList(int beginIndex, int count,
 				String sort) {
-			
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			query = em.createNamedQuery( "AllUserByRoleId" );
 			query.setParameter( "roleId", roleId );
@@ -892,7 +889,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			query.setMaxResults( count );
 			list = query.getResultList();
 			em.getTransaction().commit();
-	
+			}finally{
+				pm.closeEntityManager( em );
+			}
 			return (Iterable<User>) list;
 		}
 
@@ -907,30 +906,38 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		private List<User> list = new LinkedList<User>();
 		private MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		private EntityManager em = pm.getEntityManager();
+		private EntityManager em = null;
 		private Query countQuery = null;
 		private Query query = null;
 		private Long maxResults = 0L;
 
 		
 		public User2ListProvider(){
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			countQuery = em.createNamedQuery( "AllUserCount" );
 			maxResults = (Long) countQuery.getSingleResult();
 			em.getTransaction().commit();
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}
 
 		@Override
 		public Iterable<User> getList(int beginIndex, int count,
 				String sort) {
-			
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			query = em.createNamedQuery( "AllUser" );
 			query.setFirstResult( beginIndex );
 			query.setMaxResults( count );
 			list = query.getResultList();
 			em.getTransaction().commit();
-	
+			}finally{
+				pm.closeEntityManager( em );
+			}
 			return (Iterable<User>) list;
 		}
 
@@ -945,7 +952,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		private List<Groups> list = new LinkedList<Groups>();
 		private MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		private EntityManager em = pm.getEntityManager();
+		private EntityManager em = null;
 		private Query countQuery = null;
 		private Query query = null;
 		private Long maxResults = 0L;
@@ -954,17 +961,23 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		public GroupListProvider( long roleId ){
 			this.roleId = roleId;
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			countQuery = em.createNamedQuery( "AllGroupsByRoleIdCount" );
 			countQuery.setParameter( "roleId", roleId );
 			maxResults = (Long) countQuery.getSingleResult();
 			em.getTransaction().commit();
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}
 
 		@Override
 		public Iterable<Groups> getList(int beginIndex, int count,
 				String sort) {
-			
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			query = em.createNamedQuery( "AllGroupsByRoleId" );
 			query.setParameter( "roleId", roleId );
@@ -972,7 +985,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			query.setMaxResults( count );
 			list = query.getResultList();
 			em.getTransaction().commit();
-	
+			}finally{
+				pm.closeEntityManager( em );
+			}
 			return (Iterable<Groups>) list;
 		}
 
@@ -987,7 +1002,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		private List<Groups> list = new LinkedList<Groups>();
 		private MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		private EntityManager em = pm.getEntityManager();
+		private EntityManager em = null;
 		private Query countQuery = null;
 		private Query query = null;
 		private Long maxResults = 0L;
@@ -995,17 +1010,23 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		public Group2ListProvider( long appId ){
 			this.appId = appId;
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			countQuery = em.createNamedQuery( "AllGroupsByApplicationIdCount" );
 			countQuery.setParameter( "appId", appId );
 			maxResults = (Long) countQuery.getSingleResult();
 			em.getTransaction().commit();
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}
 
 		@Override
 		public Iterable<Groups> getList(int beginIndex, int count,
 				String sort) {
-			
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			query = em.createNamedQuery( "AllGroupsByApplicationId" );
 			query.setParameter( "appId", appId );
@@ -1013,7 +1034,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			query.setMaxResults( count );
 			list = query.getResultList();
 			em.getTransaction().commit();
-	
+			}finally{
+				pm.closeEntityManager( em );
+			}
 			return (Iterable<Groups>) list;
 		}
 

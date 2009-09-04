@@ -12,7 +12,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import de.axone.tools.E;
 import de.axone.webtemplate.WebTemplate;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.WebTemplateFactory;
@@ -22,7 +21,6 @@ import de.axone.webtemplate.form.FormValue;
 import de.axone.webtemplate.form.WebFormImpl;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
-import de.uplinkgmbh.lms.business.DBList;
 import de.uplinkgmbh.lms.entitys.Action;
 import de.uplinkgmbh.lms.entitys.Application;
 import de.uplinkgmbh.lms.entitys.Role;
@@ -52,6 +50,7 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 		
 	}   	
 	
+	@Override
 	public void init( javax.servlet.ServletConfig config ) throws ServletException {
 		
 		super.init( config );
@@ -63,6 +62,7 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		response.setCharacterEncoding( "utf-8" );
@@ -90,7 +90,7 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 			WebTemplate template = context.getWebTemplateFactory().templateFor( templateFile );
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			EntityManager em = pm.getEntityManager();
-			
+			try{
 			template.setParameter( "path", "Application" );
 			
 			if( request.getParameter( "application_id" ) != null  ){
@@ -155,7 +155,7 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 							mainApp.getRoleList().add( r );
 							em.merge( mainApp );
 							em.getTransaction().commit();
-							
+					
 							response.sendRedirect( request.getContextPath()+request.getServletPath()+"?action=show&application_id="+app.getId() );
 							return;
 						}else{
@@ -210,7 +210,9 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 					template.setParameter( "path", "Application  &gt; new" );
 				}
 			}
-			em.clear();
+			}finally{
+				pm.closeEntityManager( em );
+			}
 			
 			String Applicationitem = context.getServletContext().getRealPath( "/template/ApplicationListItem.xhtml" );
 			File ApplicationitemFile = new File( Applicationitem );
@@ -238,6 +240,7 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		doGet( request, response );
@@ -269,12 +272,14 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 		
 		private List<Application> list = new LinkedList<Application>();
 		private MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		private EntityManager em = pm.getEntityManager();
+		private EntityManager em = null;
 		private Query query = null;
 		private LMSToken token;
 		
 		public ApplicationListProvider( LMSToken token ){
 			this.token = token;
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			query = em.createNamedQuery( "AllApplication" );
 			List<Application>  ilist = query.getResultList();
@@ -285,6 +290,9 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 					list.add( a );
 				}
 			}
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}
 
 		@Override
@@ -294,7 +302,7 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 			int end = 0;
 			if( beginIndex+count >= list.size() ) end = list.size();
 			else end = beginIndex+count;
-			return (Iterable<Application>) list.subList( beginIndex, end);
+			return list.subList( beginIndex, end);
 		}
 
 		@Override

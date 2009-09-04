@@ -1,13 +1,10 @@
 package de.uplinkgmbh.lms.services;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 
 import de.axone.logging.Log;
 import de.axone.logging.Logging;
-import de.axone.tools.E;
 import de.axone.wash.DefaultWash;
 import de.axone.wash.Wash;
 import de.axone.wash.Wash.DuplicateEntryException;
@@ -19,7 +16,7 @@ import de.axone.wash.handler.Handler.HandlerException;
 import de.axone.wash.handler.Handler.OperationNotFoundException;
 import de.axone.wash.service.Service;
 import de.uplinkgmbh.lms.exceptions.LoginException;
-import de.uplinkgmbh.lms.servlets.WashServices;
+import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
 import de.uplinkgmbh.lms.user.Login;
 
 public class LoginService implements Service{
@@ -97,7 +94,7 @@ public class LoginService implements Service{
 		if( !request.getString( "LOGINNAME" ).equals( "" ) &&
 			!request.getString( "PASSWORD" ).equals( "" ) &&
 			!request.getString( "APPLICATION" ).equals( "" ) ){
-			
+
 			Login l = new Login();
 			try {
 				l.check( request.getString( "LOGINNAME" ),
@@ -140,6 +137,7 @@ public class LoginService implements Service{
 				result.addField( "STATUS", Type.BOOLEAN, false );
 				result.addField( "REASON", Type.STRING, "NOT ACTIV" );
 			}
+			
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );

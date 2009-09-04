@@ -23,8 +23,6 @@ import de.axone.webtemplate.form.FormValue;
 import de.axone.webtemplate.form.WebFormImpl;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
-import de.uplinkgmbh.lms.business.DBList;
-import de.uplinkgmbh.lms.entitys.Application;
 import de.uplinkgmbh.lms.entitys.Groups;
 import de.uplinkgmbh.lms.entitys.Role;
 import de.uplinkgmbh.lms.entitys.User;
@@ -33,7 +31,6 @@ import de.uplinkgmbh.lms.user.AuthorizationsChecker;
 import de.uplinkgmbh.lms.utils.LMSToken;
 import de.uplinkgmbh.lms.utils.UserStatus;
 import de.uplinkgmbh.lms.webtemplate.Context;
-import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 import de.uplinkgmbh.lms.webtemplate.groups.GroupList;
 import de.uplinkgmbh.lms.webtemplate.role.RoleList;
 import de.uplinkgmbh.lms.webtemplate.user.UserList;
@@ -109,11 +106,11 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 				de.uplinkgmbh.lms.entitys.Application app = null;
 				MyPersistenceManager pm = MyPersistenceManager.getInstance();
 				EntityManager em = pm.getEntityManager();
-
+				try{
 				em.getTransaction().begin();	
 				app = em.find( de.uplinkgmbh.lms.entitys.Application.class, new Long( request.getParameter( "application_id" ) ) );
 				em.getTransaction().commit();
-				
+			
 				template.setParameter( "path", app.getName()+" - Group" );
 				
 				if( ! AuthorizationsChecker.isAllowed( token, "ADMIN", "DOALL", app.getName() ) ){
@@ -156,6 +153,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								em.getTransaction().begin();	
 								em.persist( g );
 								em.getTransaction().commit();
+								
 							}else{
 								em.getTransaction().begin();	
 								g = em.find( de.uplinkgmbh.lms.entitys.Groups.class, new Long( request.getParameter( "group_id" ) ) );
@@ -164,6 +162,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								em.getTransaction().begin();	
 								em.merge( g );
 								em.getTransaction().commit();
+								
 							}
 							
 							HashMap<String, String> parameters = new HashMap<String,String>();
@@ -264,7 +263,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						em.getTransaction().begin();
 						em.merge( g );
 						em.getTransaction().commit();
-						
 						HashMap<String, String> parameters = new HashMap<String,String>();
 						parameters.put( "user_id", ""+u.getId() );
 						parameters.put( "group_id", ""+g.getId() );
@@ -291,7 +289,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						em.getTransaction().begin();
 						em.merge( g );
 						em.getTransaction().commit();
-						
 						HashMap<String, String> parameters = new HashMap<String,String>();
 						parameters.put( "user_id", ""+u.getId() );
 						parameters.put( "group_id", ""+g.getId() );
@@ -312,6 +309,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						em.getTransaction().begin();
 						em.remove( g );
 						em.getTransaction().commit();
+					
 						
 					}else if( request.getParameter( "action" ).equals( "edit" ) ){
 						
@@ -333,9 +331,11 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 							WebTemplate groupsEditTemp = context.getWebTemplateFactory().templateFor( groupsEditFile );
 							groupsEditTemp.setParameter( "appid", app.getId() );
 							Groups g = null;
+						
 							em.getTransaction().begin();	
 							g = em.find( de.uplinkgmbh.lms.entitys.Groups.class, new Long( request.getParameter( "group_id" ) ) );
 							em.getTransaction().commit();
+							
 							form.setName( g.getName() );
 							groupsEditTemp.setParameter( "groupid", g.getId() );
 							groupsEditTemp.setParameter( "name", form.getHtmlInput( "name" ) );
@@ -343,10 +343,12 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 							template.setParameter( "path", app.getName()+" - Group &gt; edit" );
 						}
 					}
-					em.clear();
+					
 				}
 				
-				
+				}finally{
+					pm.closeEntityManager( em );
+				}
 				String groupsList = context.getServletContext().getRealPath( "/template/GroupListItem.xhtml" );
 				File groupsListFile = new File( groupsList );
 				WebTemplate groupsListTemp = context.getWebTemplateFactory().templateFor( groupsListFile );
@@ -405,7 +407,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		private List<Groups> list = new LinkedList<Groups>();
 		private MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		private EntityManager em = pm.getEntityManager();
+		private EntityManager em = null;
 		private Query countQuery = null;
 		private Query query = null;
 		private Long maxResults = 0L;
@@ -414,17 +416,23 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		public GroupListProvider( long appId ){
 			this.appId = appId;
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			countQuery = em.createNamedQuery( "GroupFetchByApplicationIdCount" );
 			countQuery.setParameter( "appId", appId );
 			maxResults = (Long) countQuery.getSingleResult();
 			em.getTransaction().commit();
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}
 
 		@Override
 		public Iterable<Groups> getList(int beginIndex, int count,
 				String sort) {
-			
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			query = em.createNamedQuery( "GroupFetchByApplicationId" );
 			query.setParameter( "appId", appId );
@@ -432,7 +440,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			query.setMaxResults( count );
 			list = query.getResultList();
 			em.getTransaction().commit();
-	
+			}finally{
+				pm.closeEntityManager( em );
+			}
 			return (Iterable<Groups>) list;
 		}
 
@@ -448,7 +458,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		private List<Role> list = new LinkedList<Role>();
 		private MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		private EntityManager em = pm.getEntityManager();
+		private EntityManager em = null;
 		private Query countQuery = null;
 		private Query query = null;
 		private Long maxResults = 0L;
@@ -459,19 +469,24 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			
 			this.appname = appname;
 			this.groupId = groupId;
-			
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			countQuery = em.createNamedQuery( "RoleFetchByAppnameAndGroupsCount" );
 			countQuery.setParameter( "appname", appname);
 			countQuery.setParameter( "groupId", groupId );
 			maxResults = (Long) countQuery.getSingleResult();
 			em.getTransaction().commit();
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}
 
 		@Override
 		public Iterable<Role> getList(int beginIndex, int count,
 				String sort) {
-			
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			query = em.createNamedQuery( "RoleFetchByAppnameAndGroups" );
 			query.setParameter( "appname", appname);
@@ -480,7 +495,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			query.setMaxResults( count );
 			list = query.getResultList();
 			em.getTransaction().commit();
-	
+			}finally{
+				pm.closeEntityManager( em );
+			}
 			return (Iterable<Role>) list;
 		}
 
@@ -495,7 +512,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		private List<User> list = new LinkedList<User>();
 		private MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		private EntityManager em = pm.getEntityManager();
+		private EntityManager em = null;
 		private Query countQuery = null;
 		private Query query = null;
 		private Long maxResults = 0L;
@@ -504,17 +521,23 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		public UserListProvider( long groupId ){
 			this.groupId = groupId;
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			countQuery = em.createNamedQuery( "AllUserByGroupIdCount" );
 			countQuery.setParameter( "groupId", groupId );
 			maxResults = (Long) countQuery.getSingleResult();
 			em.getTransaction().commit();
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}
 
 		@Override
 		public Iterable<User> getList(int beginIndex, int count,
 				String sort) {
-			
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			query = em.createNamedQuery( "AllUserByGroupId" );
 			query.setParameter( "groupId", groupId );
@@ -522,7 +545,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			query.setMaxResults( count );
 			list = query.getResultList();
 			em.getTransaction().commit();
-	
+			}finally{
+				pm.closeEntityManager( em );
+			}
 			return (Iterable<User>) list;
 		}
 
@@ -537,30 +562,38 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		private List<User> list = new LinkedList<User>();
 		private MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		private EntityManager em = pm.getEntityManager();
+		private EntityManager em = null;
 		private Query countQuery = null;
 		private Query query = null;
 		private Long maxResults = 0L;
 
 		
 		public User2ListProvider(){
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			countQuery = em.createNamedQuery( "AllUserCount" );
 			maxResults = (Long) countQuery.getSingleResult();
 			em.getTransaction().commit();
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}
 
 		@Override
 		public Iterable<User> getList(int beginIndex, int count,
 				String sort) {
-			
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			query = em.createNamedQuery( "AllUser" );
 			query.setFirstResult( beginIndex );
 			query.setMaxResults( count );
 			list = query.getResultList();
 			em.getTransaction().commit();
-	
+			}finally{
+				pm.closeEntityManager( em );
+			}
 			return (Iterable<User>) list;
 		}
 

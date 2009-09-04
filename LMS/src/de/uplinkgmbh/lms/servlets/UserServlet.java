@@ -15,7 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import de.axone.tools.E;
 import de.axone.web.HttpLinkBuilder;
 import de.axone.webtemplate.WebTemplate;
 import de.axone.webtemplate.WebTemplateException;
@@ -23,7 +22,6 @@ import de.axone.webtemplate.WebTemplateFactory;
 import de.axone.webtemplate.element.HtmlInput;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
-import de.uplinkgmbh.lms.business.DBList;
 import de.uplinkgmbh.lms.entitys.Action;
 import de.uplinkgmbh.lms.entitys.Groups;
 import de.uplinkgmbh.lms.entitys.Organisation;
@@ -98,7 +96,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			EntityManager em = pm.getEntityManager();
-			
+			try{
 			if( request.getParameter( "action" ) != null ){
 				if( request.getParameter( "action" ).equals( "save") ){
 					
@@ -143,7 +141,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 							em.getTransaction().begin();	
 							em.merge( user );
 							em.getTransaction().commit();
-							
 							if( request.getParameter( "organisation" ).equals( "-2" ) ){
 								HashMap<String, String> parameters = new HashMap<String,String>();
 								parameters.put( "user_id", ""+user.getId() );
@@ -164,7 +161,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 							
 						}else{
 							user = null;
-
 							em.getTransaction().begin();	
 							Query q = em.createNamedQuery( "UserFetchByLoginname" );
 							q.setParameter( "loginname", form.getLoginname() );
@@ -172,7 +168,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								user = (User)q.getSingleResult();
 							}catch( NoResultException e ){}
 							em.getTransaction().commit();
-							
 							
 							if( user != null ){
 								form.getHtmlInput( "loginname" ).setValid( false );
@@ -238,7 +233,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								em.getTransaction().begin();	
 								em.persist( user );
 								em.getTransaction().commit();
-								
 								if( request.getParameter( "organisation" ).equals( "-2" ) ){
 									HashMap<String, String> parameters = new HashMap<String,String>();
 									parameters.put( "user_id", ""+user.getId() );
@@ -325,7 +319,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 					em.getTransaction().begin();	
 					em.merge( user );
 					em.getTransaction().commit();
-					
 					HashMap<String, String> parameters = new HashMap<String,String>();
 					parameters.put( "user_id", ""+user.getId() );
 					parameters.put( "action", "show" );
@@ -382,7 +375,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						em.getTransaction().begin();	
 						user = em.find( User.class, new Long( request.getParameter( "user_id" ) ) );
 						em.getTransaction().commit();
-						
 						userShowTemp.setParameter( "id", user.getId() );
 						if( user.getOrganisation() != null )
 							userShowTemp.setParameter( "organisation", user.getOrganisation().getName() );
@@ -481,7 +473,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 					user = em.find( User.class, new Long( request.getParameter( "user_id" ) ) );
 					em.remove( user );
 					em.getTransaction().commit();
-					
 					response.sendRedirect( request.getContextPath()+request.getServletPath() );
 					return;
 					
@@ -496,7 +487,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						em.getTransaction().begin();	
 						user = em.find( User.class, new Long( request.getParameter( "user_id" ) ) );
 						em.getTransaction().commit();
-						
 						UserForm form = new UserForm();
 						
 						form.setActiv( user.isActiv() );
@@ -555,7 +545,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 				}
 				
 			}
-			em.clear();
+			}finally{
+				pm.closeEntityManager( em );
+			}
 			
 			String userList = context.getServletContext().getRealPath( "/template/UserListItem.xhtml" );
 			File userListFile = new File( userList );
@@ -616,30 +608,38 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		private List<User> list = new LinkedList<User>();
 		private MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		private EntityManager em = pm.getEntityManager();
+		private EntityManager em = null;
 		private Query countQuery = null;
 		private Query query = null;
 		private Long maxResults = 0L;
 
 		
 		public UserListProvider( ){
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			countQuery = em.createNamedQuery( "AllUserCount" );
 			maxResults = (Long) countQuery.getSingleResult();
 			em.getTransaction().commit();
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}
 
 		@Override
 		public Iterable<User> getList(int beginIndex, int count,
 				String sort) {
-			
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			query = em.createNamedQuery( "AllUser" );
 			query.setFirstResult( beginIndex );
 			query.setMaxResults( count );
 			list = query.getResultList();
 			em.getTransaction().commit();
-	
+			}finally{
+				pm.closeEntityManager( em );
+			}
 			return (Iterable<User>) list;
 		}
 
@@ -654,7 +654,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		private List<Groups> list = new LinkedList<Groups>();
 		private MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		private EntityManager em = pm.getEntityManager();
+		private EntityManager em = null;
 		private Query countQuery = null;
 		private Query query = null;
 		private Long maxResults = 0L;
@@ -663,17 +663,23 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		public GroupsListProvider( long userId ){
 			this.userId = userId;
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			countQuery = em.createNamedQuery( "AllGroupsByUserIdCount" );
 			countQuery.setParameter( "userId", userId );
 			maxResults = (Long) countQuery.getSingleResult();
 			em.getTransaction().commit();
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}
 
 		@Override
 		public Iterable<Groups> getList(int beginIndex, int count,
 				String sort) {
-			
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			query = em.createNamedQuery( "AllGroupsByUserId" );
 			query.setParameter( "userId", userId );
@@ -681,7 +687,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			query.setMaxResults( count );
 			list = query.getResultList();
 			em.getTransaction().commit();
-	
+			}finally{
+				pm.closeEntityManager( em );
+			}
 			return (Iterable<Groups>) list;
 		}
 
@@ -696,7 +704,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		private List<Role> list = new LinkedList<Role>();
 		private MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		private EntityManager em = pm.getEntityManager();
+		private EntityManager em = null;
 		private Query countQuery = null;
 		private Query query = null;
 		private Long maxResults = 0L;
@@ -705,17 +713,23 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 	public RoleListProvider( long userId ){
 		this.userId = userId;
+		em = pm.getEntityManager();
+		try{
 		em.getTransaction().begin();
 		countQuery = em.createNamedQuery( "RoleFetchByUserIdCount" );
 		countQuery.setParameter( "userId", userId );
 		maxResults = (Long) countQuery.getSingleResult();
 		em.getTransaction().commit();
+		}finally{
+			pm.closeEntityManager( em );
+		}
 	}
 
 	@Override
 	public Iterable<Role> getList(int beginIndex, int count,
 			String sort) {
-		
+		em = pm.getEntityManager();
+		try{
 		em.getTransaction().begin();
 		query = em.createNamedQuery( "RoleFetchByUserId" );
 		query.setParameter( "userId", userId );
@@ -723,7 +737,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		query.setMaxResults( count );
 		list = query.getResultList();
 		em.getTransaction().commit();
-
+		}finally{
+			pm.closeEntityManager( em );
+		}
 		return (Iterable<Role>) list;
 	}
 

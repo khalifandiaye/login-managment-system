@@ -33,6 +33,7 @@ import de.uplinkgmbh.lms.webtemplate.Context;
 		super();
 	}
 	
+	@Override
 	public void init( javax.servlet.ServletConfig config ) throws ServletException {
 		
 		super.init( config );
@@ -41,6 +42,7 @@ import de.uplinkgmbh.lms.webtemplate.Context;
 		context.setWebTemplateFactory( new WebTemplateFactory() );
 	}
 	
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		response.setCharacterEncoding( "utf-8" );
@@ -109,6 +111,7 @@ import de.uplinkgmbh.lms.webtemplate.Context;
 		}
 	}  	
 	
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet( request, response );
 	} 

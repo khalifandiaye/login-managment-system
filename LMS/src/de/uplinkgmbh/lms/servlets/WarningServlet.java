@@ -33,6 +33,7 @@ import de.uplinkgmbh.lms.webtemplate.Context;
 		
 	}   	
 	
+	@Override
 	public void init( javax.servlet.ServletConfig config ) throws ServletException {
 		
 		super.init( config );
@@ -44,6 +45,7 @@ import de.uplinkgmbh.lms.webtemplate.Context;
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	@SuppressWarnings("deprecation")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
@@ -81,6 +83,7 @@ import de.uplinkgmbh.lms.webtemplate.Context;
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		doGet( request, response );

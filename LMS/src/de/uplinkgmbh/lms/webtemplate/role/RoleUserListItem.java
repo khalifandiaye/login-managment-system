@@ -1,29 +1,17 @@
 package de.uplinkgmbh.lms.webtemplate.role;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedList;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.Ostermiller.util.Base64;
-
-import de.axone.wash.Wash;
 import de.axone.web.HttpLinkBuilder;
 import de.axone.webtemplate.AbstractFileWebTemplate;
 import de.axone.webtemplate.KeyException;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.form.Translator;
-import de.uplinkgmbh.lms.entitys.Application;
-import de.uplinkgmbh.lms.entitys.Role;
 import de.uplinkgmbh.lms.entitys.User;
-import de.uplinkgmbh.lms.user.AuthorizationsChecker;
-import de.uplinkgmbh.lms.utils.LMSToken;
-import de.uplinkgmbh.lms.utils.UserStatus;
 
 public class RoleUserListItem extends AbstractFileWebTemplate{
 

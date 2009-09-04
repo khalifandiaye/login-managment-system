@@ -1,22 +1,14 @@
 package de.uplinkgmbh.lms.services;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 
 import de.axone.logging.Log;
 import de.axone.logging.Logging;
-import de.axone.tools.E;
 import de.axone.wash.DefaultWash;
 import de.axone.wash.Wash;
 import de.axone.wash.Wash.DuplicateEntryException;
@@ -27,16 +19,12 @@ import de.axone.wash.Wash.WrongTypeException;
 import de.axone.wash.handler.Handler.HandlerException;
 import de.axone.wash.handler.Handler.OperationNotFoundException;
 import de.axone.wash.service.Service;
-import de.uplinkgmbh.lms.exceptions.LoginException;
+import de.uplinkgmbh.lms.entitys.Action;
+import de.uplinkgmbh.lms.entitys.Role;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
-import de.uplinkgmbh.lms.servlets.WashServices;
 import de.uplinkgmbh.lms.user.AuthorizationsChecker;
-import de.uplinkgmbh.lms.user.Login;
 import de.uplinkgmbh.lms.utils.LMSToken;
 import de.uplinkgmbh.lms.utils.Tokenaizer;
-import de.uplinkgmbh.lms.entitys.Action;
-import de.uplinkgmbh.lms.entitys.Organisation;
-import de.uplinkgmbh.lms.entitys.Role;
 
 public class ActionService implements Service{
 	
@@ -120,13 +108,13 @@ public class ActionService implements Service{
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			EntityManager em = pm.getEntityManager();
-			
+			try{
 			List<Role> rl = null;
 			em.getTransaction().begin();
 			Query q = em.createNamedQuery( "RoleFetchByAppnameAndUserId" );
 			q.setParameter( "appname", token.application );
 			q.setParameter( "userId", token.userId );
-			rl = (List<Role>) q.getResultList();
+			rl = q.getResultList();
 			em.getTransaction().commit();
 			
 			List<Action> al = new LinkedList<Action>();
@@ -154,12 +142,15 @@ public class ActionService implements Service{
 				result.addField( "Action-"+i+".ROLE", Type.STRING, a.getRole().getName() );
 				i++;
 			}
-			
+		}finally{
+			pm.closeEntityManager( em );
+		}
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );
 		
 		}
+		
 		return result;
 	} 
 	
@@ -176,9 +167,6 @@ public class ActionService implements Service{
 				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
 				return result;
 			}
-			
-			MyPersistenceManager pm = MyPersistenceManager.getInstance();
-			EntityManager em = pm.getEntityManager();
 			
 			if( AuthorizationsChecker.isAllowed( token,
 					request.getString( "STATE" ),

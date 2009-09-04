@@ -4,7 +4,7 @@ public abstract class FolderList {
 
 	public static String generate( long size, int shownSize, int position, String target, String listname ){
 		
-		double sS = (double)shownSize;
+		double sS = shownSize;
 		double pages = size/sS;
 		
 		pages = Math.ceil( pages );

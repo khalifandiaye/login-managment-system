@@ -22,16 +22,13 @@ import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.WebTemplateFactory;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
-import de.uplinkgmbh.lms.business.DBList;
 import de.uplinkgmbh.lms.entitys.Organisation;
-import de.uplinkgmbh.lms.entitys.User;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
 import de.uplinkgmbh.lms.servlets.forms.OrganisationForm;
 import de.uplinkgmbh.lms.user.AuthorizationsChecker;
 import de.uplinkgmbh.lms.utils.LMSToken;
 import de.uplinkgmbh.lms.webtemplate.Context;
 import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
-import de.uplinkgmbh.lms.webtemplate.user.UserList;
 
 
 /**
@@ -90,7 +87,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			EntityManager em = pm.getEntityManager();
-			
+			try{
 			template.setParameter( "path", "Organisation" );
 			
 			if( request.getParameter( "action" ) != null ){
@@ -103,6 +100,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						Organisation orga = null;
 						// ohne organisation_id
 						if( ! request.getParameter( "organisation_id" ).equals( "" ) ){
+							
 							em.getTransaction().begin();	
 							orga = em.find( Organisation.class, new Long( request.getParameter( "organisation_id" ) ) );
 							em.getTransaction().commit();
@@ -125,7 +123,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 							em.getTransaction().begin();	
 							em.merge( orga );
 							em.getTransaction().commit();
-							
 							HashMap<String, String> parameters = new HashMap<String,String>();
 							parameters.put( "organisation_id", ""+orga.getId() );
 							parameters.put( "action", "show" );
@@ -138,7 +135,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						// mit organisation_id
 						}else{
 							orga = null;
-
 							em.getTransaction().begin();	
 							Query q = em.createNamedQuery( "OrgaFetchByName" );
 							q.setParameter( "name", form.getName() );
@@ -146,7 +142,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								orga = (Organisation)q.getSingleResult();
 							}catch( NoResultException e ){}
 							em.getTransaction().commit();
-							
 							
 							if( orga != null ){
 								form.getHtmlInput( "name" ).setValid( false );
@@ -189,11 +184,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								orga.setStreet( form.getStreet() );
 								orga.setStreetnr( form.getStreetnr() );
 								orga.setWashstore( form.getWashstore() );
-								
 								em.getTransaction().begin();	
 								em.persist( orga );
 								em.getTransaction().commit();
-								
 								// wenn user_id bei save mitkommt dann zurück zu User
 								if( request.getParameter( "user_id" ) != null ){
 									HashMap<String, String> parameters = new HashMap<String,String>();
@@ -311,7 +304,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						em.getTransaction().begin();	
 						orga = em.find( Organisation.class, new Long( request.getParameter( "organisation_id" ) ) );
 						em.getTransaction().commit();
-						
 						orgaShowTemp.setParameter( "id", orga.getId() );
 						orgaShowTemp.setParameter( "city", orga.getCity() );
 						orgaShowTemp.setParameter( "country", orga.getCountry().getCountry() );
@@ -335,7 +327,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 					orga = em.find( Organisation.class, new Long( request.getParameter( "organisation_id" ) ) );
 					em.remove( orga );
 					em.getTransaction().commit();
-					
 					HashMap<String, String> parameters = new HashMap<String,String>();
 					parameters.put( "action", "" );
 					String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
@@ -354,7 +345,6 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						em.getTransaction().begin();	
 						orga = em.find( Organisation.class, new Long( request.getParameter( "organisation_id" ) ) );
 						em.getTransaction().commit();
-						
 						OrganisationForm form = new OrganisationForm();
 					
 						form.setCity( orga.getCity() );
@@ -389,8 +379,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 					template.setParameter( "orga", orgaEditTemp );
 				}
 			}
-			em.clear();
-			
+			}finally{
+				pm.closeEntityManager( em );
+			}
 			String orgaList = context.getServletContext().getRealPath( "/template/OrganisationListItem.xhtml" );
 			File orgaListFile = new File( orgaList );
 			WebTemplate orgaListTemp = context.getWebTemplateFactory().templateFor( orgaListFile );
@@ -425,30 +416,38 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		private List<Organisation> list = new LinkedList<Organisation>();
 		private MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		private EntityManager em = pm.getEntityManager();
+		private EntityManager em = null;
 		private Query countQuery = null;
 		private Query query = null;
 		private Long maxResults = 0L;
 
 		
 		public OrganisationListProvider( ){
+			try{
+			em = pm.getEntityManager();
 			em.getTransaction().begin();
 			countQuery = em.createNamedQuery( "AllOrganisationCount" );
 			maxResults = (Long) countQuery.getSingleResult();
 			em.getTransaction().commit();
+			}finally{
+				pm.closeEntityManager( em );
+			}
 		}
 
 		@Override
 		public Iterable<Organisation> getList(int beginIndex, int count,
 				String sort) {
-			
+			em = pm.getEntityManager();
+			try{
 			em.getTransaction().begin();
 			query = em.createNamedQuery( "AllOrganisation" );
 			query.setFirstResult( beginIndex );
 			query.setMaxResults( count );
 			list = query.getResultList();
 			em.getTransaction().commit();
-	
+			}finally{
+				pm.closeEntityManager( em );
+			}
 			return (Iterable<Organisation>) list;
 		}
 

@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import de.axone.tools.E;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.converter.ConverterException;
 import de.axone.webtemplate.elements.impl.HtmlCheckboxElement;
@@ -70,7 +69,7 @@ public class UserForm extends WebFormImpl {
 		
 		em.getTransaction().begin();	
 		Query q = em.createNamedQuery( "AllOrganisation" );
-		List<Organisation> res = (List<Organisation>) q.getResultList();
+		List<Organisation> res = q.getResultList();
 		em.getTransaction().commit();
 		
 		organisationOptions.add( new OptionImpl( "-1", "none" ) );
