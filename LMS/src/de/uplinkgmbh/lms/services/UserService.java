@@ -54,6 +54,8 @@ public class UserService implements Service{
 			result = getTemplateUsers( request );
 		else if( "getUsers".equals( operation ) )
 			result = getUsers( request );
+		else if( "getUser".equals( operation ) )
+			result = getUser( request );
 		else if( "getLoginUser".equals( operation ) )
 			result = getLoginUser( request );
 		else if( "newUser".equals( operation ) )
@@ -290,6 +292,126 @@ public class UserService implements Service{
 			}
 			
 			log.debug( logstr );
+			}finally{
+				pm.closeEntityManager( em );
+			}
+		}else{
+			result = new DefaultWash();
+			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );
+		
+		}
+		return result;
+	}
+	
+	private Wash getUser(Wash request) throws NotFoundException, WrongTypeException, DuplicateEntryException{
+		
+		Wash result = null;
+		if( !request.getString( "LMSTOKEN" ).equals( "" ) && !request.getString( "LOGINNAME" ).equals( "" ) ){
+			
+			LMSToken token = Tokenaizer.restoreLMSToken( request.getString( "LMSTOKEN" ).getBytes() );
+			if( token == null ){
+				result = new DefaultWash();
+				result.addField( "STATUS", Type.BOOLEAN, false );
+				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
+				return result;
+			}
+			
+			MyPersistenceManager pm = MyPersistenceManager.getInstance();
+			
+			if( !AuthorizationsChecker.isAllowed( token, "APPLICATION", "user.getUser", token.application ) ){
+				result = new DefaultWash();
+				result.addField( "STATUS", Type.BOOLEAN, false );
+				result.addField( "REASON", Type.STRING, "WRONG PERMISSION" );
+				return result;
+			}
+			
+			
+			
+			User u = null;
+			EntityManager em = pm.getEntityManager();
+			try{
+			em.getTransaction().begin();	
+			Query q = em.createNamedQuery( "UserFetchByLoginname" );
+			q.setParameter( "loginname", request.getString( "LOGINNAME" ) );
+			try{
+			u = (User)q.getSingleResult();
+			}catch( NoResultException e ){
+				result = new DefaultWash();
+				result.addField( "ERROR", Type.STRING, "USER NOT FOUND" );
+				return result;
+			}
+			em.getTransaction().commit();
+			
+			result = new DefaultWash();
+			result.addField( "STATUS", Type.BOOLEAN, true );
+			result.addField( "REASON", Type.STRING, "" );
+			
+			
+			result.addField( "User.LOGINNAME", Type.STRING, u.getLoginname() );
+			result.addField( "User.PASSWORD", Type.STRING, u.getPassword() );
+			result.addField( "User.FIRSTNAME", Type.STRING, u.getFirstname() );
+			result.addField( "User.SURENAME", Type.STRING, u.getSurename() );
+			result.addField( "User.EMAIL", Type.STRING, u.getEmail() );
+			result.addField( "User.PHONEPRIV", Type.STRING, u.getPhonepriv() );
+			result.addField( "User.PHONEWORK", Type.STRING, u.getPhonework() );
+			result.addField( "User.MOBILE", Type.STRING, u.getMobile() );
+			result.addField( "User.FAX", Type.STRING, u.getFax() );
+			result.addField( "User.CITY", Type.STRING, u.getCity() );
+			result.addField( "User.STATE", Type.STRING, u.getState() );
+			result.addField( "User.ZIP", Type.STRING, u.getZip() );
+			result.addField( "User.STREET", Type.STRING, u.getStreet() );
+			result.addField( "User.STREETNR", Type.STRING, u.getStreetnr() );
+			if( u.getCountry() != null )
+				result.addField( "User.COUNTRY", Type.STRING, u.getCountry().getDisplayCountry() );
+			else
+				result.addField( "User.COUNTRY", Type.STRING, "" );
+			if( u.getLanguage() != null )
+				result.addField( "User.LANGUAGE", Type.STRING, u.getLanguage().getDisplayLanguage() );
+			else
+				result.addField( "User.LANGUAGE", Type.STRING, "" );
+			if( u.getLastlogin() != null )
+				result.addField( "User.LASTLOGIN", Type.INTEGER, u.getLastlogin().getTime() );
+			else
+				result.addField( "User.LASTLOGIN", Type.INTEGER );
+			if( u.getLastlogout() != null )
+				result.addField( "User.LASTLOGOUT", Type.INTEGER, u.getLastlogout().getTime() );
+			else
+				result.addField( "User.LASTLOGOUT", Type.INTEGER );
+			result.addField( "User.LOGINCOUNTER", Type.INTEGER, u.getLogincounter() );
+			result.addField( "User.WASHSTORE", Type.STRING, u.getWashstore() );
+			
+			if( u.getOrganisation() != null ){
+				result.addField( "User.ORGANAME", Type.STRING, u.getOrganisation().getName() );
+				if( u.getOrganisation().getUrl() != null )
+					result.addField( "User.ORGAURL", Type.STRING, u.getOrganisation().getUrl().toString() );
+				else
+					result.addField( "User.ORGAURL", Type.STRING, "" );
+				result.addField( "User.ORGAPHONE", Type.STRING, u.getOrganisation().getPhone() );
+				result.addField( "User.ORGAFAX", Type.STRING, u.getOrganisation().getFax() );
+				result.addField( "User.ORGACITY", Type.STRING, u.getOrganisation().getCity() );
+				result.addField( "User.ORGASTATE", Type.STRING, u.getOrganisation().getState() );
+				if( u.getOrganisation().getCountry() != null )
+					result.addField( "User.ORGACOUNTRY", Type.STRING, u.getOrganisation().getCountry().getDisplayCountry() );
+				else
+					result.addField( "User.ORGACOUNTRY", Type.STRING, "" );
+				result.addField( "User.ORGAZIP", Type.STRING, u.getOrganisation().getZip() );
+				result.addField( "User.ORGASTREET", Type.STRING, u.getOrganisation().getStreet() );
+				result.addField( "User.ORGASTREETNR", Type.STRING, u.getOrganisation().getStreetnr() );
+				result.addField( "User.ORGAWASHSTORE", Type.STRING, u.getOrganisation().getWashstore() );
+			}else{
+				result.addField( "User.ORGANAME", Type.STRING, "" );
+				result.addField( "User.ORGAURL", Type.STRING, "" );
+				result.addField( "User.ORGAPHONE", Type.STRING, "" );
+				result.addField( "User.ORGAFAX", Type.STRING, "" );
+				result.addField( "User.ORGACITY", Type.STRING, "" );
+				result.addField( "User.ORGASTATE", Type.STRING, "" );
+				result.addField( "User.ORGACOUNTRY", Type.STRING, "" );
+				result.addField( "User.ORGAZIP", Type.STRING, "" );
+				result.addField( "User.ORGASTREET", Type.STRING, "" );
+				result.addField( "User.ORGASTREETNR", Type.STRING, "" );
+				result.addField( "User.ORGAWASHSTORE", Type.STRING, "" );
+			}
+	
 			}finally{
 				pm.closeEntityManager( em );
 			}
