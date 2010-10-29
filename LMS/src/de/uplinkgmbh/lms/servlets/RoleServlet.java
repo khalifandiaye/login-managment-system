@@ -22,12 +22,11 @@ import de.axone.webtemplate.WebTemplate;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.WebTemplateFactory;
 import de.axone.webtemplate.converter.ConverterException;
-import de.axone.webtemplate.elements.impl.HtmlInputElement;
 import de.axone.webtemplate.form.FormValue;
 import de.axone.webtemplate.form.WebFormImpl;
 import de.axone.webtemplate.list.DefaultPager;
+import de.axone.webtemplate.list.DefaultSortSelector;
 import de.axone.webtemplate.list.ListProvider;
-import de.uplinkgmbh.lms.business.DBList;
 import de.uplinkgmbh.lms.entitys.Action;
 import de.uplinkgmbh.lms.entitys.Groups;
 import de.uplinkgmbh.lms.entitys.Role;
@@ -38,8 +37,8 @@ import de.uplinkgmbh.lms.user.AuthorizationsChecker;
 import de.uplinkgmbh.lms.utils.LMSToken;
 import de.uplinkgmbh.lms.utils.UserStatus;
 import de.uplinkgmbh.lms.webtemplate.Context;
+import de.uplinkgmbh.lms.webtemplate.FVFactory;
 import de.uplinkgmbh.lms.webtemplate.action.ActionList;
-import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 import de.uplinkgmbh.lms.webtemplate.groups.GroupList;
 import de.uplinkgmbh.lms.webtemplate.role.RoleList;
 import de.uplinkgmbh.lms.webtemplate.user.UserList;
@@ -148,7 +147,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								r = em.find( de.uplinkgmbh.lms.entitys.Role.class, new Long( request.getParameter( "role_id" ) ) );
 								em.getTransaction().commit();
 								
-								// zur sicherheit ob die übergebene role id auch zur erlaubten app gehört
+								// zur sicherheit ob die ï¿½bergebene role id auch zur erlaubten app gehï¿½rt
 								if( ! r.getApplication().getName().equals( app.getName() ) ){
 									response.sendRedirect( request.getContextPath()+"/" );
 									return;
@@ -171,7 +170,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								parameters.put( "application_id", ""+app.getId() );
 								parameters.put( "action", "show" );
 								parameters.put( "actionaction", "" );
-								String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+								String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 								listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Role.html" );
 								response.sendRedirect( listpage );
 								
@@ -204,9 +203,11 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								List<Action> alist = r.getActionList();
 								
 								DefaultPager Actionpager = new DefaultPager();
+								DefaultSortSelector ActionSortSelector = new DefaultSortSelector();
 								ActionListProvider ap = new ActionListProvider( alist );
 								ActionList al = new ActionList( request, "actionlist", 10, ap, ActionitemTemp );
 								al.initPager( Actionpager );
+								al.initSortSelector( ActionSortSelector );
 								
 								template.setParameter( "actionlist", al );
 								template.setParameter( "actionlistpager", Actionpager );
@@ -231,7 +232,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								parameters.put( "application_id", ""+app.getId() );
 								parameters.put( "action_id", request.getParameter( "action_id" ) );
 								parameters.put( "actionaction", "delete" );
-								String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+								String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 								String target = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Role.html" );
 								
 								parameters = new HashMap<String,String>();
@@ -239,7 +240,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								parameters.put( "application_id", ""+app.getId() );
 								parameters.put( "action", "show" );
 								parameters.put( "actionaction", "" );
-								listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+								listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 								String source = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Role.html" );
 								
 								String target64 = Base64.encode( target );
@@ -282,7 +283,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 									parameters.put( "application_id", ""+app.getId() );
 									parameters.put( "action", "show" );
 									parameters.put( "actionaction", "" );
-									String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+									String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 									listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Role.html" );
 									
 									response.sendRedirect( listpage );
@@ -368,7 +369,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						parameters.put( "application_id", ""+app.getId() );
 						parameters.put( "action", "show" );
 						parameters.put( "actionaction", "" );
-						String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+						String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 						listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Role.html" );
 						
 						response.sendRedirect( listpage );
@@ -409,7 +410,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 							parameters.put( "role_id", ""+r.getId() );
 							parameters.put( "application_id", ""+app.getId() );
 							parameters.put( "action", "show" );;
-							String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+							String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 							listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Role.html" );
 							
 							response.sendRedirect( listpage );
@@ -567,7 +568,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						parameters.put( "role_id", ""+request.getParameter( "role_id" ) );
 						parameters.put( "application_id", ""+app.getId() );
 						parameters.put( "action", "show" );;
-						String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+						String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 						listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Role.html" );
 						
 						response.sendRedirect( listpage );
@@ -595,7 +596,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						parameters.put( "role_id", ""+request.getParameter( "role_id" ) );
 						parameters.put( "application_id", ""+app.getId() );
 						parameters.put( "action", "show" );;
-						String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+						String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 						listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Role.html" );
 						
 						response.sendRedirect( listpage );
@@ -623,7 +624,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						parameters.put( "role_id", ""+request.getParameter( "role_id" ) );
 						parameters.put( "application_id", ""+app.getId() );
 						parameters.put( "action", "show" );;
-						String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+						String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 						listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Role.html" );
 						
 						response.sendRedirect( listpage );
@@ -651,7 +652,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						parameters.put( "role_id", ""+request.getParameter( "role_id" ) );
 						parameters.put( "application_id", ""+app.getId() );
 						parameters.put( "action", "show" );;
-						String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+						String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 						listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Role.html" );
 						
 						response.sendRedirect( listpage );
@@ -670,7 +671,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						r = em.find( Role.class, new Long (request.getParameter( "role_id" ) ) );
 						em.getTransaction().commit();
 						
-						form.setName( r.getName() );
+						form.setRoleName( r.getName() );
 						form.setSort( ((Long)r.getSort()).intValue() );
 						
 						roleEditTemp.setParameter( "appid", app.getId() );
@@ -712,7 +713,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						HashMap<String, String> parameters = new HashMap<String,String>();
 						parameters.put( "application_id", ""+app.getId() );
 						parameters.put( "action", "" );
-						String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+						String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 						listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Role.html" );
 						
 						response.sendRedirect( listpage );
@@ -766,18 +767,18 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		public RoleEditForm() throws WebTemplateException {
 			
-			name = HtmlInputElement.createTextValue( NAME, 255, false );
+			name = new FVFactory().createInputTextValue( NAME, 255, false );
 			this.addFormValue( NAME, name );
 			
-			sort = HtmlInputElement.createIntegerValue( SORT, Locale.GERMANY, false );
+			sort = new FVFactory().createInputIntegerValue( SORT, Locale.GERMANY, false );
 			this.addFormValue( SORT, sort );
 		}
 		
-		public String getName() throws ConverterException{
+		public String getRoleName() throws ConverterException{
 			return name.getValue();
 		}
 		
-		public void setName( String name ) throws ConverterException{
+		public void setRoleName( String name ) throws ConverterException{
 			this.name.setValue( name );
 		}
 	

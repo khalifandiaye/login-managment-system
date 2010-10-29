@@ -1,0 +1,20 @@
+@Class:de.uplinkgmbh.lms.webtemplate.action.ActionListItem
+<tr>
+	<form name="action_save" method="get" action="/LMS/Role.html">
+				<td><div class="__validatorname__">__elementname__</div></td>
+				<td><div class="__validatorsort__"><span class="sort">__elementsort__</span></div></td>
+				<td><div class="__validatorstate__">__elementstate__</div></td>
+				<td><div class="__validatoraction__">__elementaction__</div></td>
+				<td><div class="__validatortarget__">__elementtarget__</div></td>
+				<td><div class="__validatorrule__"><span class="rule">__elementrule__</span></div></td>
+
+		<td>
+			<input type="submit" name="save" value="Save"></input>
+			<input type="hidden" value="__actionid__" name="action_id" />
+			<input type="hidden" value="__appid__" name="application_id" />
+			<input type="hidden" value="__roleid__" name="role_id" />
+			<input type="hidden" value="save" name="actionaction" />
+		</td>
+		__del__
+	</form>
+</tr>

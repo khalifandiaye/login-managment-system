@@ -14,12 +14,12 @@ import de.axone.webtemplate.WebTemplate;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.WebTemplateFactory;
 import de.axone.webtemplate.converter.ConverterException;
-import de.axone.webtemplate.elements.impl.HtmlInputElement;
 import de.axone.webtemplate.form.FormValue;
 import de.axone.webtemplate.form.WebFormImpl;
 import de.uplinkgmbh.lms.exceptions.LoginException;
 import de.uplinkgmbh.lms.utils.Tokenaizer;
 import de.uplinkgmbh.lms.webtemplate.Context;
+import de.uplinkgmbh.lms.webtemplate.FVFactory;
 
 /**
  * Servlet implementation class for Servlet: Login
@@ -123,10 +123,10 @@ import de.uplinkgmbh.lms.webtemplate.Context;
 		
 		public LoginForm() throws WebTemplateException {
 			
-			username = HtmlInputElement.createTextValue( USERNAME, 255, false );
+			username = new FVFactory().createInputTextValue( USERNAME, 255, false );
 			this.addFormValue( USERNAME, username );
 			
-			password = HtmlInputElement.createPasswordValue( PASSWORD, 255, false );
+			password = new FVFactory().createInputPasswordValue( PASSWORD, 255, false );
 			this.addFormValue( PASSWORD, password );
 
 		}

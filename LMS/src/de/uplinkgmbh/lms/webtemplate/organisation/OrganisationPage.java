@@ -38,7 +38,7 @@ public class OrganisationPage extends AbstractFileWebTemplate{
 		getHolder().setValue( "usermanagment", "<a href=\"User.html\"><span>User</span></a>" );
 		HashMap<String, String> parameters = new HashMap<String,String>();
 		parameters.put( "action", "new" );
-		String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+		String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 		listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Organisation.html" );
 		
 		if( ! this.getParameter( "orgalist" ).equals( "" ) ) getHolder().setValue( "neworga", "<a href=\""+listpage+"\"><h1>new Organisation</h1></a>" );

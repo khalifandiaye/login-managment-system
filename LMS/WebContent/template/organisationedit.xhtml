@@ -1,0 +1,49 @@
+@Class:de.uplinkgmbh.lms.webtemplate.organisation.OrganisationEdit
+<form name="orga_save" method="get" action="/LMS/Organisation.html">
+<table
+ style="text-align: left; border-style:solid; border-color:black; width: 100%;" border="1"
+ cellpadding="2" cellspacing="2">
+ <tbody>
+ 	<tr>
+ 		<td>Name: </td><td>__name__</td><td></td><td></td>
+ 	</tr>
+ 	<tr>
+ 		<td>Url: </td><td>__url__</td><td></td><td></td>
+ 	</tr>
+ 	<tr> 	
+ 		<td>Country: </td><td>__country__</td><td></td><td></td>
+  	</tr>
+ 	<tr>		
+ 		<td>State: </td><td>__state__</td><td></td><td></td>
+  	</tr>
+ 	<tr>		
+ 		<td>City: </td><td>__city__</td><td></td><td></td>
+  	</tr>
+ 	<tr>		
+ 		<td>Zip: </td><td>__zip__</td><td></td><td></td>
+  	</tr>
+ 	<tr>		
+ 		<td>Street: </td><td>__street__</td><td></td><td></td>
+  	</tr>
+ 	<tr>		
+ 		<td>Streetnr: </td><td>__streetnr__</td><td></td><td></td>
+ 	</tr>
+ 	<tr> 		
+ 		<td>Phone: </td><td>__phone__</td><td></td><td></td>
+ 	</tr>
+ 	<tr>		
+ 		<td>Fax: </td><td>__fax__</td><td></td><td></td>
+  	</tr>
+ 	<tr>		
+ 		<td>Washstore: </td><td>__washstore__</td><td></td><td></td>
+  	</tr>
+ 	<tr>		
+ 		<td><input type="submit" name="save" value="Save"></input>
+ 			<input type="hidden" value="__orgaid__" name="organisation_id" />
+ 			__user__
+ 			<input type="hidden" value="save" name="action" />
+ 		</td>
+ 	</tr>
+ </tbody>
+</table>
+</form>

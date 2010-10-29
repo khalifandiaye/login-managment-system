@@ -1,12 +1,10 @@
 package de.uplinkgmbh.lms.servlets.forms;
 
-import java.util.Locale;
-
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.converter.ConverterException;
-import de.axone.webtemplate.elements.impl.HtmlInputElement;
 import de.axone.webtemplate.form.FormValue;
 import de.axone.webtemplate.form.WebFormImpl;
+import de.uplinkgmbh.lms.webtemplate.FVFactory;
 
 public class ActionForm extends WebFormImpl {
 	
@@ -27,25 +25,25 @@ public class ActionForm extends WebFormImpl {
 	
 	public ActionForm() throws WebTemplateException {
 		
-		a_name = HtmlInputElement.createTextValue( ACTIONNAME, 255, false );
+		a_name = new FVFactory().createInputTextValue( ACTIONNAME, 255, false );
 		this.addFormValue( ACTIONNAME, a_name );
-		a_target = HtmlInputElement.createTextValue( ACTIONTARGET, 255, false );
+		a_target = new FVFactory().createInputTextValue( ACTIONTARGET, 255, false );
 		this.addFormValue( ACTIONTARGET, a_target );
-		a_state = HtmlInputElement.createTextValue( ACTIONSTATE, 255, false );
+		a_state = new FVFactory().createInputTextValue( ACTIONSTATE, 255, false );
 		this.addFormValue( ACTIONSTATE, a_state );
-		a_action = HtmlInputElement.createTextValue( ACTIONACTION, 255, false );
+		a_action = new FVFactory().createInputTextValue( ACTIONACTION, 255, false );
 		this.addFormValue( ACTIONACTION, a_action );
-		a_rule = HtmlInputElement.createTextValue( ACTIONRULE, 255, false );
+		a_rule = new FVFactory().createInputTextValue( ACTIONRULE, 255, false );
 		this.addFormValue( ACTIONRULE, a_rule );
-		a_sort = HtmlInputElement.createIntegerValue( ACTIONSORT, Locale.GERMANY, false );
+		a_sort = new FVFactory().createInputIntegerValue( ACTIONSORT, false );
 		this.addFormValue( ACTIONSORT, a_sort );
 	}
 	
-	public String getName() throws ConverterException{
+	public String getActionName() throws ConverterException{
 		return a_name.getValue();
 	}
 	
-	public void setName( String a_name ) throws ConverterException{
+	public void setActionName( String a_name ) throws ConverterException{
 		this.a_name.setValue( a_name );
 	}
 

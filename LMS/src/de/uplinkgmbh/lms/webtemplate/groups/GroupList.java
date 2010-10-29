@@ -1,30 +1,23 @@
 package de.uplinkgmbh.lms.webtemplate.groups;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import de.axone.tools.E;
 import de.axone.webtemplate.Renderer;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.form.Translator;
 import de.axone.webtemplate.list.AbstractListRenderer;
-import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
-import de.axone.webtemplate.list.Pager;
-import de.uplinkgmbh.lms.entitys.Application;
 import de.uplinkgmbh.lms.entitys.Groups;
-import de.uplinkgmbh.lms.user.AuthorizationsChecker;
-import de.uplinkgmbh.lms.utils.LMSToken;
 
 public class GroupList extends AbstractListRenderer<Groups> {
 
 
 	public GroupList(HttpServletRequest req, String name, int itemsPerPage,
 			ListProvider<Groups> listProvider, Renderer itemTemplate) {
-		super( req, name, itemsPerPage, listProvider, itemTemplate );
+		super( req, name, "name", itemsPerPage, listProvider, itemTemplate );
 
 	}
 

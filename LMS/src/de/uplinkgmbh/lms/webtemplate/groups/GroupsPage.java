@@ -37,7 +37,7 @@ public class GroupsPage extends AbstractFileWebTemplate{
 		HashMap<String, String> parameters = new HashMap<String,String>();
 		parameters.put( "application_id", ""+this.getParameter( "appid" ) );
 		parameters.put( "action", "edit" );
-		String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+		String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 		listpage = listpage.replaceFirst( "group_id=[a-zA-Z_0-9]*", "" );
 		listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Groups.html" );
 		getHolder().setValue( "newgroup", "<a href=\""+listpage+"\" ><h1 class=\"listtop\">new group</h></a>" );

@@ -6,17 +6,15 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import de.axone.tools.E;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.converter.ConverterException;
-import de.axone.webtemplate.elements.impl.HtmlCheckboxElement;
-import de.axone.webtemplate.elements.impl.HtmlInputElement;
 import de.axone.webtemplate.elements.impl.HtmlSelectElement;
 import de.axone.webtemplate.elements.impl.HtmlSelectElement.Option;
 import de.axone.webtemplate.form.FormValue;
 import de.axone.webtemplate.form.WebFormImpl;
 import de.uplinkgmbh.lms.entitys.Organisation;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
+import de.uplinkgmbh.lms.webtemplate.FVFactory;
 
 public class UserForm extends WebFormImpl {
 	
@@ -58,8 +56,8 @@ public class UserForm extends WebFormImpl {
 	private FormValue<String> washstore;
 	private FormValue<String> country;
 	private FormValue<String> language;
-	private FormValue<Integer> activ;
-	private FormValue<Integer> template;
+	private FormValue<Boolean> activ;
+	private FormValue<Boolean> template;
 
 	private List<HtmlSelectElement.Option> organisationOptions = new LinkedList<HtmlSelectElement.Option>();
 	
@@ -82,61 +80,61 @@ public class UserForm extends WebFormImpl {
 			}
 		}
 
-		loginname = HtmlInputElement.createTextValue( LOGINNAME, 255, false );
+		loginname = new FVFactory().createInputTextValue( LOGINNAME, 255, false );
 		this.addFormValue( LOGINNAME, loginname );
 		
-		password = HtmlInputElement.createTextValue( PASSWORD, 255, false );
+		password = new FVFactory().createInputTextValue( PASSWORD, 255, false );
 		this.addFormValue( PASSWORD, password );
 		
-		firstname = HtmlInputElement.createTextValue( FIRSTNAME, 255, true );
+		firstname = new FVFactory().createInputTextValue( FIRSTNAME, 255, true );
 		this.addFormValue( FIRSTNAME, firstname );
 		
-		surename = HtmlInputElement.createTextValue( SURENAME, 255, true );
+		surename = new FVFactory().createInputTextValue( SURENAME, 255, true );
 		this.addFormValue( SURENAME, surename );
 		
-		email = HtmlInputElement.createEMailValue( EMAIL, 255, true );
+		email = new FVFactory().createInputEMailValue( EMAIL, 255, true );
 		this.addFormValue( EMAIL, email );
 		
-		phonepriv = HtmlInputElement.createTextValue( PHONEPRIV, 255, true );
+		phonepriv = new FVFactory().createInputTextValue( PHONEPRIV, 255, true );
 		this.addFormValue( PHONEPRIV, phonepriv );
 		
-		phonework = HtmlInputElement.createTextValue( PHONEWORK, 255, true );
+		phonework = new FVFactory().createInputTextValue( PHONEWORK, 255, true );
 		this.addFormValue( PHONEWORK, phonework );
 		
-		mobile = HtmlInputElement.createTextValue( MOBILE, 255, true );
+		mobile = new FVFactory().createInputTextValue( MOBILE, 255, true );
 		this.addFormValue( MOBILE, mobile );
 		
-		fax = HtmlInputElement.createTextValue( FAX, 255, true );
+		fax = new FVFactory().createInputTextValue( FAX, 255, true );
 		this.addFormValue( FAX, fax );
 		
-		city = HtmlInputElement.createTextValue( CITY, 255, true );
+		city = new FVFactory().createInputTextValue( CITY, 255, true );
 		this.addFormValue( CITY, city );
 		
-		state = HtmlInputElement.createTextValue( STATE, 255, true );
+		state = new FVFactory().createInputTextValue( STATE, 255, true );
 		this.addFormValue( STATE, state );
 		
-		zip = HtmlInputElement.createTextValue( ZIP, 255, true );
+		zip = new FVFactory().createInputTextValue( ZIP, 255, true );
 		this.addFormValue( ZIP, zip );
 		
-		street = HtmlInputElement.createTextValue( STREET, 255, true );
+		street = new FVFactory().createInputTextValue( STREET, 255, true );
 		this.addFormValue( STREET, street );
 		
-		streetnr = HtmlInputElement.createTextValue( STREETNR, 255, true );
+		streetnr = new FVFactory().createInputTextValue( STREETNR, 255, true );
 		this.addFormValue( STREETNR, streetnr );
 		
-		washstore = HtmlInputElement.createTextValue( WASHSTORE, 255, true );
+		washstore = new FVFactory().createInputTextValue( WASHSTORE, 255, true );
 		this.addFormValue( WASHSTORE, washstore );
 		
-		country = HtmlInputElement.createCountryValue( COUNTRY, true );
+		country = new FVFactory().createInputCountryValue( COUNTRY, true );
 		this.addFormValue( COUNTRY, country );
 		
-		language = HtmlInputElement.createLanguageValue( LANGUAGE, true );
+		language = new FVFactory().createInputLanguageValue( LANGUAGE, true );
 		this.addFormValue( LANGUAGE, language );
 		
-		activ = HtmlCheckboxElement.createBooleanValue( ACTIV );
+		activ = new FVFactory().createCheckboxBooleanValue( ACTIV );
 		this.addFormValue( ACTIV, activ );
 		
-		template = HtmlCheckboxElement.createBooleanValue( TEMPLATE );
+		template = new FVFactory().createCheckboxBooleanValue( TEMPLATE );
 		this.addFormValue( TEMPLATE, template );
 	}
 	
@@ -272,7 +270,7 @@ public class UserForm extends WebFormImpl {
 	
 	public Boolean getActiv() throws ConverterException{
 		
-		if( activ.getValue() == 0 ){
+		if( activ.getValue() == false ){
 			return false;
 		}else{
 			return true;
@@ -280,13 +278,13 @@ public class UserForm extends WebFormImpl {
 	}
 	public void setActiv( Boolean activ ) throws ConverterException{
 		if( activ )
-			this.activ.setValue( 1 );
+			this.activ.setValue( true );
 		else
-			this.activ.setValue( 0 );
+			this.activ.setValue( false );
 	}
 	
 	public Boolean getTemplate() throws ConverterException{
-		if( template.getValue() == 0 ){
+		if( template.getValue() == false ){
 			return false;
 		}else{
 			return true;
@@ -294,9 +292,9 @@ public class UserForm extends WebFormImpl {
 	}
 	public void setTemplate( Boolean template ) throws ConverterException{
 		if( template )
-			this.template.setValue( 1 );
+			this.template.setValue( true );
 		else
-			this.template.setValue( 0 );
+			this.template.setValue( false );
 	}
 	
 	public static class OptionImpl implements Option {

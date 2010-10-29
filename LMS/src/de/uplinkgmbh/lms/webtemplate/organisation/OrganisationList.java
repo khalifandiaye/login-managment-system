@@ -1,31 +1,22 @@
 package de.uplinkgmbh.lms.webtemplate.organisation;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import de.axone.tools.E;
 import de.axone.webtemplate.Renderer;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.form.Translator;
 import de.axone.webtemplate.list.AbstractListRenderer;
-import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
-import de.axone.webtemplate.list.Pager;
-import de.uplinkgmbh.lms.entitys.Application;
 import de.uplinkgmbh.lms.entitys.Organisation;
-import de.uplinkgmbh.lms.entitys.Role;
-import de.uplinkgmbh.lms.entitys.User;
-import de.uplinkgmbh.lms.user.AuthorizationsChecker;
-import de.uplinkgmbh.lms.utils.LMSToken;
 
 public class OrganisationList extends AbstractListRenderer<Organisation> {
 
 	public OrganisationList(HttpServletRequest req, String name, int itemsPerPage,
 			ListProvider<Organisation> listProvider, Renderer itemTemplate) {
-		super( req, name, itemsPerPage, listProvider, itemTemplate );
+		super( req, name, "name", itemsPerPage, listProvider, itemTemplate );
 	}
 
 	@Override

@@ -1,0 +1,62 @@
+@Class:de.uplinkgmbh.lms.webtemplate.LoginPage
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+       "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=7" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="Content-Language" content="de" />
+        
+        <title> __title__ </title>
+        
+        <meta name="Keywords" content="__keywords__" />
+        <meta name="Description" content="__description__" />
+        
+        <meta name="ROBOTS" content="ALL" />
+        <meta http-equiv="imagetoolbar" content="no" />
+        <meta name="MSSmartTagsPreventParsing" content="true" />
+        <meta name="Copyright" content="(c) 2008 __company__ " />
+        <link href="css/general.css" rel="stylesheet" type="text/css" media="all" />
+    </head>
+    <body>
+    
+    <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+    <td>
+    	<img class="logo" src="images/logo.png" />
+    </td>
+
+     <td>
+    <form name="login" method="get" action="/LMS/Login.html">
+	  <table width="300" border="0" cellspacing="0" cellpadding="0">
+	    <tr>
+	      <td width="57"><font class="contenttext">Benutzername:</font></td>
+	      <td width="8">&nbsp;</td>
+	      <td width="130"> 
+	        <input type="text" name="username"></input>
+	      </td>
+	      <td width="14">&nbsp;</td>
+	      <td width="91">&nbsp;</td>
+	    </tr>
+	    <tr>
+	      <td width="57"><font class="contenttext">Passwort:</font></td>
+	      <td width="8">&nbsp;</td>
+	      <td width="130"> 
+	        <input type="password" name="password"></input>
+	      </td>
+	      <td width="14">&nbsp;</td>
+	      <td width="91">
+	        <input type="submit" name="login_do_login" value="Login"></input>
+	      </td>
+	    </tr>
+	  </table>
+	</form>
+	__message__
+       </td>
+	  </tr>
+	</table>
+
+    </body>
+    
+</html>

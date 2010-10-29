@@ -12,17 +12,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import de.axone.tools.E;
 import de.axone.webtemplate.WebTemplate;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.WebTemplateFactory;
 import de.axone.webtemplate.converter.ConverterException;
-import de.axone.webtemplate.elements.impl.HtmlInputElement;
 import de.axone.webtemplate.form.FormValue;
 import de.axone.webtemplate.form.WebFormImpl;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
-import de.uplinkgmbh.lms.business.DBList;
 import de.uplinkgmbh.lms.entitys.Action;
 import de.uplinkgmbh.lms.entitys.Application;
 import de.uplinkgmbh.lms.entitys.Role;
@@ -31,6 +28,7 @@ import de.uplinkgmbh.lms.user.AuthorizationsChecker;
 import de.uplinkgmbh.lms.utils.LMSToken;
 import de.uplinkgmbh.lms.utils.UserStatus;
 import de.uplinkgmbh.lms.webtemplate.Context;
+import de.uplinkgmbh.lms.webtemplate.FVFactory;
 import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 
 
@@ -185,7 +183,7 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 					}else if( request.getParameter( "action" ).equals( "edit") && userstatus == UserStatus.SYSTEMADMIN ){
 				
 						ApplicationEditForm form = new ApplicationEditForm();
-						form.setName( app.getName() );
+						form.setApplicationName( app.getName() );
 						
 						String appEdit = context.getServletContext().getRealPath( "/template/appedit.xhtml" );
 						File appEditFile = new File( appEdit );
@@ -251,15 +249,15 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 		
 		public ApplicationEditForm() throws WebTemplateException {
 			
-			name = HtmlInputElement.createTextValue( NAME, 255, false );
+			name = new FVFactory().createInputTextValue( NAME, 255, false );
 			this.addFormValue( NAME, name );
 		}
 		
-		public String getName() throws ConverterException{
+		public String getApplicationName() throws ConverterException{
 			return name.getValue();
 		}
 		
-		public void setName( String name ) throws ConverterException{
+		public void setApplicationName( String name ) throws ConverterException{
 			this.name.setValue( name );
 		}
 	

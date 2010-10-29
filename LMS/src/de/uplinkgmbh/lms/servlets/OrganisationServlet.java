@@ -22,16 +22,13 @@ import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.WebTemplateFactory;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
-import de.uplinkgmbh.lms.business.DBList;
 import de.uplinkgmbh.lms.entitys.Organisation;
-import de.uplinkgmbh.lms.entitys.User;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
 import de.uplinkgmbh.lms.servlets.forms.OrganisationForm;
 import de.uplinkgmbh.lms.user.AuthorizationsChecker;
 import de.uplinkgmbh.lms.utils.LMSToken;
 import de.uplinkgmbh.lms.webtemplate.Context;
 import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
-import de.uplinkgmbh.lms.webtemplate.user.UserList;
 
 
 /**
@@ -129,7 +126,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 							HashMap<String, String> parameters = new HashMap<String,String>();
 							parameters.put( "organisation_id", ""+orga.getId() );
 							parameters.put( "action", "show" );
-							String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+							String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 							listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Organisation.html" );
 							response.sendRedirect( listpage );
 							
@@ -194,13 +191,13 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								em.persist( orga );
 								em.getTransaction().commit();
 								
-								// wenn user_id bei save mitkommt dann zurück zu User
+								// wenn user_id bei save mitkommt dann zurï¿½ck zu User
 								if( request.getParameter( "user_id" ) != null ){
 									HashMap<String, String> parameters = new HashMap<String,String>();
 									parameters.put( "organisation_id", ""+orga.getId() );
 									parameters.put( "user_id", request.getParameter( "user_id" ) );
 									parameters.put( "action", "saveorga" );
-									String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+									String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 									listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "User.html" );
 									response.sendRedirect( listpage );
 								
@@ -210,7 +207,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								HashMap<String, String> parameters = new HashMap<String,String>();
 								parameters.put( "organisation_id", ""+orga.getId() );
 								parameters.put( "action", "show" );
-								String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+								String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 								listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Organisation.html" );
 								response.sendRedirect( listpage );
 								return;	
@@ -338,7 +335,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 					
 					HashMap<String, String> parameters = new HashMap<String,String>();
 					parameters.put( "action", "" );
-					String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+					String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 					listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Organisation.html" );
 					response.sendRedirect( listpage );
 					return;	
@@ -360,7 +357,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						form.setCity( orga.getCity() );
 						form.setCountry( orga.getCountry().getCountry().toUpperCase() );
 						form.setFax( orga.getFax() );
-						form.setName( orga.getName() );
+						form.setOrgaName( orga.getName() );
 						if( orga.getUrl() != null )
 							form.setUrl( orga.getUrl().toString() );
 						else

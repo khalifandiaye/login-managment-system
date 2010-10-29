@@ -1,28 +1,19 @@
 package de.uplinkgmbh.lms.webtemplate.groups;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedList;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.Ostermiller.util.Base64;
 
-import de.axone.wash.Wash;
 import de.axone.web.HttpLinkBuilder;
 import de.axone.webtemplate.AbstractFileWebTemplate;
 import de.axone.webtemplate.KeyException;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.form.Translator;
-import de.uplinkgmbh.lms.entitys.Application;
 import de.uplinkgmbh.lms.entitys.Groups;
-import de.uplinkgmbh.lms.user.AuthorizationsChecker;
-import de.uplinkgmbh.lms.utils.LMSToken;
-import de.uplinkgmbh.lms.utils.UserStatus;
 
 public class GroupListItem extends AbstractFileWebTemplate{
 
@@ -44,7 +35,7 @@ public class GroupListItem extends AbstractFileWebTemplate{
 		parameters.put( "application_id", ""+g.getApplication().getId() );
 		parameters.put( "group_id", ""+g.getId() );
 		parameters.put( "action", "show" );
-		String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+		String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 		listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Groups.html" );
 		getHolder().setValue( "showlink", listpage );
 		
@@ -52,7 +43,7 @@ public class GroupListItem extends AbstractFileWebTemplate{
 		parameters.put( "application_id", ""+g.getApplication().getId() );
 		parameters.put( "group_id", ""+g.getId() );
 		parameters.put( "action", "edit" );
-		listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+		listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 		listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Groups.html" );
 		getHolder().setValue( "editlink", listpage );
 		
@@ -60,11 +51,11 @@ public class GroupListItem extends AbstractFileWebTemplate{
 		parameters.put( "application_id", ""+g.getApplication().getId() );
 		parameters.put( "group_id", ""+g.getId() );
 		parameters.put( "action", "delete" );
-		listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+		listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 		listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Groups.html" );
 		
 		String target = listpage;
-		String source = HttpLinkBuilder.makeLink( request, true, null );;
+		String source = HttpLinkBuilder.makeLink( request, true, true, null );;
 
 		String target64 = Base64.encode( target );
 		String source64 = Base64.encode( source );
