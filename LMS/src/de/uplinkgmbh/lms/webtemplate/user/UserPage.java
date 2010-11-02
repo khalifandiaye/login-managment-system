@@ -37,7 +37,7 @@ public class UserPage extends AbstractFileWebTemplate{
 		getHolder().setValue( "usermanagment", "<a href=\"User.html\"><span>User</span></a>" );
 		HashMap<String, String> parameters = new HashMap<String,String>();
 		parameters.put( "action", "new" );
-		String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
+		String listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 		listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "User.html" );
 		getHolder().setValue( "newuser", "<a href=\""+listpage+"\"><h1>new user</h1></a>" );
 		
@@ -64,7 +64,7 @@ public class UserPage extends AbstractFileWebTemplate{
 		if( this.getParameter( "actionlist" ) != null ){
 			getHolder().setValue( "actionlistpager", this.getParameter( "actionlistpager" ) );
 			getHolder().setValue( "actionlist", this.getParameter( "actionlist" ) );
-			getHolder().setValue( "actionhead", "<tr><td>Name</td><td>Sort</td><td>State</td><td>Action</td><td>Target</td><td>Rule</td></tr>" );
+			getHolder().setValue( "actionhead", "<tr><td>App</td><td>Name</td><td>Sort</td><td>State</td><td>Action</td><td>Target</td><td>Rule</td></tr>" );
 		}else{
 			getHolder().setValue( "actionhead", "" );
 			getHolder().setValue( "actionlist", "" );

@@ -9,7 +9,6 @@ import javax.persistence.Query;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.converter.ConverterException;
 import de.axone.webtemplate.elements.impl.HtmlSelectElement;
-import de.axone.webtemplate.elements.impl.HtmlSelectElement.Option;
 import de.axone.webtemplate.form.FormValue;
 import de.axone.webtemplate.form.WebFormImpl;
 import de.uplinkgmbh.lms.entitys.Organisation;
@@ -58,8 +57,9 @@ public class UserForm extends WebFormImpl {
 	private FormValue<String> language;
 	private FormValue<Boolean> activ;
 	private FormValue<Boolean> template;
+	private FormValue<String> organisation; 
 
-	private List<HtmlSelectElement.Option> organisationOptions = new LinkedList<HtmlSelectElement.Option>();
+	private LinkedList<HtmlSelectElement.Option> organisationOptions = new LinkedList<HtmlSelectElement.Option>();
 	
 	public UserForm() throws WebTemplateException {
 		
@@ -71,14 +71,17 @@ public class UserForm extends WebFormImpl {
 		List<Organisation> res = (List<Organisation>) q.getResultList();
 		em.getTransaction().commit();
 		
-		organisationOptions.add( new OptionImpl( "-1", "none" ) );
-		organisationOptions.add( new OptionImpl( "-2", "new" ) ); 
+		organisationOptions.add( new HtmlSelectElement.OptionImpl( "-1", "none" ) );
+		organisationOptions.add( new HtmlSelectElement.OptionImpl( "-2", "new" ) ); 
 		
 		if( res != null ){
 			for( Organisation o : res ){
-				organisationOptions.add( new OptionImpl( String.valueOf( o.getId() ), o.getName() ) );
+				organisationOptions.add( new HtmlSelectElement.OptionImpl( String.valueOf( o.getId() ), o.getName() ) );
 			}
 		}
+		
+		organisation = new FVFactory().createSelectValue( ORGANISATION, (List<HtmlSelectElement.Option>)organisationOptions, true );
+		this.addFormValue( ORGANISATION, organisation );
 
 		loginname = new FVFactory().createInputTextValue( LOGINNAME, 255, false );
 		this.addFormValue( LOGINNAME, loginname );
@@ -131,22 +134,23 @@ public class UserForm extends WebFormImpl {
 		language = new FVFactory().createInputLanguageValue( LANGUAGE, true );
 		this.addFormValue( LANGUAGE, language );
 		
-		activ = new FVFactory().createCheckboxBooleanValue( ACTIV );
+		activ = new FVFactory().createRadioBooleanValue( ACTIV, "on", "off", false );
 		this.addFormValue( ACTIV, activ );
 		
-		template = new FVFactory().createCheckboxBooleanValue( TEMPLATE );
+		template = new FVFactory().createRadioBooleanValue( TEMPLATE, "on", "off", false );
 		this.addFormValue( TEMPLATE, template );
 	}
 	
-	public HtmlSelectElement getOrganisationHtmlSelectElement( ){
-		return getOrganisationHtmlSelectElement( null );
+	
+	public LinkedList<HtmlSelectElement.Option> getSelectedOrganisations() throws ConverterException{
+		return organisationOptions;
 	}
 	
-	public HtmlSelectElement getOrganisationHtmlSelectElement( String selectedkey ){
-		if( selectedkey == null )
-			return new HtmlSelectElement( ORGANISATION, organisationOptions );
-		else
-			return new HtmlSelectElement( ORGANISATION, selectedkey, organisationOptions );
+	public void setOrganisation( String orga) throws ConverterException{
+		organisation.setValue( orga );
+	}
+	public String getOrganisation() throws ConverterException{
+		return organisation.getValue();
 	}
 	
 	public String getLoginname() throws ConverterException{
@@ -270,11 +274,7 @@ public class UserForm extends WebFormImpl {
 	
 	public Boolean getActiv() throws ConverterException{
 		
-		if( activ.getValue() == false ){
-			return false;
-		}else{
-			return true;
-		}
+		return activ.getValue();
 	}
 	public void setActiv( Boolean activ ) throws ConverterException{
 		if( activ )
@@ -284,11 +284,8 @@ public class UserForm extends WebFormImpl {
 	}
 	
 	public Boolean getTemplate() throws ConverterException{
-		if( template.getValue() == false ){
-			return false;
-		}else{
-			return true;
-		}
+		return template.getValue();
+		
 	}
 	public void setTemplate( Boolean template ) throws ConverterException{
 		if( template )
@@ -296,22 +293,5 @@ public class UserForm extends WebFormImpl {
 		else
 			this.template.setValue( false );
 	}
-	
-	public static class OptionImpl implements Option {
-		
-		private String key;
-		private String text;
-		
-		public OptionImpl( String key, String text ){
-			this.key = key;
-			this.text = text;
-		}
-		
-		public String getValue() { return key; }
-		public void setValue( String value ) { this.key = value; }
-		
-		public String getText() { return text; }
-		public void setText( String text ) { this.text = text; }
-		
-	}
+
 }

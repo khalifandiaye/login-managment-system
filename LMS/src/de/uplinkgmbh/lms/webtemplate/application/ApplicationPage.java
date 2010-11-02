@@ -44,5 +44,4 @@ public class ApplicationPage extends AbstractFileWebTemplate{
 		getHolder().render( object, request, response, null );
 	}
 	
-
 }

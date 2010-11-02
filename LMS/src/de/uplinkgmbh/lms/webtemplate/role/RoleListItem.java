@@ -48,8 +48,8 @@ public class RoleListItem extends AbstractFileWebTemplate{
 		parameters.put( "application_id", ""+r.getApplication().getId() );
 		parameters.put( "role_id", ""+r.getId() );
 		parameters.put( "action", "delete" );
-		String target = HttpLinkBuilder.makeLink( request, true, true, parameters );
-		String source = HttpLinkBuilder.makeLink( request, true, true, null );
+		String target = HttpLinkBuilder.makeLink( request, true, false, parameters );
+		String source = HttpLinkBuilder.makeLink( request, true, false, null );
 		
 		String target64 = Base64.encode( target );
 		String source64 = Base64.encode( source );

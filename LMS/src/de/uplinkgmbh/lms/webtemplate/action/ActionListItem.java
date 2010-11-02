@@ -8,8 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 import de.axone.webtemplate.AbstractFileWebTemplate;
 import de.axone.webtemplate.KeyException;
 import de.axone.webtemplate.WebTemplateException;
+import de.axone.webtemplate.elements.impl.HtmlInputElement;
 import de.axone.webtemplate.form.Translator;
 import de.uplinkgmbh.lms.entitys.Action;
+import de.uplinkgmbh.lms.entitys.Application;
 import de.uplinkgmbh.lms.servlets.forms.ActionForm;
 
 public class ActionListItem extends AbstractFileWebTemplate{
@@ -35,6 +37,7 @@ public class ActionListItem extends AbstractFileWebTemplate{
 		if( object instanceof Action ){
 		
 			Action a = (Action)object;
+			Application app;
 			
 			aform.setAction( a.getAction() );
 			aform.setActionName( a.getName() );
@@ -47,10 +50,15 @@ public class ActionListItem extends AbstractFileWebTemplate{
 			getHolder().setValue( "roleid", ((Long)a.getRole().getId()).toString() );
 			getHolder().setValue( "actionid", ((Long)a.getId()).toString() );
 			
+			getHolder().setValue( "rand", "_"+(int)(Math.random()*10000000) );
+			
 			if( aform.isValid() ){
-				
+				HtmlInputElement hie = new HtmlInputElement( HtmlInputElement.InputType.TEXT, "application" );
+				hie.setValue( a.getRole().getApplication().getName() );
+				hie.addAttribute( "id", "input_a_name" );
+				getHolder().setValue( "elementapp", hie );				
 				getHolder().setValue( "elementname", aform.getHtmlInput( ActionForm.ACTIONNAME ) );
-				getHolder().setValue( "elementsort", aform.getHtmlInput( ActionForm.ACTIONSORT ) );
+				getHolder().setValue( "elementsort", aform.getHtmlInput( ActionForm.ACTIONSORT) );
 				getHolder().setValue( "elementstate", aform.getHtmlInput( ActionForm.ACTIONSTATE ) );
 				getHolder().setValue( "elementaction", aform.getHtmlInput( ActionForm.ACTIONACTION ) );
 				getHolder().setValue( "elementtarget", aform.getHtmlInput( ActionForm.ACTIONTARGET ) );

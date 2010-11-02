@@ -51,11 +51,11 @@ public class GroupListItem extends AbstractFileWebTemplate{
 		parameters.put( "application_id", ""+g.getApplication().getId() );
 		parameters.put( "group_id", ""+g.getId() );
 		parameters.put( "action", "delete" );
-		listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
+		listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 		listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Groups.html" );
 		
 		String target = listpage;
-		String source = HttpLinkBuilder.makeLink( request, true, true, null );;
+		String source = HttpLinkBuilder.makeLink( request, true, false, null );;
 
 		String target64 = Base64.encode( target );
 		String source64 = Base64.encode( source );

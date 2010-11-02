@@ -24,11 +24,11 @@ public class ApplicationShow extends AbstractFileWebTemplate{
 		
 		getHolder().setValue( "name", this.getParameter( "name" ) );
 		if( ((UserStatus)this.getParameter( "userstatus" )) == UserStatus.SYSTEMADMIN )
-			getHolder().setValue( "linkedit", "<a href=\""+request.getContextPath()+request.getServletPath()+"?action=edit&amp;application_id="+this.getParameter( "id" )+"\">edit</a>" );
+			getHolder().setValue( "linkedit", "<a href=\""+request.getContextPath()+request.getServletPath()+"?action=edit&application_id="+this.getParameter( "id" )+"\">edit</a>" );
 		else
 			getHolder().setValue( "linkedit", "" );
-		getHolder().setValue( "linkrole", request.getContextPath()+"/Role.html?action=list&amp;application_id="+this.getParameter( "id" ) );
-		getHolder().setValue( "linkgroups", request.getContextPath()+"/Groups.html?action=list&amp;application_id="+this.getParameter( "id" ) );
+		getHolder().setValue( "linkrole", request.getContextPath()+"/Role.html?action=list&application_id="+this.getParameter( "id" ) );
+		getHolder().setValue( "linkgroups", request.getContextPath()+"/Groups.html?action=list&application_id="+this.getParameter( "id" ) );
 		
 		getHolder().render( object, request, response, null );
 	}

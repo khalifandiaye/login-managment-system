@@ -47,12 +47,12 @@ public class OrganisationListItem extends AbstractFileWebTemplate{
 		parameters = new HashMap<String,String>();
 		parameters.put( "organisation_id", ""+o.getId() );
 		parameters.put( "action", "delete" );
-		listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
+		listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 		listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Organisation.html" );
 		
 		String target = listpage;
 	
-		String source = HttpLinkBuilder.makeLink( request, true, true, null );;
+		String source = HttpLinkBuilder.makeLink( request, true, false, null );;
 	
 		String target64 = Base64.encode( target );
 		String source64 = Base64.encode( source );
