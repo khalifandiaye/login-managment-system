@@ -12,7 +12,9 @@ window.addEvent('domready', function(){
 				'keepFocusOnError' : 0,
 				'closeTipsButton' : 1,
 				'showErrors' : 1,
-				'addClassErrorToField' : 1
+				'addClassErrorToField' : 1,
+				'fadeDuration' : 300,
+				'indicateErrorsInit' : 0
 			},
 			'optional' : {
 				'submit' : false,
