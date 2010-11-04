@@ -233,11 +233,11 @@ public class UserService implements Service{
 				result.addField( "User-"+i+".STREET", Type.STRING, u.getStreet() );
 				result.addField( "User-"+i+".STREETNR", Type.STRING, u.getStreetnr() );
 				if( u.getCountry() != null )
-					result.addField( "User-"+i+".COUNTRY", Type.STRING, u.getCountry().getDisplayCountry() );
+					result.addField( "User-"+i+".COUNTRY", Type.STRING, u.getCountry().getCountry() );
 				else
 					result.addField( "User-"+i+".COUNTRY", Type.STRING, "" );
 				if( u.getLanguage() != null )
-					result.addField( "User-"+i+".LANGUAGE", Type.STRING, u.getLanguage().getDisplayLanguage() );
+					result.addField( "User-"+i+".LANGUAGE", Type.STRING, u.getLanguage().getLanguage() );
 				else
 					result.addField( "User-"+i+".LANGUAGE", Type.STRING, "" );
 				if( u.getLastlogin() != null )
@@ -335,11 +335,11 @@ public class UserService implements Service{
 			result.addField( "STREET", Type.STRING, user.getStreet() );
 			result.addField( "STREETNR", Type.STRING, user.getStreetnr() );
 			if( user.getCountry() != null )
-				result.addField( "COUNTRY", Type.STRING, user.getCountry().getDisplayCountry() );
+				result.addField( "COUNTRY", Type.STRING, user.getCountry().getCountry() );
 			else
 				result.addField( "COUNTRY", Type.STRING, "" );
 			if( user.getLanguage() != null )
-				result.addField( "LANGUAGE", Type.STRING, user.getLanguage().getDisplayLanguage() );
+				result.addField( "LANGUAGE", Type.STRING, user.getLanguage().getLanguage() );
 			else
 				result.addField( "LANGUAGE", Type.STRING, "" );
 			if( user.getLastlogin() != null )
@@ -364,7 +364,7 @@ public class UserService implements Service{
 				result.addField( "ORGACITY", Type.STRING, user.getOrganisation().getCity() );
 				result.addField( "ORGASTATE", Type.STRING, user.getOrganisation().getState() );
 				if( user.getOrganisation().getCountry() != null )
-					result.addField( "ORGACOUNTRY", Type.STRING, user.getOrganisation().getCountry().getDisplayCountry() );
+					result.addField( "ORGACOUNTRY", Type.STRING, user.getOrganisation().getCountry().getCountry() );
 				else
 					result.addField( "ORGACOUNTRY", Type.STRING, "" );
 				result.addField( "ORGAZIP", Type.STRING, user.getOrganisation().getZip() );

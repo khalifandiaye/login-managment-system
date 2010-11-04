@@ -145,7 +145,7 @@ public class OrganisationService implements Service{
 				result.addField( "Orga-"+i+".ORGACITY", Type.STRING, o.getCity() );
 				result.addField( "Orga-"+i+".ORGASTATE", Type.STRING, o.getState() );
 				if( o.getCountry() != null )
-					result.addField( "Orga-"+i+".ORGACOUNTRY", Type.STRING, o.getCountry().getDisplayCountry() );
+					result.addField( "Orga-"+i+".ORGACOUNTRY", Type.STRING, o.getCountry().getCountry() );
 				else
 					result.addField( "Orga-"+i+".ORGACOUNTRY", Type.STRING, "" );
 				result.addField( "Orga-"+i+".ORGAZIP", Type.STRING, o.getZip() );
