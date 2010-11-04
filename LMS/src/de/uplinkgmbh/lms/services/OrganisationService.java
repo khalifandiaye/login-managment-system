@@ -1,8 +1,5 @@
 package de.uplinkgmbh.lms.services;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -15,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import de.axone.logging.Log;
 import de.axone.logging.Logging;
-import de.axone.tools.E;
 import de.axone.wash.DefaultWash;
 import de.axone.wash.Wash;
 import de.axone.wash.Wash.DuplicateEntryException;
@@ -26,14 +22,11 @@ import de.axone.wash.Wash.WrongTypeException;
 import de.axone.wash.handler.Handler.HandlerException;
 import de.axone.wash.handler.Handler.OperationNotFoundException;
 import de.axone.wash.service.Service;
-import de.uplinkgmbh.lms.exceptions.LoginException;
+import de.uplinkgmbh.lms.entitys.Organisation;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
-import de.uplinkgmbh.lms.servlets.WashServices;
 import de.uplinkgmbh.lms.user.AuthorizationsChecker;
-import de.uplinkgmbh.lms.user.Login;
 import de.uplinkgmbh.lms.utils.LMSToken;
 import de.uplinkgmbh.lms.utils.Tokenaizer;
-import de.uplinkgmbh.lms.entitys.Organisation;
 
 public class OrganisationService implements Service{
 	
@@ -161,7 +154,7 @@ public class OrganisationService implements Service{
 				result.addField( "Orga-"+i+".ORGAWASHSTORE", Type.STRING, o.getWashstore() );
 				i++;
 			}
-			
+			if( em.isOpen() ) em.clear(); em.close();
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );
@@ -185,9 +178,6 @@ public class OrganisationService implements Service{
 				return result;
 			}
 			
-			MyPersistenceManager pm = MyPersistenceManager.getInstance();
-			EntityManager em = pm.getEntityManager();
-			
 			if( !AuthorizationsChecker.isAllowed( token, "APPLICATION", "organisation.newOrga", token.application ) ){
 				result = new DefaultWash();
 				result.addField( "STATUS", Type.BOOLEAN, false );
@@ -199,6 +189,8 @@ public class OrganisationService implements Service{
 			 * ORGAFAX	string	ORGACITY	string	ORGASTATE	string	ORGACOUNTRY	string	
 			 * ORGAZIP	string	ORGASTREET	string	ORGASTREETNR	string	ORGAWASHSTORE	string
 			 */
+			MyPersistenceManager pm = MyPersistenceManager.getInstance();
+			EntityManager em = pm.getEntityManager();
 			Organisation orga = null;
 			em.getTransaction().begin();
 			Query q = em.createNamedQuery( "OrgaFetchByName" );
@@ -252,6 +244,8 @@ public class OrganisationService implements Service{
 			result = new DefaultWash();
 			result.addField( "STATUS", Type.BOOLEAN, true );
 			result.addField( "REASON", Type.STRING, "" );
+			
+			if( em.isOpen() ) em.clear(); em.close();
 			
 		}else{
 			result = new DefaultWash();

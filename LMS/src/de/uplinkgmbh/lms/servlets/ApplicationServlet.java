@@ -20,9 +20,11 @@ import de.axone.webtemplate.form.FormValue;
 import de.axone.webtemplate.form.WebFormImpl;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
+import de.uplinkgmbh.lms.business.STATICS;
 import de.uplinkgmbh.lms.entitys.Action;
 import de.uplinkgmbh.lms.entitys.Application;
 import de.uplinkgmbh.lms.entitys.Role;
+import de.uplinkgmbh.lms.entitys.User;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
 import de.uplinkgmbh.lms.user.AuthorizationsChecker;
 import de.uplinkgmbh.lms.utils.LMSToken;
@@ -208,7 +210,17 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 					template.setParameter( "path", "Application  &gt; new" );
 				}
 			}
+			
+			User user=null;
+			em.getTransaction().begin();	
+			user = em.find( User.class, token.userId );
+			em.getTransaction().commit();
+			
+			if( user != null && user.getLanguage() != null ) template.setParameter( "lang", user.getLanguage().getLanguage() );
+			else template.setParameter( "lang", STATICS.SYSLANG );
+			
 			em.clear();
+			if( em.isOpen() ) em.close();
 			
 			String Applicationitem = context.getServletContext().getRealPath( "/template/ApplicationListItem.xhtml" );
 			File ApplicationitemFile = new File( Applicationitem );
@@ -300,5 +312,8 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 			return list.size();
 		}
 		
+		protected void finalize() throws Throwable {
+			if( em.isOpen() ) em.clear(); em.close();
+		}
 	}
 }

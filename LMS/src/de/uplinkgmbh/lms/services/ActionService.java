@@ -142,7 +142,7 @@ public class ActionService implements Service{
 				result.addField( "Action-"+i+".ROLE", Type.STRING, a.getRole().getName() );
 				i++;
 			}
-			
+			if( em.isOpen() ) em.clear(); em.close();
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );
@@ -183,7 +183,7 @@ public class ActionService implements Service{
 				result.addField( "REASON", Type.STRING, "" );
 				result.addField( "PERMISSION", Type.BOOLEAN, false );
 			}
-			
+			if( em.isOpen() ) em.clear(); em.close();
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );

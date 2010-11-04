@@ -22,6 +22,7 @@ import de.axone.webtemplate.WebTemplateFactory;
 import de.axone.webtemplate.elements.impl.HtmlSelectElement.Option;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
+import de.uplinkgmbh.lms.business.STATICS;
 import de.uplinkgmbh.lms.entitys.Action;
 import de.uplinkgmbh.lms.entitys.Groups;
 import de.uplinkgmbh.lms.entitys.Organisation;
@@ -561,7 +562,19 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 				}
 				
 			}
+			
+			User user=null;
+			em.getTransaction().begin();	
+			user = em.find( User.class, token.userId );
+			em.getTransaction().commit();
+			
+			if( user != null && user.getLanguage() != null ) template.setParameter( "lang", user.getLanguage().getLanguage() );
+			else template.setParameter( "lang", STATICS.SYSLANG );
+			
 			em.clear();
+
+			if( em.isOpen() ) em.close();
+
 			
 			String userList = context.getServletContext().getRealPath( "/template/UserListItem.xhtml" );
 			File userListFile = new File( userList );
@@ -654,6 +667,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			return maxResults.intValue();
 		}
 		
+		protected void finalize() throws Throwable {
+			if( em.isOpen() ) em.clear(); em.close();
+		}
 	}
 	
 	private static class GroupsListProvider implements ListProvider<Groups> {
@@ -696,6 +712,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			return maxResults.intValue();
 		}
 		
+		protected void finalize() throws Throwable {
+			if( em.isOpen() ) em.clear(); em.close();
+		}
 	}
 	
 	private static class RoleListProvider implements ListProvider<Role> {
@@ -738,5 +757,8 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		return maxResults.intValue();
 	}
 	
+	protected void finalize() throws Throwable {
+		if( em.isOpen() ) em.clear(); em.close();
+	}
 }
 }

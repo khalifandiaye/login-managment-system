@@ -11,6 +11,7 @@ import de.axone.webtemplate.AbstractFileWebTemplate;
 import de.axone.webtemplate.KeyException;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.form.Translator;
+import de.uplinkgmbh.lms.business.STATICS;
 
 public class UserPage extends AbstractFileWebTemplate{
 
@@ -27,6 +28,8 @@ public class UserPage extends AbstractFileWebTemplate{
 		getHolder().setValue( "message", this.getParameter( "message" ) );
 		getHolder().setValue( "keywords", "" );
 		getHolder().setValue( "description", "" );
+		getHolder().setValue( "lang", this.getParameter( "lang" ) );
+		getHolder().setValue( "formcolor", STATICS.FROMCOLOR );
 		getHolder().setValue( "company", "uplink gmbh" );
 		getHolder().setValue( "userlist", this.getParameter( "userlist" ) );
 		getHolder().setValue( "userlistpager", this.getParameter( "userlistpager" ) );

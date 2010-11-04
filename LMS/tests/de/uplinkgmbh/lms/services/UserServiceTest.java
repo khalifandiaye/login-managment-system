@@ -1,29 +1,22 @@
 package de.uplinkgmbh.lms.services;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.net.MalformedURLException;
 import java.util.Locale;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
-import de.axone.tools.E;
 import de.axone.wash.DefaultWash;
 import de.axone.wash.Wash;
 import de.axone.wash.Wash.Type;
 import de.uplinkgmbh.lms.entitys.Action;
 import de.uplinkgmbh.lms.entitys.Application;
 import de.uplinkgmbh.lms.entitys.Groups;
+import de.uplinkgmbh.lms.entitys.Organisation;
 import de.uplinkgmbh.lms.entitys.Role;
 import de.uplinkgmbh.lms.entitys.User;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
@@ -47,6 +40,13 @@ public class UserServiceTest {
 		em.persist( app );
 		em.getTransaction().commit();
 		
+		Organisation orga = new Organisation();
+		orga.setName( "orga" );
+		
+		em.getTransaction().begin();
+		em.persist( orga );
+		em.getTransaction().commit();
+		
 		User user = new User();
 		user.setActiv( true );
 		user.setCity( "Neumarkt i.d.Opf." );
@@ -63,12 +63,13 @@ public class UserServiceTest {
 		user.setState( "Bavaria" );
 		user.setStreet( "Freisinger Gass" );
 		user.setStreetnr( "12b" );
-		user.setSurename( "Müller" );
+		user.setSurename( "MÃ¼ller" );
 		user.setTemplate( true );
 		user.setZip( "47722" );
 		
 		User user2 = new User();
 		user2.setActiv( true );
+		user2.setOrganisation( orga );
 		user2.setCity( "Neumarkt i.d.Opf." );
 		user2.setCountry( new Locale( "de_DE" ) );
 		user2.setEmail( "maxl@web.de" );
@@ -175,7 +176,8 @@ public class UserServiceTest {
 		
 		assertNotNull( result );
 		assertTrue( result.getBoolean( "STATUS" ) );
-		assertTrue( result.getLong( "SIZE" ) == 6L );
+		System.err.println( result.getLong( "SIZE" ) );
+		assertTrue( result.getLong( "SIZE" ) == 2L );
 		
 		DefaultWash lw2 = new DefaultWash();
 		
@@ -331,10 +333,11 @@ public class UserServiceTest {
 		
 		request.setString( "LMSTOKEN", token );
 		request.setString( "TEMPLATELOGINNAME", "" );
-		request.setString( "ORGANAME", "LoginManagmentSystem" );
+		request.setString( "ORGANAME", "orga" );
 		request.setString( "LOGINNAME", "logo6" );
 		result = null;
 		result = mc.call( "user", "newUser", request );
+
 		assertTrue( result.getBoolean( "STATUS" ) );
 		assertTrue( result.getString( "REASON" ).equals( "" ) );
 		
@@ -487,7 +490,6 @@ public class UserServiceTest {
 		result = null;
 		result = mc.call( "user", "updateUser", request );
 
-		E.rr( result.serialize() );
 		assertTrue( result.getBoolean( "STATUS" ) );
 		assertTrue( result.getString( "REASON" ).equals( "" ) );
 		

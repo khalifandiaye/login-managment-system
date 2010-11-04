@@ -1,11 +1,7 @@
 package de.uplinkgmbh.lms.services;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,7 +11,6 @@ import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 
 import de.axone.logging.Log;
-import de.axone.logging.LogLevel;
 import de.axone.logging.Logging;
 import de.axone.tools.E;
 import de.axone.wash.DefaultWash;
@@ -33,11 +28,8 @@ import de.uplinkgmbh.lms.entitys.Groups;
 import de.uplinkgmbh.lms.entitys.Organisation;
 import de.uplinkgmbh.lms.entitys.Role;
 import de.uplinkgmbh.lms.entitys.User;
-import de.uplinkgmbh.lms.exceptions.LoginException;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
-import de.uplinkgmbh.lms.servlets.WashServices;
 import de.uplinkgmbh.lms.user.AuthorizationsChecker;
-import de.uplinkgmbh.lms.user.Login;
 import de.uplinkgmbh.lms.utils.LMSToken;
 import de.uplinkgmbh.lms.utils.Tokenaizer;
 
@@ -130,15 +122,15 @@ public class UserService implements Service{
 				return result;
 			}
 			
-			MyPersistenceManager pm = MyPersistenceManager.getInstance();
-			EntityManager em = pm.getEntityManager();
-			
 			if( !AuthorizationsChecker.isAllowed( token, "APPLICATION", "user.getTemplateUsers", token.application ) ){
 				result = new DefaultWash();
 				result.addField( "STATUS", Type.BOOLEAN, false );
 				result.addField( "REASON", Type.STRING, "WRONG PERMISSION" );
 				return result;
 			}
+			
+			MyPersistenceManager pm = MyPersistenceManager.getInstance();
+			EntityManager em = pm.getEntityManager();
 			
 			List<User> ul = null;
 			
@@ -156,7 +148,7 @@ public class UserService implements Service{
 				result.addField( "TemplateUser-"+i+".LOGINNAME", Type.STRING, ul.get(i).getLoginname() );
 				logstr = logstr.concat( ul.get(i).getLoginname()+"\n" );
 			}
-			
+			if( em.isOpen() ) em.clear(); em.close();
 			log.debug( logstr );
 		}else{
 			result = new DefaultWash();
@@ -179,16 +171,16 @@ public class UserService implements Service{
 				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
 				return result;
 			}
-			
-			MyPersistenceManager pm = MyPersistenceManager.getInstance();
-			EntityManager em = pm.getEntityManager();
-			
+
 			if( !AuthorizationsChecker.isAllowed( token, "APPLICATION", "user.getUsers", token.application ) ){
 				result = new DefaultWash();
 				result.addField( "STATUS", Type.BOOLEAN, false );
 				result.addField( "REASON", Type.STRING, "WRONG PERMISSION" );
 				return result;
 			}
+			
+			MyPersistenceManager pm = MyPersistenceManager.getInstance();
+			EntityManager em = pm.getEntityManager();
 			
 			Application app = null;
 			HashSet<User> ul = new HashSet<User>();
@@ -201,6 +193,7 @@ public class UserService implements Service{
 			}catch( NoResultException e ){
 				result = new DefaultWash();
 				result.addField( "ERROR", Type.STRING, "APPLICATION NOT FOUND" );
+				if( em.isOpen() ) em.clear(); em.close();
 				return result;
 			}
 			for( Groups g : app.getGroupList() ){
@@ -293,7 +286,7 @@ public class UserService implements Service{
 				//logstr = logstr.concat( u.getLoginname()+"\n" );
 				i++;
 			}
-			
+			if( em.isOpen() ) em.clear(); em.close();
 			log.debug( logstr );
 		}else{
 			result = new DefaultWash();
@@ -391,7 +384,7 @@ public class UserService implements Service{
 				result.addField( "ORGASTREETNR", Type.STRING, "" );
 				result.addField( "ORGAWASHSTORE", Type.STRING, "" );
 			}
-			
+			if( em.isOpen() ) em.clear(); em.close();
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );
@@ -414,9 +407,6 @@ public class UserService implements Service{
 				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
 				return result;
 			}
-			
-			MyPersistenceManager pm = MyPersistenceManager.getInstance();
-			EntityManager em = pm.getEntityManager();
 
 			if( !AuthorizationsChecker.isAllowed( token, "APPLICATION", "user.newUser", token.application ) ){
 				result = new DefaultWash();
@@ -424,6 +414,10 @@ public class UserService implements Service{
 				result.addField( "REASON", Type.STRING, "WRONG PERMISSION" );
 				return result;
 			}
+			
+			MyPersistenceManager pm = MyPersistenceManager.getInstance();
+			EntityManager em = pm.getEntityManager();
+			
 			em.getTransaction().begin();
 			
 			User newUser = null;
@@ -439,6 +433,7 @@ public class UserService implements Service{
 				result = new DefaultWash();
 				result.addField( "STATUS", Type.BOOLEAN, false );
 				result.addField( "REASON", Type.STRING, "LOGINNAME USED BY OTHER USER" );
+				if( em.isOpen() ) em.clear(); em.close();
 				return result;
 			}
 			
@@ -463,6 +458,7 @@ public class UserService implements Service{
 					result.addField( "REASON", Type.STRING, "WRONG TEMPLATE" );
 					em.remove( newUser );
 					em.getTransaction().commit();
+					if( em.isOpen() ) em.clear(); em.close();
 					return result;
 				}
 				em.getTransaction().commit();
@@ -504,6 +500,7 @@ public class UserService implements Service{
 					result.addField( "REASON", Type.STRING, "WRONG ORGANISATION" );
 					em.remove( newUser );
 					em.getTransaction().commit();
+					if( em.isOpen() ) em.clear(); em.close();
 					return result;
 				}
 				em.getTransaction().commit();
@@ -535,7 +532,7 @@ public class UserService implements Service{
 			result = new DefaultWash();
 			result.addField( "STATUS", Type.BOOLEAN, true );
 			result.addField( "REASON", Type.STRING, "" );
-			
+			if( em.isOpen() ) em.clear(); em.close();
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );

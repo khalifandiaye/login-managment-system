@@ -16,7 +16,8 @@ window.addEvent('domready', function(){
 			},
 			'optional' : {
 				'submit' : false,
-				'fieldErrorClass' : 'error'
+				'fieldErrorClass' : 'error',
+				'listErrorsAtTop' : true
 			}
 		} );
 	} );

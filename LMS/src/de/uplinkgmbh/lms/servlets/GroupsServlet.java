@@ -22,6 +22,7 @@ import de.axone.webtemplate.form.FormValue;
 import de.axone.webtemplate.form.WebFormImpl;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
+import de.uplinkgmbh.lms.business.STATICS;
 import de.uplinkgmbh.lms.entitys.Groups;
 import de.uplinkgmbh.lms.entitys.Role;
 import de.uplinkgmbh.lms.entitys.User;
@@ -340,7 +341,17 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 							template.setParameter( "path", app.getName()+" - Group &gt; edit" );
 						}
 					}
+					
+					User user=null;
+					em.getTransaction().begin();	
+					user = em.find( User.class, token.userId );
+					em.getTransaction().commit();
+					
+					if( user != null && user.getLanguage() != null ) template.setParameter( "lang", user.getLanguage().getLanguage() );
+					else template.setParameter( "lang", STATICS.SYSLANG );
+					
 					em.clear();
+					if( em.isOpen() ) em.close();
 				}
 				
 				
@@ -438,6 +449,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			return maxResults.intValue();
 		}
 		
+		protected void finalize() throws Throwable {
+			if( em.isOpen() ) em.clear(); em.close();
+		}
 	}
 
 	
@@ -486,6 +500,10 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			return maxResults.intValue();
 		}
 		
+		protected void finalize() throws Throwable {
+			if( em.isOpen() ) em.clear(); em.close();
+		}
+		
 	}
 	
 	private static class UserListProvider implements ListProvider<User> {
@@ -528,6 +546,10 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			return maxResults.intValue();
 		}
 		
+		protected void finalize() throws Throwable {
+			if( em.isOpen() ) em.clear(); em.close();
+		}
+		
 	}
 	
 	private static class User2ListProvider implements ListProvider<User> {
@@ -564,6 +586,10 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		@Override
 		public int getTotalCount() {
 			return maxResults.intValue();
+		}
+		
+		protected void finalize() throws Throwable {
+			if( em.isOpen() ) em.clear(); em.close();
 		}
 		
 	}

@@ -27,6 +27,7 @@ import de.axone.webtemplate.form.WebFormImpl;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.DefaultSortSelector;
 import de.axone.webtemplate.list.ListProvider;
+import de.uplinkgmbh.lms.business.STATICS;
 import de.uplinkgmbh.lms.entitys.Action;
 import de.uplinkgmbh.lms.entitys.Groups;
 import de.uplinkgmbh.lms.entitys.Role;
@@ -725,7 +726,19 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						return;
 					}
 				}
+				
+				User user=null;
+				em.getTransaction().begin();	
+				user = em.find( User.class, token.userId );
+				em.getTransaction().commit();
+				
+				if( user != null && user.getLanguage() != null ) template.setParameter( "lang", user.getLanguage().getLanguage() );
+				else template.setParameter( "lang", STATICS.SYSLANG );
+				
 				em.clear();
+
+				if( em.isOpen() ) em.close();
+
 				
 				String roleList = context.getServletContext().getRealPath( "/template/RoleListItem.xhtml" );
 				File roleListFile = new File( roleList );
@@ -823,7 +836,11 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			return list.size();
 		}
 		
+		protected void finalize() throws Throwable {
+			if( em.isOpen() ) em.clear(); em.close();
+		}
 	}
+	
 	private static class RoleListProvider implements ListProvider<Role> {
 		
 		private List<Role> list = new LinkedList<Role>();
@@ -864,6 +881,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			return maxResults.intValue();
 		}
 		
+		protected void finalize() throws Throwable {
+			if( em.isOpen() ) em.clear(); em.close();
+		}
 	}
 	
 	private static class UserListProvider implements ListProvider<User> {
@@ -906,6 +926,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			return maxResults.intValue();
 		}
 		
+		protected void finalize() throws Throwable {
+			if( em.isOpen() ) em.clear(); em.close();
+		}
 	}
 	
 	private static class User2ListProvider implements ListProvider<User> {
@@ -944,6 +967,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			return maxResults.intValue();
 		}
 		
+		protected void finalize() throws Throwable {
+			if( em.isOpen() ) em.clear(); em.close();
+		}
 	}
 	
 	private static class GroupListProvider implements ListProvider<Groups> {
@@ -986,6 +1012,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			return maxResults.intValue();
 		}
 		
+		protected void finalize() throws Throwable {
+			if( em.isOpen() ) em.clear(); em.close();
+		}
 	}
 	
 	private static class Group2ListProvider implements ListProvider<Groups> {
@@ -1027,5 +1056,8 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			return maxResults.intValue();
 		}
 		
+		protected void finalize() throws Throwable {
+			if( em.isOpen() ) em.clear(); em.close();
+		}
 	}
 }

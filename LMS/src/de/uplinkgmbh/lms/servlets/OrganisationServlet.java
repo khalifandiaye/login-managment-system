@@ -22,7 +22,9 @@ import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.WebTemplateFactory;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
+import de.uplinkgmbh.lms.business.STATICS;
 import de.uplinkgmbh.lms.entitys.Organisation;
+import de.uplinkgmbh.lms.entitys.User;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
 import de.uplinkgmbh.lms.servlets.forms.OrganisationForm;
 import de.uplinkgmbh.lms.user.AuthorizationsChecker;
@@ -386,7 +388,17 @@ import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
 					template.setParameter( "orga", orgaEditTemp );
 				}
 			}
+			
+			User user=null;
+			em.getTransaction().begin();	
+			user = em.find( User.class, token.userId );
+			em.getTransaction().commit();
+			
+			if( user != null && user.getLanguage() != null ) template.setParameter( "lang", user.getLanguage().getLanguage() );
+			else template.setParameter( "lang", STATICS.SYSLANG );
+			
 			em.clear();
+			if( em.isOpen() ) em.close();
 			
 			String orgaList = context.getServletContext().getRealPath( "/template/OrganisationListItem.xhtml" );
 			File orgaListFile = new File( orgaList );
@@ -407,7 +419,7 @@ import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+	
 	}  	
 	
 	/* (non-Java-doc)
@@ -454,5 +466,8 @@ import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
 			return maxResults.intValue();
 		}
 		
+		protected void finalize() throws Throwable {
+			if( em.isOpen() ) em.clear(); em.close();
+		}
 	}
 }
