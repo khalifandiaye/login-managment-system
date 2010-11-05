@@ -79,6 +79,7 @@ public class UserForm extends WebFormImpl {
 				organisationOptions.add( new HtmlSelectElement.OptionImpl( String.valueOf( o.getId() ), o.getName() ) );
 			}
 		}
+		if( em.isOpen() ){ em.clear(); em.close(); }
 		
 		organisation = new FVFactory().createSelectValue( ORGANISATION, (List<HtmlSelectElement.Option>)organisationOptions, true );
 		this.addFormValue( ORGANISATION, organisation );

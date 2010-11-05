@@ -13,7 +13,7 @@ formcheckLanguage = {
 	
 	confirm: "Das Feld ist verschieden von %0.",
 	differs: "Der Wert muss unterschiedlich zu %0 sein.",
-	length_str: "Das Feld ist verschieden von %0.",
+	length_str: "Falsche Anzahl der Zeichen.",
 	length_fix: "Falsche L&auml;nge, es m&uuml;ssen exakt %0 Buchstaben sein.",
 	lengthmax: "Der Wert ist nicht korrekt, maximale Anzahl Charakter %0.",
 	lengthmin: "Der Wert ist nicht korrekt, minimale Anzahl Charakter %0.",
