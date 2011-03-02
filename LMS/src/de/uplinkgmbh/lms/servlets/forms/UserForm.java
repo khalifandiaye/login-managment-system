@@ -8,7 +8,8 @@ import javax.persistence.Query;
 
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.converter.ConverterException;
-import de.axone.webtemplate.elements.impl.HtmlSelectElement;
+import de.axone.webtemplate.elements.impl.Option;
+import de.axone.webtemplate.elements.impl.OptionImpl;
 import de.axone.webtemplate.form.FormValue;
 import de.axone.webtemplate.form.WebFormImpl;
 import de.uplinkgmbh.lms.entitys.Organisation;
@@ -59,7 +60,7 @@ public class UserForm extends WebFormImpl {
 	private FormValue<Boolean> template;
 	private FormValue<String> organisation; 
 
-	private LinkedList<HtmlSelectElement.Option> organisationOptions = new LinkedList<HtmlSelectElement.Option>();
+	private LinkedList<Option> organisationOptions = new LinkedList<Option>();
 	
 	public UserForm() throws WebTemplateException {
 		
@@ -71,17 +72,17 @@ public class UserForm extends WebFormImpl {
 		List<Organisation> res = (List<Organisation>) q.getResultList();
 		em.getTransaction().commit();
 		
-		organisationOptions.add( new HtmlSelectElement.OptionImpl( "-1", "none" ) );
-		organisationOptions.add( new HtmlSelectElement.OptionImpl( "-2", "new" ) ); 
+		organisationOptions.add( new OptionImpl( "-1", "none" ) );
+		organisationOptions.add( new OptionImpl( "-2", "new" ) ); 
 		
 		if( res != null ){
 			for( Organisation o : res ){
-				organisationOptions.add( new HtmlSelectElement.OptionImpl( String.valueOf( o.getId() ), o.getName() ) );
+				organisationOptions.add( new OptionImpl( String.valueOf( o.getId() ), o.getName() ) );
 			}
 		}
 		if( em.isOpen() ){ em.clear(); em.close(); }
 		
-		organisation = new FVFactory().createSelectValue( ORGANISATION, (List<HtmlSelectElement.Option>)organisationOptions, true );
+		organisation = new FVFactory().createSelectValue( ORGANISATION, (List<Option>)organisationOptions, true );
 		this.addFormValue( ORGANISATION, organisation );
 
 		loginname = new FVFactory().createInputTextValue( LOGINNAME, 255, false );
@@ -143,7 +144,7 @@ public class UserForm extends WebFormImpl {
 	}
 	
 	
-	public LinkedList<HtmlSelectElement.Option> getSelectedOrganisations() throws ConverterException{
+	public LinkedList<Option> getSelectedOrganisations() throws ConverterException{
 		return organisationOptions;
 	}
 	

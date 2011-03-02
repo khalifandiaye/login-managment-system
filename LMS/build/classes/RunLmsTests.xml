@@ -8,8 +8,8 @@
 				<include name="admin" />
 				<include name="Inv" />
 				<include name="lms.*" />
-				<include name="Service" />
-				<include name="Del" />
+				<!-- <include name="Service" /> -->
+	 			<include name="Del" />
 			</run>
 		</groups>
 

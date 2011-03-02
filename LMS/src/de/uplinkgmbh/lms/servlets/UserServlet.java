@@ -19,7 +19,7 @@ import de.axone.web.HttpLinkBuilder;
 import de.axone.webtemplate.WebTemplate;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.WebTemplateFactory;
-import de.axone.webtemplate.elements.impl.HtmlSelectElement.Option;
+import de.axone.webtemplate.elements.impl.Option;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
 import de.uplinkgmbh.lms.business.STATICS;
