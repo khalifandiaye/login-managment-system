@@ -348,69 +348,69 @@ public class UserService implements Service{
 			result.addField( "REASON", Type.STRING, "" );
 			
 			
-			result.addField( "User.LOGINNAME", Type.STRING, u.getLoginname() );
-			result.addField( "User.PASSWORD", Type.STRING, u.getPassword() );
-			result.addField( "User.FIRSTNAME", Type.STRING, u.getFirstname() );
-			result.addField( "User.SURENAME", Type.STRING, u.getSurename() );
-			result.addField( "User.EMAIL", Type.STRING, u.getEmail() );
-			result.addField( "User.PHONEPRIV", Type.STRING, u.getPhonepriv() );
-			result.addField( "User.PHONEWORK", Type.STRING, u.getPhonework() );
-			result.addField( "User.MOBILE", Type.STRING, u.getMobile() );
-			result.addField( "User.FAX", Type.STRING, u.getFax() );
-			result.addField( "User.CITY", Type.STRING, u.getCity() );
-			result.addField( "User.STATE", Type.STRING, u.getState() );
-			result.addField( "User.ZIP", Type.STRING, u.getZip() );
-			result.addField( "User.STREET", Type.STRING, u.getStreet() );
-			result.addField( "User.STREETNR", Type.STRING, u.getStreetnr() );
+			result.addField( "LOGINNAME", Type.STRING, u.getLoginname() );
+			result.addField( "PASSWORD", Type.STRING, u.getPassword() );
+			result.addField( "FIRSTNAME", Type.STRING, u.getFirstname() );
+			result.addField( "SURENAME", Type.STRING, u.getSurename() );
+			result.addField( "EMAIL", Type.STRING, u.getEmail() );
+			result.addField( "PHONEPRIV", Type.STRING, u.getPhonepriv() );
+			result.addField( "PHONEWORK", Type.STRING, u.getPhonework() );
+			result.addField( "MOBILE", Type.STRING, u.getMobile() );
+			result.addField( "FAX", Type.STRING, u.getFax() );
+			result.addField( "CITY", Type.STRING, u.getCity() );
+			result.addField( "STATE", Type.STRING, u.getState() );
+			result.addField( "ZIP", Type.STRING, u.getZip() );
+			result.addField( "STREET", Type.STRING, u.getStreet() );
+			result.addField( "STREETNR", Type.STRING, u.getStreetnr() );
 			if( u.getCountry() != null )
-				result.addField( "User.COUNTRY", Type.STRING, u.getCountry().getDisplayCountry() );
+				result.addField( "COUNTRY", Type.STRING, u.getCountry().getDisplayCountry() );
 			else
-				result.addField( "User.COUNTRY", Type.STRING, "" );
+				result.addField( "COUNTRY", Type.STRING, "" );
 			if( u.getLanguage() != null )
-				result.addField( "User.LANGUAGE", Type.STRING, u.getLanguage().getDisplayLanguage() );
+				result.addField( "LANGUAGE", Type.STRING, u.getLanguage().getDisplayLanguage() );
 			else
-				result.addField( "User.LANGUAGE", Type.STRING, "" );
+				result.addField( "LANGUAGE", Type.STRING, "" );
 			if( u.getLastlogin() != null )
-				result.addField( "User.LASTLOGIN", Type.INTEGER, u.getLastlogin().getTime() );
+				result.addField( "LASTLOGIN", Type.INTEGER, u.getLastlogin().getTime() );
 			else
-				result.addField( "User.LASTLOGIN", Type.INTEGER );
+				result.addField( "LASTLOGIN", Type.INTEGER );
 			if( u.getLastlogout() != null )
-				result.addField( "User.LASTLOGOUT", Type.INTEGER, u.getLastlogout().getTime() );
+				result.addField( "LASTLOGOUT", Type.INTEGER, u.getLastlogout().getTime() );
 			else
-				result.addField( "User.LASTLOGOUT", Type.INTEGER );
-			result.addField( "User.LOGINCOUNTER", Type.INTEGER, u.getLogincounter() );
-			result.addField( "User.WASHSTORE", Type.STRING, u.getWashstore() );
+				result.addField( "LASTLOGOUT", Type.INTEGER );
+			result.addField( "LOGINCOUNTER", Type.INTEGER, u.getLogincounter() );
+			result.addField( "WASHSTORE", Type.STRING, u.getWashstore() );
 			
 			if( u.getOrganisation() != null ){
-				result.addField( "User.ORGANAME", Type.STRING, u.getOrganisation().getName() );
+				result.addField( "ORGANAME", Type.STRING, u.getOrganisation().getName() );
 				if( u.getOrganisation().getUrl() != null )
-					result.addField( "User.ORGAURL", Type.STRING, u.getOrganisation().getUrl().toString() );
+					result.addField( "ORGAURL", Type.STRING, u.getOrganisation().getUrl().toString() );
 				else
-					result.addField( "User.ORGAURL", Type.STRING, "" );
-				result.addField( "User.ORGAPHONE", Type.STRING, u.getOrganisation().getPhone() );
-				result.addField( "User.ORGAFAX", Type.STRING, u.getOrganisation().getFax() );
-				result.addField( "User.ORGACITY", Type.STRING, u.getOrganisation().getCity() );
-				result.addField( "User.ORGASTATE", Type.STRING, u.getOrganisation().getState() );
+					result.addField( "ORGAURL", Type.STRING, "" );
+				result.addField( "ORGAPHONE", Type.STRING, u.getOrganisation().getPhone() );
+				result.addField( "ORGAFAX", Type.STRING, u.getOrganisation().getFax() );
+				result.addField( "ORGACITY", Type.STRING, u.getOrganisation().getCity() );
+				result.addField( "ORGASTATE", Type.STRING, u.getOrganisation().getState() );
 				if( u.getOrganisation().getCountry() != null )
-					result.addField( "User.ORGACOUNTRY", Type.STRING, u.getOrganisation().getCountry().getDisplayCountry() );
+					result.addField( "ORGACOUNTRY", Type.STRING, u.getOrganisation().getCountry().getDisplayCountry() );
 				else
-					result.addField( "User.ORGACOUNTRY", Type.STRING, "" );
-				result.addField( "User.ORGAZIP", Type.STRING, u.getOrganisation().getZip() );
-				result.addField( "User.ORGASTREET", Type.STRING, u.getOrganisation().getStreet() );
-				result.addField( "User.ORGASTREETNR", Type.STRING, u.getOrganisation().getStreetnr() );
-				result.addField( "User.ORGAWASHSTORE", Type.STRING, u.getOrganisation().getWashstore() );
+					result.addField( "ORGACOUNTRY", Type.STRING, "" );
+				result.addField( "ORGAZIP", Type.STRING, u.getOrganisation().getZip() );
+				result.addField( "ORGASTREET", Type.STRING, u.getOrganisation().getStreet() );
+				result.addField( "ORGASTREETNR", Type.STRING, u.getOrganisation().getStreetnr() );
+				result.addField( "ORGAWASHSTORE", Type.STRING, u.getOrganisation().getWashstore() );
 			}else{
-				result.addField( "User.ORGANAME", Type.STRING, "" );
-				result.addField( "User.ORGAURL", Type.STRING, "" );
-				result.addField( "User.ORGAPHONE", Type.STRING, "" );
-				result.addField( "User.ORGAFAX", Type.STRING, "" );
-				result.addField( "User.ORGACITY", Type.STRING, "" );
-				result.addField( "User.ORGASTATE", Type.STRING, "" );
-				result.addField( "User.ORGACOUNTRY", Type.STRING, "" );
-				result.addField( "User.ORGAZIP", Type.STRING, "" );
-				result.addField( "User.ORGASTREET", Type.STRING, "" );
-				result.addField( "User.ORGASTREETNR", Type.STRING, "" );
-				result.addField( "User.ORGAWASHSTORE", Type.STRING, "" );
+				result.addField( "ORGANAME", Type.STRING, "" );
+				result.addField( "ORGAURL", Type.STRING, "" );
+				result.addField( "ORGAPHONE", Type.STRING, "" );
+				result.addField( "ORGAFAX", Type.STRING, "" );
+				result.addField( "ORGACITY", Type.STRING, "" );
+				result.addField( "ORGASTATE", Type.STRING, "" );
+				result.addField( "ORGACOUNTRY", Type.STRING, "" );
+				result.addField( "ORGAZIP", Type.STRING, "" );
+				result.addField( "ORGASTREET", Type.STRING, "" );
+				result.addField( "ORGASTREETNR", Type.STRING, "" );
+				result.addField( "ORGAWASHSTORE", Type.STRING, "" );
 			}
 	
 			}finally{

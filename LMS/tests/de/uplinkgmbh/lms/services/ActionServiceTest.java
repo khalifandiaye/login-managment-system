@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.util.Locale;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -134,12 +135,85 @@ public class ActionServiceTest {
 		role2.getActionList().add( ac2 );
 		ac2.setRole( role2 );
 		
+		Action ac10 = new Action();
+		ac10.setName( "ac10" );
+		ac10.setSort( 1 );
+		ac10.setState( "Autor" );
+		ac10.setAction( "create" );
+		ac10.setTarget( "Artikel" );
+		ac10.setRule( "ACCEPT" );
+		
+		Action ac11 = new Action();
+		ac11.setName( "ac11" );
+		ac11.setSort( 2 );
+		ac11.setState( "Lektor" );
+		ac11.setAction( "create" );
+		ac11.setTarget( "Artikel" );
+		ac11.setRule( "ACCEPT" );
+		
+		Action ac12 = new Action();
+		ac12.setName( "ac12" );
+		ac12.setSort( 3 );
+		ac12.setState( "Autor" );
+		ac12.setAction( "delete" );
+		ac12.setTarget( "Artikel" );
+		ac12.setRule( "ACCEPT" );
+		
+		Action ac13 = new Action();
+		ac13.setName( "ac13" );
+		ac13.setSort( 4 );
+		ac13.setState( "Publisher" );
+		ac13.setAction( "create" );
+		ac13.setTarget( "Artikel" );
+		ac13.setRule( "ACCEPT" );
+		
+		Action ac14 = new Action();
+		ac14.setName( "ac14" );
+		ac14.setSort( 5 );
+		ac14.setState( "Autor" );
+		ac14.setAction( "change" );
+		ac14.setTarget( "Artikel" );
+		ac14.setRule( "ACCEPT" );
+		
+		Action ac15 = new Action();
+		ac15.setName( "ac15" );
+		ac15.setSort( 6 );
+		ac15.setState( "Autor" );
+		ac15.setAction( "change" );
+		ac15.setTarget( "Page" );
+		ac15.setRule( "ACCEPT" );
+		
+		Role role3 = new Role();
+		role3.setName( "getWildcardActions_Test" );
+		role3.setSort( 2 );
+		role3.setApplication( app );
+		role3.getUserList().add( user2 );
+		app.getRoleList().add( role3 );
+		role3.getActionList().add( ac10 );
+		role3.getActionList().add( ac11 );
+		role3.getActionList().add( ac12 );
+		role3.getActionList().add( ac13 );
+		role3.getActionList().add( ac14 );
+		role3.getActionList().add( ac15 );
+		ac10.setRole( role3 );
+		ac11.setRole( role3 );
+		ac12.setRole( role3 );
+		ac13.setRole( role3 );
+		ac14.setRole( role3 );
+		ac15.setRole( role3 );
+		
 		em.getTransaction().begin();
 		em.persist( ac );
 		em.persist( ac1 );
 		em.persist( ac2 );
+		em.persist( ac10 );
+		em.persist( ac11 );
+		em.persist( ac12 );
+		em.persist( ac13 );
+		em.persist( ac14 );
 		em.persist( role );
 		em.persist( role2 );
+		em.persist( role3 );
 		em.getTransaction().commit();
 		
 	}
@@ -268,6 +342,89 @@ public class ActionServiceTest {
 		assertTrue( result.getBoolean( "STATUS" ) );
 		assertTrue( result.getString( "REASON" ).equals( "" ) );
 		assertFalse( result.getBoolean( "PERMISSION" ) );
+		
+		
+		// getWildcardActions test
+		request = new DefaultWash();
+		request.addField( "LMSTOKEN", Type.STRING, token2 );
+		request.addField( "STATE", Type.STRING, null );
+		request.addField( "ACTION", Type.STRING, "create" );
+		request.addField( "TARGET", Type.STRING, "Artikel" );
+		result = null;
+		result = mc.call( "action", "getWildcardActions", request );
+
+		assertTrue( result.getBoolean( "STATUS" ) );
+		assertTrue( result.getString( "REASON" ).equals( "" ) );
+		assertTrue( result.getLong( "SIZE" ) == 3 );
+		assertTrue( result.getString( "Action-0.NAME" ).equals( "ac10" ) );
+		assertTrue( result.getString( "Action-1.NAME" ).equals( "ac11" ) );
+		assertTrue( result.getString( "Action-2.NAME" ).equals( "ac13" ) );
+
+		// 2
+		request = new DefaultWash();
+		request.addField( "LMSTOKEN", Type.STRING, token2 );
+		request.addField( "STATE", Type.STRING, "Autor" );
+		request.addField( "ACTION", Type.STRING, null );
+		request.addField( "TARGET", Type.STRING, "Artikel" );
+		result = null;
+		result = mc.call( "action", "getWildcardActions", request );
+
+		assertTrue( result.getBoolean( "STATUS" ) );
+		assertTrue( result.getString( "REASON" ).equals( "" ) );
+		assertTrue( result.getLong( "SIZE" ) == 3 );
+		assertTrue( result.getString( "Action-0.NAME" ).equals( "ac10" ) );
+		assertTrue( result.getString( "Action-1.NAME" ).equals( "ac12" ) );
+		assertTrue( result.getString( "Action-2.NAME" ).equals( "ac14" ) );
+		
+		MyPersistenceManager pm = MyPersistenceManager.getInstance();
+		EntityManager em = pm.getEntityManager();
+		em.getTransaction().begin();
+		Query query = em.createNamedQuery( "ActionFetchByName" );
+		query.setParameter( "name", "ac12" );
+		Action a = (Action) query.getSingleResult();
+		a.setRule( "DENY" );
+		em.merge( a );
+		em.getTransaction().commit();
+		
+		// 3
+		request = new DefaultWash();
+		request.addField( "LMSTOKEN", Type.STRING, token2 );
+		request.addField( "STATE", Type.STRING, "Autor" );
+		request.addField( "ACTION", Type.STRING, null );
+		request.addField( "TARGET", Type.STRING, "Artikel" );
+		result = null;
+		result = mc.call( "action", "getWildcardActions", request );
+
+		assertTrue( result.getBoolean( "STATUS" ) );
+		assertTrue( result.getString( "REASON" ).equals( "" ) );
+		assertTrue( result.getLong( "SIZE" ) == 1 );
+		assertTrue( result.getString( "Action-0.NAME" ).equals( "ac10" ) );
+		
+		em.getTransaction().begin();
+		query = em.createNamedQuery( "ActionFetchByName" );
+		query.setParameter( "name", "ac13" );
+		a = (Action) query.getSingleResult();
+		a.setRule( "DENY" );
+		em.merge( a );
+		em.getTransaction().commit();
+		
+		// 4
+		request = new DefaultWash();
+		request.addField( "LMSTOKEN", Type.STRING, token2 );
+		request.addField( "STATE", Type.STRING, null );
+		request.addField( "ACTION", Type.STRING, "create" );
+		request.addField( "TARGET", Type.STRING, "Artikel" );
+		result = null;
+		result = mc.call( "action", "getWildcardActions", request );
+
+		assertTrue( result.getBoolean( "STATUS" ) );
+		assertTrue( result.getString( "REASON" ).equals( "" ) );
+		assertTrue( result.getLong( "SIZE" ) == 2 );
+		assertTrue( result.getString( "Action-0.NAME" ).equals( "ac10" ) );
+		assertTrue( result.getString( "Action-1.NAME" ).equals( "ac11" ) );
+		
+		em.clear();
+		em.close();
 	}
 	
 }

@@ -48,6 +48,8 @@ public class ActionService implements Service{
 			result = getActions( request );
 		else if( "isAllowed".equals( operation ) )
 			result = isAllowed( request );
+		else if( "getWildcardActions".equals( operation ) )
+			result = getWildcardActions( request );
 		else
 			throw new OperationNotFoundException();
 
@@ -189,6 +191,82 @@ public class ActionService implements Service{
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );
 		}
 	
+		return result;
+	} 
+	
+	private Wash getWildcardActions(Wash request) throws NotFoundException, WrongTypeException, DuplicateEntryException{
+		
+		Wash result = null;
+		if( !request.getString( "LMSTOKEN" ).equals( "" ) ){
+			LMSToken token = Tokenaizer.restoreLMSToken( request.getString( "LMSTOKEN" ).getBytes() );
+			if( token == null ){
+				result = new DefaultWash();
+				result.addField( "STATUS", Type.BOOLEAN, false );
+				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
+				return result;
+			}
+			
+			MyPersistenceManager pm = MyPersistenceManager.getInstance();
+			EntityManager em = pm.getEntityManager();
+			try{
+			List<Role> rl = null;
+			em.getTransaction().begin();
+			Query q = em.createNamedQuery( "RoleFetchByAppnameAndUserId" );
+			q.setParameter( "appname", token.application );
+			q.setParameter( "userId", token.userId );
+			rl = q.getResultList();
+			em.getTransaction().commit();
+			
+			List<Action> al = new LinkedList<Action>();
+			
+			String target = request.getString( "TARGET" );
+			String action = request.getString( "ACTION" );
+			String state = request.getString( "STATE" );
+						
+			OUT: for (Role r : rl) {
+
+				for (Action a : (List<Action>) r.getActionList()) {
+					System.out.println( a.getTarget()+" "+a.getState()+" "+a.getAction() );
+					if ((target == null || target.matches(a.getTarget()))
+							&& (action == null || action.matches(a.getAction()))
+							&& (state == null || state.matches(a.getState()))) {
+
+						if (a.getRule().equalsIgnoreCase("ACCEPT"))
+							al.add(a);
+						else
+							break OUT;
+					}
+				}
+			}
+			
+			result = new DefaultWash();
+			result.addField( "STATUS", Type.BOOLEAN, true );
+			result.addField( "REASON", Type.STRING, "" );
+			result.addField( "SIZE", Type.INTEGER, al.size() );
+			/*
+			 * NAME-n	string	SORT-n	integer	TARGET-n	string	
+			 * ACTION-n	string	STATE-n	string	RULE-n	string	ROLE-n	string
+			 */
+			int i = 0;
+			for( Action a : al ){
+				result.addField( "Action-"+i+".NAME", Type.STRING, a.getName() );
+				result.addField( "Action-"+i+".SORT", Type.INTEGER, a.getSort() );
+				result.addField( "Action-"+i+".TARGET", Type.STRING, a.getTarget() );
+				result.addField( "Action-"+i+".ACTION", Type.STRING, a.getAction() );
+				result.addField( "Action-"+i+".STATE", Type.STRING, a.getState() );
+				result.addField( "Action-"+i+".RULE", Type.STRING, a.getRule() );
+				result.addField( "Action-"+i+".ROLE", Type.STRING, a.getRole().getName() );
+				i++;
+			}
+		}finally{
+			pm.closeEntityManager( em );
+		}
+		}else{
+			result = new DefaultWash();
+			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );
+		
+		}
+		
 		return result;
 	} 
 }
