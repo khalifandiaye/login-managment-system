@@ -17,7 +17,7 @@ public class ActionList extends AbstractListRenderer<Action> {
 
 	public ActionList(HttpServletRequest req, String name, int itemsPerPage,
 			ListProvider<Action> listProvider, Renderer itemTemplate) {
-		super( req, name, itemsPerPage, listProvider, itemTemplate );
+		super( req, name, "sort", itemsPerPage, listProvider, itemTemplate );
 
 	}
 

@@ -22,7 +22,9 @@ import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.WebTemplateFactory;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
+import de.uplinkgmbh.lms.business.STATICS;
 import de.uplinkgmbh.lms.entitys.Organisation;
+import de.uplinkgmbh.lms.entitys.User;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
 import de.uplinkgmbh.lms.servlets.forms.OrganisationForm;
 import de.uplinkgmbh.lms.user.AuthorizationsChecker;
@@ -105,7 +107,7 @@ import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
 							orga = em.find( Organisation.class, new Long( request.getParameter( "organisation_id" ) ) );
 							em.getTransaction().commit();
 							
-							orga.setName( form.getName() );
+							orga.setName( form.getOrgaName() );
 							if( form.getUrl() == "" )
 								orga.setUrl( null );
 							else
@@ -126,7 +128,7 @@ import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
 							HashMap<String, String> parameters = new HashMap<String,String>();
 							parameters.put( "organisation_id", ""+orga.getId() );
 							parameters.put( "action", "show" );
-							String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+							String listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 							listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Organisation.html" );
 							response.sendRedirect( listpage );
 							
@@ -137,7 +139,7 @@ import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
 							orga = null;
 							em.getTransaction().begin();	
 							Query q = em.createNamedQuery( "OrgaFetchByName" );
-							q.setParameter( "name", form.getName() );
+							q.setParameter( "name", form.getOrgaName() );
 							try{
 								orga = (Organisation)q.getSingleResult();
 							}catch( NoResultException e ){}
@@ -170,7 +172,7 @@ import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
 							
 								orga = new Organisation();
 								
-								orga.setName( form.getName() );
+								orga.setName( form.getOrgaName() );
 								if( form.getUrl().equals( "" ) )
 									orga.setUrl( null );
 								else
@@ -187,13 +189,13 @@ import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
 								em.getTransaction().begin();	
 								em.persist( orga );
 								em.getTransaction().commit();
-								// wenn user_id bei save mitkommt dann zurück zu User
+								// wenn user_id bei save mitkommt dann zurï¿½ck zu User
 								if( request.getParameter( "user_id" ) != null ){
 									HashMap<String, String> parameters = new HashMap<String,String>();
 									parameters.put( "organisation_id", ""+orga.getId() );
 									parameters.put( "user_id", request.getParameter( "user_id" ) );
 									parameters.put( "action", "saveorga" );
-									String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+									String listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 									listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "User.html" );
 									response.sendRedirect( listpage );
 								
@@ -203,7 +205,7 @@ import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
 								HashMap<String, String> parameters = new HashMap<String,String>();
 								parameters.put( "organisation_id", ""+orga.getId() );
 								parameters.put( "action", "show" );
-								String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+								String listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 								listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Organisation.html" );
 								response.sendRedirect( listpage );
 								return;	
@@ -327,9 +329,10 @@ import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
 					orga = em.find( Organisation.class, new Long( request.getParameter( "organisation_id" ) ) );
 					em.remove( orga );
 					em.getTransaction().commit();
+					
 					HashMap<String, String> parameters = new HashMap<String,String>();
 					parameters.put( "action", "" );
-					String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+					String listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 					listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Organisation.html" );
 					response.sendRedirect( listpage );
 					return;	
@@ -345,12 +348,13 @@ import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
 						em.getTransaction().begin();	
 						orga = em.find( Organisation.class, new Long( request.getParameter( "organisation_id" ) ) );
 						em.getTransaction().commit();
+						
 						OrganisationForm form = new OrganisationForm();
 					
 						form.setCity( orga.getCity() );
 						form.setCountry( orga.getCountry().getCountry().toUpperCase() );
 						form.setFax( orga.getFax() );
-						form.setName( orga.getName() );
+						form.setOrgaName( orga.getName() );
 						if( orga.getUrl() != null )
 							form.setUrl( orga.getUrl().toString() );
 						else
@@ -379,6 +383,15 @@ import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
 					template.setParameter( "orga", orgaEditTemp );
 				}
 			}
+			
+			User user=null;
+			em.getTransaction().begin();	
+			user = em.find( User.class, token.userId );
+			em.getTransaction().commit();
+			
+			if( user != null && user.getLanguage() != null ) template.setParameter( "lang", user.getLanguage().getLanguage() );
+			else template.setParameter( "lang", STATICS.SYSLANG );
+			
 			}finally{
 				pm.closeEntityManager( em );
 			}
@@ -401,7 +414,7 @@ import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+	
 	}  	
 	
 	/* (non-Java-doc)

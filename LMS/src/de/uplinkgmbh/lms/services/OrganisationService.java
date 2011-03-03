@@ -181,6 +181,7 @@ public class OrganisationService implements Service{
 				return result;
 			}
 			
+
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			
 			if( !AuthorizationsChecker.isAllowed( token, "APPLICATION", "organisation.newOrga", token.application ) ){
@@ -246,13 +247,14 @@ public class OrganisationService implements Service{
 			em.getTransaction().begin();
 			em.persist( orga );
 			em.getTransaction().commit();
-
+			
 			result = new DefaultWash();
 			result.addField( "STATUS", Type.BOOLEAN, true );
 			result.addField( "REASON", Type.STRING, "" );
 			}finally{
 				pm.closeEntityManager( em );
 			}
+			
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );

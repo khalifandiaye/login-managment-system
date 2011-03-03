@@ -16,7 +16,7 @@ public class RoleList extends AbstractListRenderer<Role> {
 
 	public RoleList(HttpServletRequest req, String name, int itemsPerPage,
 			ListProvider<Role> listProvider, Renderer itemTemplate) {
-		super( req, name, itemsPerPage, listProvider, itemTemplate );
+		super( req, name, "name", itemsPerPage, listProvider, itemTemplate );
 	}
 
 	@Override

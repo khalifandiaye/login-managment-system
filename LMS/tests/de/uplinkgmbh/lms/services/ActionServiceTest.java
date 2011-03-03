@@ -1,23 +1,15 @@
 package de.uplinkgmbh.lms.services;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.net.MalformedURLException;
 import java.util.Locale;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
-import de.axone.tools.E;
 import de.axone.wash.DefaultWash;
 import de.axone.wash.Wash;
 import de.axone.wash.Wash.Type;
@@ -61,7 +53,7 @@ public class ActionServiceTest {
 		user.setState( "Bavaria" );
 		user.setStreet( "Freisinger Gass" );
 		user.setStreetnr( "12b" );
-		user.setSurename( "Müller" );
+		user.setSurename( "MÃ¼ller" );
 		user.setTemplate( true );
 		user.setZip( "47722" );
 		

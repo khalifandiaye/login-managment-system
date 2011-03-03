@@ -18,7 +18,7 @@ public class ApplicationList extends AbstractListRenderer<Application> {
 
 	public ApplicationList(HttpServletRequest req, String name, int itemsPerPage,
 			ListProvider<Application> listProvider, Renderer itemTemplate) {
-		super( req, name, itemsPerPage, listProvider, itemTemplate );
+		super( req, name, "name", itemsPerPage, listProvider, itemTemplate );
 		this.itemTemplate = itemTemplate;
 	}
 

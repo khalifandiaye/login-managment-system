@@ -18,11 +18,11 @@ import de.axone.webtemplate.WebTemplate;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.WebTemplateFactory;
 import de.axone.webtemplate.converter.ConverterException;
-import de.axone.webtemplate.elements.impl.HtmlInputElement;
 import de.axone.webtemplate.form.FormValue;
 import de.axone.webtemplate.form.WebFormImpl;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
+import de.uplinkgmbh.lms.business.STATICS;
 import de.uplinkgmbh.lms.entitys.Groups;
 import de.uplinkgmbh.lms.entitys.Role;
 import de.uplinkgmbh.lms.entitys.User;
@@ -31,6 +31,7 @@ import de.uplinkgmbh.lms.user.AuthorizationsChecker;
 import de.uplinkgmbh.lms.utils.LMSToken;
 import de.uplinkgmbh.lms.utils.UserStatus;
 import de.uplinkgmbh.lms.webtemplate.Context;
+import de.uplinkgmbh.lms.webtemplate.FVFactory;
 import de.uplinkgmbh.lms.webtemplate.groups.GroupList;
 import de.uplinkgmbh.lms.webtemplate.role.RoleList;
 import de.uplinkgmbh.lms.webtemplate.user.UserList;
@@ -169,7 +170,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 							parameters.put( "group_id", ""+g.getId() );
 							parameters.put( "application_id", ""+app.getId() );
 							parameters.put( "action", "show" );
-							String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+							String listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 							listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Groups.html" );
 							response.sendRedirect( listpage );
 							return;
@@ -268,7 +269,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						parameters.put( "group_id", ""+g.getId() );
 						parameters.put( "application_id", ""+app.getId() );
 						parameters.put( "action", "show" );
-						String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+						String listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 						listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Groups.html" );
 						response.sendRedirect( listpage );
 						return;
@@ -289,12 +290,13 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						em.getTransaction().begin();
 						em.merge( g );
 						em.getTransaction().commit();
+						
 						HashMap<String, String> parameters = new HashMap<String,String>();
 						parameters.put( "user_id", ""+u.getId() );
 						parameters.put( "group_id", ""+g.getId() );
 						parameters.put( "application_id", ""+app.getId() );
 						parameters.put( "action", "show" );
-						String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+						String listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 						listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Groups.html" );
 						response.sendRedirect( listpage );
 						return;
@@ -336,13 +338,21 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 							g = em.find( de.uplinkgmbh.lms.entitys.Groups.class, new Long( request.getParameter( "group_id" ) ) );
 							em.getTransaction().commit();
 							
-							form.setName( g.getName() );
+							form.setGroupsName( g.getName() );
 							groupsEditTemp.setParameter( "groupid", g.getId() );
 							groupsEditTemp.setParameter( "name", form.getHtmlInput( "name" ) );
 							template.setParameter( "group", groupsEditTemp );
 							template.setParameter( "path", app.getName()+" - Group &gt; edit" );
 						}
 					}
+					
+					User user=null;
+					em.getTransaction().begin();	
+					user = em.find( User.class, token.userId );
+					em.getTransaction().commit();
+					
+					if( user != null && user.getLanguage() != null ) template.setParameter( "lang", user.getLanguage().getLanguage() );
+					else template.setParameter( "lang", STATICS.SYSLANG );
 					
 				}
 				
@@ -389,15 +399,15 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		
 		public GroupsEditForm() throws WebTemplateException {
 			
-			name = HtmlInputElement.createTextValue( NAME, 255, false );
+			name = new FVFactory().createInputTextValue( NAME, 255, false );
 			this.addFormValue( NAME, name );
 		}
 		
-		public String getName() throws ConverterException{
+		public String getGroupsName() throws ConverterException{
 			return name.getValue();
 		}
 		
-		public void setName( String name ) throws ConverterException{
+		public void setGroupsName( String name ) throws ConverterException{
 			this.name.setValue( name );
 		}
 	
@@ -556,6 +566,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			return maxResults.intValue();
 		}
 		
+
 	}
 	
 	private static class User2ListProvider implements ListProvider<User> {
@@ -602,6 +613,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			return maxResults.intValue();
 		}
 		
+
 	}
 	
 

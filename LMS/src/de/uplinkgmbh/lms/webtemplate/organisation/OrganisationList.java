@@ -16,7 +16,7 @@ public class OrganisationList extends AbstractListRenderer<Organisation> {
 
 	public OrganisationList(HttpServletRequest req, String name, int itemsPerPage,
 			ListProvider<Organisation> listProvider, Renderer itemTemplate) {
-		super( req, name, itemsPerPage, listProvider, itemTemplate );
+		super( req, name, "name", itemsPerPage, listProvider, itemTemplate );
 	}
 
 	@Override

@@ -3,17 +3,14 @@
     <wb-module deploy-name="LMS">
         <wb-resource deploy-path="/" source-path="/WebContent"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/test"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/tests"/>
         <dependent-module archiveName="Tools.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/Tools/Tools">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="WebTemplates.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/WebTemplates/WebTemplates">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="Wash.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/Wash/Wash">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <property name="java-output-path"/>
         <property name="context-root" value="LMS"/>
+        <property name="java-output-path" value="/LMS/build/classes"/>
     </wb-module>
 </project-modules>

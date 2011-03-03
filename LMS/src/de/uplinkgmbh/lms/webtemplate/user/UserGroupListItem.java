@@ -32,7 +32,7 @@ public class UserGroupListItem extends AbstractFileWebTemplate{
 		parameters.put( "group_id", ""+g.getId() );
 		parameters.put( "application_id", ""+g.getApplication().getId() );
 		parameters.put( "action", "show" );
-		String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+		String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 		listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Groups.html" );
 		getHolder().setValue( "link", listpage );
 

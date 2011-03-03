@@ -16,19 +16,21 @@ import de.axone.webtemplate.WebTemplate;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.WebTemplateFactory;
 import de.axone.webtemplate.converter.ConverterException;
-import de.axone.webtemplate.elements.impl.HtmlInputElement;
 import de.axone.webtemplate.form.FormValue;
 import de.axone.webtemplate.form.WebFormImpl;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
+import de.uplinkgmbh.lms.business.STATICS;
 import de.uplinkgmbh.lms.entitys.Action;
 import de.uplinkgmbh.lms.entitys.Application;
 import de.uplinkgmbh.lms.entitys.Role;
+import de.uplinkgmbh.lms.entitys.User;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
 import de.uplinkgmbh.lms.user.AuthorizationsChecker;
 import de.uplinkgmbh.lms.utils.LMSToken;
 import de.uplinkgmbh.lms.utils.UserStatus;
 import de.uplinkgmbh.lms.webtemplate.Context;
+import de.uplinkgmbh.lms.webtemplate.FVFactory;
 import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 
 
@@ -185,7 +187,7 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 					}else if( request.getParameter( "action" ).equals( "edit") && userstatus == UserStatus.SYSTEMADMIN ){
 				
 						ApplicationEditForm form = new ApplicationEditForm();
-						form.setName( app.getName() );
+						form.setApplicationName( app.getName() );
 						
 						String appEdit = context.getServletContext().getRealPath( "/template/appedit.xhtml" );
 						File appEditFile = new File( appEdit );
@@ -210,6 +212,15 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 					template.setParameter( "path", "Application  &gt; new" );
 				}
 			}
+			
+			User user=null;
+			em.getTransaction().begin();	
+			user = em.find( User.class, token.userId );
+			em.getTransaction().commit();
+			
+			if( user != null && user.getLanguage() != null ) template.setParameter( "lang", user.getLanguage().getLanguage() );
+			else template.setParameter( "lang", STATICS.SYSLANG );
+			
 			}finally{
 				pm.closeEntityManager( em );
 			}
@@ -254,15 +265,15 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 		
 		public ApplicationEditForm() throws WebTemplateException {
 			
-			name = HtmlInputElement.createTextValue( NAME, 255, false );
+			name = new FVFactory().createInputTextValue( NAME, 255, false );
 			this.addFormValue( NAME, name );
 		}
 		
-		public String getName() throws ConverterException{
+		public String getApplicationName() throws ConverterException{
 			return name.getValue();
 		}
 		
-		public void setName( String name ) throws ConverterException{
+		public void setApplicationName( String name ) throws ConverterException{
 			this.name.setValue( name );
 		}
 	
@@ -302,7 +313,7 @@ import de.uplinkgmbh.lms.webtemplate.application.ApplicationList;
 			int end = 0;
 			if( beginIndex+count >= list.size() ) end = list.size();
 			else end = beginIndex+count;
-			return list.subList( beginIndex, end);
+			return (Iterable<Application>) list.subList( beginIndex, end);
 		}
 
 		@Override

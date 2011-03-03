@@ -17,7 +17,7 @@ public class GroupList extends AbstractListRenderer<Groups> {
 
 	public GroupList(HttpServletRequest req, String name, int itemsPerPage,
 			ListProvider<Groups> listProvider, Renderer itemTemplate) {
-		super( req, name, itemsPerPage, listProvider, itemTemplate );
+		super( req, name, "name", itemsPerPage, listProvider, itemTemplate );
 
 	}
 

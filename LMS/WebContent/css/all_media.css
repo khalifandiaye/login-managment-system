@@ -98,9 +98,7 @@ a {
 	width: 30px;
 }
 
-.rule input {
-	width: 50px;
-}
+
 
 .user {
 	font-weight: bold;
@@ -268,8 +266,62 @@ a {
 	color: #DFCA0E;
 }
 
+/* action form liste */
+
+#input_a_name_h {
+	width: 132px;
+}
+
+#input_a_sort_h {
+	width: 22px;	
+}
+
+#input_a_state_h {
+	width: 132px;
+}
+
+#input_a_action_h {
+	width: 132px;
+}
+
+#input_a_target_h {
+	width: 132px;
+}
+
+#input_a_rule_h {
+	width: 52px;
+}
+
+#input_a_name {
+	width: 130px;
+}
+
+#input_a_sort {
+	width: 20px;	
+}
+
+#input_a_state {
+	width: 130px;
+}
+
+#input_a_action {
+	width: 130px;
+}
+
+#input_a_target {
+	width: 130px;
+}
+
+#input_a_rule {
+	width: 50px;
+}
+
 .update td {
 	padding-left: 10px;
+}
+
+.user_action_list {
+	border-spacing: 3px;	
 }
 
 .update img {

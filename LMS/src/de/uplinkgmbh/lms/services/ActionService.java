@@ -183,7 +183,7 @@ public class ActionService implements Service{
 				result.addField( "REASON", Type.STRING, "" );
 				result.addField( "PERMISSION", Type.BOOLEAN, false );
 			}
-			
+
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );

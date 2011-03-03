@@ -1,13 +1,9 @@
 package de.uplinkgmbh.lms.user;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-import org.testng.annotations.AfterGroups;
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 
-import de.axone.tools.E;
 import de.uplinkgmbh.lms.exceptions.LoginException;
 import de.uplinkgmbh.lms.webtemplate.Context;
 
@@ -18,7 +14,7 @@ public class AuthorisationsCheckerTests {
 		
 		Login login = new Login();
 		try{
-			login.check( "admin", "wrLRIqHU", Context.getSingelton().getApplicationname() );
+			login.check( "admin", "admin", Context.getSingelton().getApplicationname() );
 		}catch( LoginException e ){
 			assertFalse( LoginException.WRONGPASSWORD == e.status );
 			assertFalse( LoginException.USERHASNOGROUPORROLE == e.status );

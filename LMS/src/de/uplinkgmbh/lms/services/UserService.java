@@ -124,6 +124,7 @@ public class UserService implements Service{
 				return result;
 			}
 			
+
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 
 			if( !AuthorizationsChecker.isAllowed( token, "APPLICATION", "user.getTemplateUsers", token.application ) ){
@@ -154,7 +155,7 @@ public class UserService implements Service{
 			}finally{
 				pm.closeEntityManager( em );
 			}
-			
+
 		}else{
 			result = new DefaultWash();
 			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );
@@ -176,7 +177,7 @@ public class UserService implements Service{
 				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
 				return result;
 			}
-			
+		
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			
 			if( !AuthorizationsChecker.isAllowed( token, "APPLICATION", "user.getUsers", token.application ) ){
@@ -290,7 +291,7 @@ public class UserService implements Service{
 				i++;
 			
 			}
-			
+
 			log.debug( logstr );
 			}finally{
 				pm.closeEntityManager( em );
@@ -536,6 +537,7 @@ public class UserService implements Service{
 				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
 				return result;
 			}
+
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 

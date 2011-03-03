@@ -19,9 +19,10 @@ import de.axone.web.HttpLinkBuilder;
 import de.axone.webtemplate.WebTemplate;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.WebTemplateFactory;
-import de.axone.webtemplate.element.HtmlInput;
+import de.axone.webtemplate.elements.impl.Option;
 import de.axone.webtemplate.list.DefaultPager;
 import de.axone.webtemplate.list.ListProvider;
+import de.uplinkgmbh.lms.business.STATICS;
 import de.uplinkgmbh.lms.entitys.Action;
 import de.uplinkgmbh.lms.entitys.Groups;
 import de.uplinkgmbh.lms.entitys.Organisation;
@@ -117,7 +118,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								em.getTransaction().commit();
 							}
 							user.setOrganisation( orga );
-							
+
 							user.setLoginname( form.getLoginname() );
 							user.setPassword( form.getPassword() );
 							user.setFirstname( form.getFirstname() );
@@ -145,7 +146,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								HashMap<String, String> parameters = new HashMap<String,String>();
 								parameters.put( "user_id", ""+user.getId() );
 								parameters.put( "action", "new" );
-								String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+								String listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 								listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Organisation.html" );
 								response.sendRedirect( listpage );
 								return;
@@ -153,7 +154,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								HashMap<String, String> parameters = new HashMap<String,String>();
 								parameters.put( "user_id", ""+user.getId() );
 								parameters.put( "action", "show" );
-								String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+								String listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 								listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "User.html" );
 								response.sendRedirect( listpage );
 								return;
@@ -176,7 +177,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 								WebTemplate userEditTemp = context.getWebTemplateFactory().templateFor( userEditFile );
 							
 								userEditTemp.setParameter( "userid", "" );
-								userEditTemp.setParameter( "organisation", form.getOrganisationHtmlSelectElement( request.getParameter( "organisation" ) ) );
+								userEditTemp.setParameter( "organisation", form.getHtmlInput( "organisation" ) );
 								userEditTemp.setParameter( "activ", form.getHtmlInput( "activ" ) );
 								userEditTemp.setParameter( "city", form.getHtmlInput( "city" ) );
 								userEditTemp.setParameter( "country", form.getHtmlInput( "country" ) );
@@ -237,7 +238,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 									HashMap<String, String> parameters = new HashMap<String,String>();
 									parameters.put( "user_id", ""+user.getId() );
 									parameters.put( "action", "new" );
-									String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+									String listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 									listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Organisation.html" );
 									response.sendRedirect( listpage );
 									return;
@@ -245,7 +246,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 									HashMap<String, String> parameters = new HashMap<String,String>();
 									parameters.put( "user_id", ""+user.getId() );
 									parameters.put( "action", "show" );
-									String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+									String listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 									listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "User.html" );
 									response.sendRedirect( listpage );
 									return;
@@ -276,7 +277,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						
 						form.isValid();
 	
-						userEditTemp.setParameter( "organisation", form.getOrganisationHtmlSelectElement( request.getParameter( "organisation" ) ) );
+						userEditTemp.setParameter( "organisation", form.getHtmlInput( "organisation" ) );
 						userEditTemp.setParameter( "activ", form.getHtmlInput( "activ" ) );
 						userEditTemp.setParameter( "city", form.getHtmlInput( "city" ) );
 						userEditTemp.setParameter( "country", form.getHtmlInput( "country" ) );
@@ -322,7 +323,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 					HashMap<String, String> parameters = new HashMap<String,String>();
 					parameters.put( "user_id", ""+user.getId() );
 					parameters.put( "action", "show" );
-					String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+					String listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 					listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "User.html" );
 					response.sendRedirect( listpage );
 					return;
@@ -335,11 +336,11 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 				
 					UserForm form = new UserForm();
 					userEditTemp.setParameter( "userid", "" );
-					
-					userEditTemp.setParameter( "organisation", form.getOrganisationHtmlSelectElement( ) );
-					HtmlInput htmlActiv = form.getHtmlInput( "activ" );
-					htmlActiv.setValue( "0" );
-					userEditTemp.setParameter( "activ", htmlActiv );
+					form.setOrganisation( "-1" );
+					userEditTemp.setParameter( "organisation", form.getHtmlInput( "organisation" ) );
+					form.setActiv( false );
+		
+					userEditTemp.setParameter( "activ", form.getHtmlInput( "activ" ) );
 					userEditTemp.setParameter( "city", form.getHtmlInput( "city" ) );
 					userEditTemp.setParameter( "country", form.getHtmlInput( "country" ) );
 					userEditTemp.setParameter( "email", form.getHtmlInput( "email" ) );
@@ -355,9 +356,8 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 					userEditTemp.setParameter( "street", form.getHtmlInput( "street" ) );
 					userEditTemp.setParameter( "streetnr", form.getHtmlInput( "streetnr" ) );
 					userEditTemp.setParameter( "surename", form.getHtmlInput( "surename" ) );
-					HtmlInput htmlTemplate = form.getHtmlInput( "template" );
-					htmlTemplate.setValue( "0" );
-					userEditTemp.setParameter( "template", htmlTemplate );
+					form.setTemplate( false );
+					userEditTemp.setParameter( "template", form.getHtmlInput( "template" ) );
 					userEditTemp.setParameter( "washstore", form.getHtmlInput( "washstore" ) );
 					userEditTemp.setParameter( "zip", form.getHtmlInput( "zip" ) );
 					
@@ -381,9 +381,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						else
 							userShowTemp.setParameter( "organisation", "--" );
 						if( user.isActiv() )
-							userShowTemp.setParameter( "activ", "True" );
+							userShowTemp.setParameter( "activ", "on" );
 						else
-							userShowTemp.setParameter( "activ", "False" );
+							userShowTemp.setParameter( "activ", "off" );
 						
 						userShowTemp.setParameter( "city", user.getCity() );
 						if( user.getCountry() != null )
@@ -407,9 +407,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						userShowTemp.setParameter( "streetnr", user.getStreetnr() );
 						userShowTemp.setParameter( "surename", user.getSurename() );
 						if( user.isTemplate() )
-							userShowTemp.setParameter( "template", "True" );
+							userShowTemp.setParameter( "template", "on" );
 						else
-							userShowTemp.setParameter( "template", "False" );
+							userShowTemp.setParameter( "template", "off" );
 						userShowTemp.setParameter( "washstore", user.getWashstore() );
 						userShowTemp.setParameter( "zip", user.getZip() );
 						
@@ -514,11 +514,20 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						form.setTemplate( user.isTemplate() );
 						form.setWashstore( user.getWashstore() );
 						form.setZip( user.getZip() );
+						String organame;
 						
-						if( user.getOrganisation() != null )
-							userEditTemp.setParameter( "organisation", form.getOrganisationHtmlSelectElement( String.valueOf( user.getOrganisation().getId() ) ) );
-						else
-							userEditTemp.setParameter( "organisation", form.getOrganisationHtmlSelectElement( ) );
+						if( user.getOrganisation() != null ){
+							organame = user.getOrganisation().getName();
+							for( Option opt : form.getSelectedOrganisations() ){
+								if( organame.equalsIgnoreCase( opt.getText() ) ){
+									form.setOrganisation( opt.getValue() );
+								}
+							}
+						}else{
+							form.setOrganisation( "-1" );
+						}
+						userEditTemp.setParameter( "organisation", form.getHtmlInput( "organisation" ) );
+						
 						userEditTemp.setParameter( "activ", form.getHtmlInput( "activ" ) );
 						userEditTemp.setParameter( "city", form.getHtmlInput( "city" ) );
 						userEditTemp.setParameter( "country", form.getHtmlInput( "country" ) );
@@ -545,6 +554,15 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 				}
 				
 			}
+			
+			User user=null;
+			em.getTransaction().begin();	
+			user = em.find( User.class, token.userId );
+			em.getTransaction().commit();
+			
+			if( user != null && user.getLanguage() != null ) template.setParameter( "lang", user.getLanguage().getLanguage() );
+			else template.setParameter( "lang", STATICS.SYSLANG );
+			
 			}finally{
 				pm.closeEntityManager( em );
 			}

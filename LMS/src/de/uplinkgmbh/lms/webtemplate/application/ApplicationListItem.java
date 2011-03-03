@@ -35,25 +35,25 @@ public class ApplicationListItem extends AbstractFileWebTemplate{
 		HashMap<String, String> parameters = new HashMap<String,String>();
 		parameters.put( "application_id", ""+a.getId() );
 		parameters.put( "action", "show" );
-		String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+		String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 		getHolder().setValue( "applink", listpage );
 		if( lmsAdmin ){
 			parameters = new HashMap<String,String>();
 			parameters.put( "application_id", ""+a.getId() );
 			parameters.put( "action", "edit" );
-			listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+			listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 			getHolder().setValue( "edit", "<td><a href=\""+listpage+"\">&emsp;edit</a></td>" );
 		}else getHolder().setValue( "edit", "" );
 		parameters = new HashMap<String,String>();
 		parameters.put( "application_id", ""+a.getId() );
 		parameters.put( "action", "list" );
-		listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+		listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 		listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Role.html" );
 		getHolder().setValue( "appshowroleslink", listpage );
 		parameters = new HashMap<String,String>();
 		parameters.put( "application_id", ""+a.getId() );
 		parameters.put( "action", "list" );
-		listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+		listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 		listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Groups.html" );
 		getHolder().setValue( "appshowgrouplink", listpage );
 		

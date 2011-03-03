@@ -11,6 +11,7 @@ import de.axone.webtemplate.AbstractFileWebTemplate;
 import de.axone.webtemplate.KeyException;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.form.Translator;
+import de.uplinkgmbh.lms.business.STATICS;
 
 public class OrganisationPage extends AbstractFileWebTemplate{
 	
@@ -28,6 +29,8 @@ public class OrganisationPage extends AbstractFileWebTemplate{
 		getHolder().setValue( "message", this.getParameter( "message" ) );
 		getHolder().setValue( "keywords", "" );
 		getHolder().setValue( "description", "" );
+		getHolder().setValue( "lang", this.getParameter( "lang" ) );
+		getHolder().setValue( "formcolor", STATICS.FROMCOLOR );
 		getHolder().setValue( "company", "uplink gmbh" );
 		getHolder().setValue( "orgalist", this.getParameter( "orgalist" ) );
 		getHolder().setValue( "orgalistpager", this.getParameter( "orgalistpager" ) );
@@ -38,7 +41,7 @@ public class OrganisationPage extends AbstractFileWebTemplate{
 		getHolder().setValue( "usermanagment", "<a href=\"User.html\"><span>User</span></a>" );
 		HashMap<String, String> parameters = new HashMap<String,String>();
 		parameters.put( "action", "new" );
-		String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+		String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 		listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Organisation.html" );
 		
 		if( ! this.getParameter( "orgalist" ).equals( "" ) ) getHolder().setValue( "neworga", "<a href=\""+listpage+"\"><h1>new Organisation</h1></a>" );

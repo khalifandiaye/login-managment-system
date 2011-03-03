@@ -9,6 +9,7 @@ import de.axone.webtemplate.AbstractFileWebTemplate;
 import de.axone.webtemplate.KeyException;
 import de.axone.webtemplate.WebTemplateException;
 import de.axone.webtemplate.form.Translator;
+import de.uplinkgmbh.lms.business.STATICS;
 import de.uplinkgmbh.lms.utils.UserStatus;
 
 public class RolePage extends AbstractFileWebTemplate{
@@ -27,6 +28,8 @@ public class RolePage extends AbstractFileWebTemplate{
 		getHolder().setValue( "keywords", "" );
 		getHolder().setValue( "description", "" );
 		getHolder().setValue( "company", "uplink gmbh" );
+		getHolder().setValue( "lang", this.getParameter( "lang" ) );
+		getHolder().setValue( "formcolor", STATICS.FROMCOLOR );
 		getHolder().setValue( "rolelist", this.getParameter( "rolelist" ) );
 		getHolder().setValue( "rolelistpager", this.getParameter( "rolelistpager" ) );
 		getHolder().setValue( "role", this.getParameter( "role" ) );

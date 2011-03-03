@@ -16,7 +16,7 @@ public class UserList extends AbstractListRenderer<User> {
 
 	public UserList(HttpServletRequest req, String name, int itemsPerPage,
 			ListProvider<User> listProvider, Renderer itemTemplate) {
-		super( req, name, itemsPerPage, listProvider, itemTemplate );
+		super( req, name, "loginname", itemsPerPage, listProvider, itemTemplate );
 	}
 
 	@Override

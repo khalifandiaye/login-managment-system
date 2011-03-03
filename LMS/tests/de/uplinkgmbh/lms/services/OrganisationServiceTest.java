@@ -1,23 +1,15 @@
 package de.uplinkgmbh.lms.services;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.net.MalformedURLException;
 import java.util.Locale;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
-import de.axone.tools.E;
 import de.axone.wash.DefaultWash;
 import de.axone.wash.Wash;
 import de.axone.wash.Wash.Type;
@@ -61,7 +53,7 @@ public class OrganisationServiceTest {
 		user.setState( "Bavaria" );
 		user.setStreet( "Freisinger Gass" );
 		user.setStreetnr( "12b" );
-		user.setSurename( "Müller" );
+		user.setSurename( "MÃ¼ller" );
 		user.setTemplate( true );
 		user.setZip( "47722" );
 		
@@ -191,7 +183,7 @@ public class OrganisationServiceTest {
 		assertTrue( result.getBoolean( "STATUS" ) );
 		assertTrue( result.getString( "REASON" ).equals( "" ) );
 		
-		assertTrue( result.getLong( "SIZE" ) == 2L );
+		assertTrue( result.getLong( "SIZE" ) == 0L );
 
 		request = new DefaultWash();
 		request.addField( "LMSTOKEN", Type.STRING, token2 );
@@ -256,6 +248,16 @@ public class OrganisationServiceTest {
 
 		assertTrue( result.getBoolean( "STATUS" ) );
 		assertTrue( result.getString( "REASON" ).equals( "" ) );
+		
+		request = new DefaultWash();
+		request.addField( "LMSTOKEN", Type.STRING, token );
+		result = null;
+		result = mc.call( "orga", "getOrgas", request );
+
+		assertTrue( result.getBoolean( "STATUS" ) );
+		assertTrue( result.getString( "REASON" ).equals( "" ) );
+		
+		assertTrue( result.getLong( "SIZE" ) == 1L );
 	}
 	
 }

@@ -33,7 +33,7 @@ public class RoleUserListItem extends AbstractFileWebTemplate{
 		parameters.put( "user_id", ""+u.getId() );
 		parameters.put( "application_id", ""+this.getParameter( "applicationId" ) );
 		parameters.put( "action", ""+this.getParameter( "usertype" ) );
-		String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+		String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 		listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Role.html" );
 		getHolder().setValue( "link", listpage );
 		

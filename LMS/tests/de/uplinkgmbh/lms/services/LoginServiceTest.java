@@ -1,15 +1,12 @@
 package de.uplinkgmbh.lms.services;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.net.MalformedURLException;
 
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 
-import de.axone.tools.E;
 import de.axone.wash.DefaultWash;
 import de.axone.wash.Wash;
 import de.axone.wash.Wash.Type;
@@ -30,8 +27,8 @@ public class LoginServiceTest {
 		
 		DefaultWash lw = new DefaultWash();
 		
-		lw.addField( "LOGINNAME", Type.STRING, "a.kratzer" );
-		lw.addField( "PASSWORD", Type.STRING, "tzzwhJm3" );
+		lw.addField( "LOGINNAME", Type.STRING, "admin" );
+		lw.addField( "PASSWORD", Type.STRING, "admin" );
 		lw.addField( "APPLICATION", Type.STRING, "LoginManagmentSystem" );
 
 		Wash res = mc.call( "login", "login", lw );
@@ -57,7 +54,7 @@ public class LoginServiceTest {
 		assertTrue( res.getString( "REASON" ).equals( "USER NOT EXIST" ) );
 		
 		DefaultWash lw3 = new DefaultWash();
-		lw3.addField( "LOGINNAME", Type.STRING, "a.kratzer" );
+		lw3.addField( "LOGINNAME", Type.STRING, "admin" );
 		lw3.addField( "PASSWORD", Type.STRING, "nix" );
 		lw3.addField( "APPLICATION", Type.STRING, "LoginManagmentSystem" );
 
@@ -67,8 +64,8 @@ public class LoginServiceTest {
 		assertTrue( res.getString( "REASON" ).equals( "WRONG PASSWORD" ) );
 		
 		DefaultWash lw4 = new DefaultWash();
-		lw4.addField( "LOGINNAME", Type.STRING, "a.kratzer" );
-		lw4.addField( "PASSWORD", Type.STRING, "tzzwhJm3" );
+		lw4.addField( "LOGINNAME", Type.STRING, "admin" );
+		lw4.addField( "PASSWORD", Type.STRING, "admin" );
 		lw4.addField( "APPLICATION", Type.STRING, "nix" );
 
 		res = mc.call( "login", "login", lw4 );
@@ -98,8 +95,8 @@ public class LoginServiceTest {
 		
 		DefaultWash lw = new DefaultWash();
 		
-		lw.addField( "LOGINNAME", Type.STRING, "a.kratzer" );
-		lw.addField( "PASSWORD", Type.STRING, "tzzwhJm3" );
+		lw.addField( "LOGINNAME", Type.STRING, "admin" );
+		lw.addField( "PASSWORD", Type.STRING, "admin" );
 		lw.addField( "APPLICATION", Type.STRING, "LoginManagmentSystem" );
 
 		Wash res = mc.call( "login", "login", lw );

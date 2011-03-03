@@ -33,26 +33,26 @@ public class OrganisationListItem extends AbstractFileWebTemplate{
 		HashMap<String, String> parameters = new HashMap<String,String>();
 		parameters.put( "organisation_id", ""+o.getId() );
 		parameters.put( "action", "show" );
-		String listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+		String listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 		listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Organisation.html" );
 		getHolder().setValue( "showlink", listpage );
 		
 		parameters = new HashMap<String,String>();
 		parameters.put( "organisation_id", ""+o.getId() );
 		parameters.put( "action", "edit" );
-		listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+		listpage = HttpLinkBuilder.makeLink( request, true, true, parameters );
 		listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Organisation.html" );
 		getHolder().setValue( "editlink", listpage );
 		
 		parameters = new HashMap<String,String>();
 		parameters.put( "organisation_id", ""+o.getId() );
 		parameters.put( "action", "delete" );
-		listpage = HttpLinkBuilder.makeLink( request, true, parameters );
+		listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 		listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Organisation.html" );
 		
 		String target = listpage;
 	
-		String source = HttpLinkBuilder.makeLink( request, true, null );;
+		String source = HttpLinkBuilder.makeLink( request, true, false, null );;
 	
 		String target64 = Base64.encode( target );
 		String source64 = Base64.encode( source );
