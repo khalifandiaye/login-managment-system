@@ -335,7 +335,7 @@ public class UserService implements Service{
 			Query q = em.createNamedQuery( "UserFetchByLoginname" );
 			q.setParameter( "loginname", request.getString( "LOGINNAME" ) );
 			try{
-			u = (User)q.getSingleResult();
+				u = (User)q.getSingleResult();
 			}catch( NoResultException e ){
 				result = new DefaultWash();
 				result.addField( "ERROR", Type.STRING, "USER NOT FOUND" );
@@ -439,12 +439,12 @@ public class UserService implements Service{
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			EntityManager em = pm.getEntityManager();
-			
+			try{
 			User user = null;
 			em.getTransaction().begin();	
 			user = em.find( User.class, token.userId );
 			em.getTransaction().commit();
-			try{
+			
 			result = new DefaultWash();
 			result.addField( "STATUS", Type.BOOLEAN, true );
 			result.addField( "REASON", Type.STRING, "" );
@@ -570,13 +570,13 @@ public class UserService implements Service{
 			newUser = new User();
 			newUser.setLoginname( request.getString( "LOGINNAME" ) );
 			newUser.setPassword( request.getString( "PASSWORD" ) );
-			em = pm.getEntityManager();
+
 			em.getTransaction().begin();
 			em.persist( newUser );
 			em.getTransaction().commit();
 	
 			if( !request.getString( "TEMPLATELOGINNAME" ).equals( "" ) ){
-				em = pm.getEntityManager();
+
 				em.getTransaction().begin();
 				User templateUser = null;
 				q = em.createNamedQuery( "UserFetchByLoginname" );
@@ -587,8 +587,7 @@ public class UserService implements Service{
 					result = new DefaultWash();
 					result.addField( "STATUS", Type.BOOLEAN, false );
 					result.addField( "REASON", Type.STRING, "WRONG TEMPLATE" );
-					em.remove( newUser );
-					em.getTransaction().commit();
+					
 					return result;
 				}
 				em.getTransaction().commit();
@@ -628,8 +627,6 @@ public class UserService implements Service{
 					result = new DefaultWash();
 					result.addField( "STATUS", Type.BOOLEAN, false );
 					result.addField( "REASON", Type.STRING, "WRONG ORGANISATION" );
-					em.remove( newUser );
-					em.getTransaction().commit();
 					return result;
 				}
 				em.getTransaction().commit();
@@ -654,7 +651,7 @@ public class UserService implements Service{
 				newUser.setCountry( new Locale( request.getString( "COUNTRY" ).trim() ) );
 			if( !request.getString( "LANGUAGE" ).equals( "" ) )
 				newUser.setLanguage( new Locale( request.getString( "LANGUAGE" ).toLowerCase() ) );
-			em = pm.getEntityManager();
+
 			em.getTransaction().begin();
 			em.merge( newUser );
 			em.getTransaction().commit();
@@ -696,7 +693,7 @@ public class UserService implements Service{
 			q.setParameter( "name", token.application );
 			app = (Application) q.getSingleResult();
 			em.getTransaction().commit();
-			em.close();
+	
 			if( app.getGroupList().size() > 0 ){
 				for( Groups g: app.getGroupList() ){
 					g.getUserList().remove( user );
@@ -708,18 +705,16 @@ public class UserService implements Service{
 					r.getUserList().remove( user );
 				}
 			}
-			em = pm.getEntityManager();
+
 			em.getTransaction().begin();
 			em.merge( app );
 			em.refresh( user );
 			em.getTransaction().commit();
-			em.close();
+		
 			if( user.getGroupList().size() == 0 && user.getRoleList().size() == 0 ){
-				em = pm.getEntityManager();
 				em.getTransaction().begin();
 				em.remove( user );
 				em.getTransaction().commit();
-				em.close();
 			}
 			
 			result = new DefaultWash();
@@ -772,7 +767,7 @@ public class UserService implements Service{
 			}
 	
 			E.rr( token.userId );
-			em = pm.getEntityManager();
+
 			em.getTransaction().begin();
 			newUser = em.find( User.class, token.userId );
 			em.getTransaction().commit();
@@ -794,7 +789,7 @@ public class UserService implements Service{
 			if( !request.getString( "MOBILE" ).equals( "" ) )
 				newUser.setMobile( request.getString( "MOBILE" ) );
 			if( request.getString( "ORGANAME" ) != null && !request.getString( "ORGANAME" ).equals( "" ) ){
-				em = pm.getEntityManager();
+
 				em.getTransaction().begin();
 				Organisation orga = null;
 				q = em.createNamedQuery( "OrgaFetchByName" );
@@ -805,8 +800,6 @@ public class UserService implements Service{
 					result = new DefaultWash();
 					result.addField( "STATUS", Type.BOOLEAN, false );
 					result.addField( "REASON", Type.STRING, "WRONG ORGANISATION" );
-					em.remove( newUser );
-					em.getTransaction().commit();
 					return result;
 				}
 				em.getTransaction().commit();
@@ -831,7 +824,7 @@ public class UserService implements Service{
 				newUser.setCountry( new Locale( request.getString( "COUNTRY" ).trim() ) );
 			if( !request.getString( "LANGUAGE" ).equals( "" ) )
 				newUser.setLanguage( new Locale( request.getString( "LANGUAGE" ).toLowerCase() ) );
-			em = pm.getEntityManager();
+
 			em.getTransaction().begin();
 			em.merge( newUser );
 			em.getTransaction().commit();

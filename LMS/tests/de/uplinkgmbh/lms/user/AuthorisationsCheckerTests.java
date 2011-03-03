@@ -41,9 +41,9 @@ public class AuthorisationsCheckerTests {
 		assertTrue( AuthorizationsChecker.isAllowed( AESToken, "GOOD", "DOALL", "Site.News.1" ) );
 		
 		assertFalse( AuthorizationsChecker.isAllowed( AESToken2, "ADMIN", "DOALL", "Site.News.1" ) );
-		assertTrue( AuthorizationsChecker.isAllowed( AESToken2, "NEXT", "DOTEST", "Site.News.1" ) );
+		assertFalse( AuthorizationsChecker.isAllowed( AESToken2, "NEXT", "DOTEST", "Site.News.1" ) );
 		assertFalse( AuthorizationsChecker.isAllowed( AESToken2, "NEXT", "DOTEST", "Site.1" ) );
-		assertTrue( AuthorizationsChecker.isAllowed( AESToken2, "EDITOR", "DOTEST2", "Site.1" ) );
+		assertFalse( AuthorizationsChecker.isAllowed( AESToken2, "EDITOR", "DOTEST2", "Site.1" ) );
 		//E.rr( "Time: "+ ((System.nanoTime()-time)/1000000.0) +" ms" );
 		
 	}

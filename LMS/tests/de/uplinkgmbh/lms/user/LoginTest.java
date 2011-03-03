@@ -1,20 +1,16 @@
 package de.uplinkgmbh.lms.user;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-import org.testng.annotations.AfterGroups;
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 
+import de.axone.tools.E;
 import de.uplinkgmbh.lms.exceptions.LoginException;
 import de.uplinkgmbh.lms.webtemplate.Context;
 
 @Test( groups="lms.login" )
 public class LoginTest {
 
-	@AfterTest(groups = {"Inv"})
 	public void login() throws Exception {
 		
 		Login login = new Login();
@@ -29,7 +25,7 @@ public class LoginTest {
 		}
 		
 		try{
-			login.check( "admin_", "passwd", Context.getSingelton().getApplicationname() );
+			login.check( "admin_", "admin", Context.getSingelton().getApplicationname() );
 		}catch( LoginException e ){
 			assertFalse( LoginException.WRONGPASSWORD == e.status );
 			assertFalse( LoginException.USERHASNOGROUPORROLE == e.status );
@@ -39,8 +35,9 @@ public class LoginTest {
 		}
 		
 		try{
-			login.check( "admin", "passwd", Context.getSingelton().getApplicationname()+"_" );
+			login.check( "admin", "admin", Context.getSingelton().getApplicationname()+"_" );
 		}catch( LoginException e ){
+			E.rr( e.status );
 			assertFalse( LoginException.WRONGPASSWORD == e.status );
 			assertFalse( LoginException.USERHASNOGROUPORROLE == e.status );
 			assertTrue( LoginException.WRONGAPPLICATION == e.status );
@@ -49,7 +46,7 @@ public class LoginTest {
 		}
 		
 		try{
-			login.check( "admin", "passwdf", Context.getSingelton().getApplicationname() );
+			login.check( "admin", "admin", Context.getSingelton().getApplicationname() );
 		}catch( LoginException e ){
 			assertFalse( LoginException.WRONGPASSWORD == e.status );
 			assertFalse( LoginException.USERHASNOGROUPORROLE == e.status );

@@ -1,16 +1,12 @@
 package de.uplinkgmbh.lms.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-import org.testng.annotations.AfterGroups;
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 
 @Test( groups="lms.tokenaizer" )
 public class TokenazierTest {
 
-	@AfterTest(groups = {"Inv"})
 	public void buildToken() throws Exception {
 		
 		LMSToken token = new LMSToken();

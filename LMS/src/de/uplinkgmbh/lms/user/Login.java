@@ -41,9 +41,8 @@ public class Login {
 		this.application = application;
 		
 		MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		EntityManager em = null;
+		EntityManager em = pm.getEntityManager();
 		try{
-			em = pm.getEntityManager();
 			em.getTransaction().begin();
 			Query q = em.createNamedQuery( "UserFetchByLoginname" );
 			q.setParameter( "loginname", username );

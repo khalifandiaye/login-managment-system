@@ -18,7 +18,7 @@ public class CreateSysAdmin {
 	public void createAdmin() throws Exception {
 		
 		MyPersistenceManager pm = MyPersistenceManager.getInstance();
-		EntityManager em = pm.getEntityManager();
+		EntityManager em = new EMReady().em;
 		
 		Application app = new Application();
 		app.setName( "LoginManagmentSystem" );
