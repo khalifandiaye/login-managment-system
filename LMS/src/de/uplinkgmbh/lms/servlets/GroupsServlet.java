@@ -238,7 +238,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						groupsuserList2Temp.setParameter( "usertype", "activateuser" );
 						
 						DefaultPager UserPager1 = new DefaultPager();
-						User2ListProvider up1 = new User2ListProvider();
+						User2ListProvider up1 = new User2ListProvider( g.getId() );
 						UserList ul1 = new UserList( request, "groupuserlist2", 10, up1, groupsuserList2Temp );
 						ul1.initPager( UserPager1 );
 						
@@ -578,12 +578,15 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		private Query query = null;
 		private Long maxResults = 0L;
 
+		private long groupId;
 		
-		public User2ListProvider(){
+		public User2ListProvider( long groupId ){
+			this.groupId = groupId;
 			em = pm.getEntityManager();
 			try{
 			em.getTransaction().begin();
-			countQuery = em.createNamedQuery( "AllUserCount" );
+			countQuery = em.createNamedQuery( "AllUserWithoutGroupIdCount" );
+			countQuery.setParameter( "groupId", groupId );
 			maxResults = (Long) countQuery.getSingleResult();
 			em.getTransaction().commit();
 			}finally{
@@ -597,7 +600,8 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			em = pm.getEntityManager();
 			try{
 			em.getTransaction().begin();
-			query = em.createNamedQuery( "AllUser" );
+			query = em.createNamedQuery( "AllUserWithoutGroupId" );
+			query.setParameter( "groupId", groupId );
 			query.setFirstResult( beginIndex );
 			query.setMaxResults( count );
 			list = query.getResultList();

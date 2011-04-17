@@ -37,6 +37,11 @@ public class RoleUserListItem extends AbstractFileWebTemplate{
 		listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Role.html" );
 		getHolder().setValue( "link", listpage );
 		
+		getHolder().setValue( "role_id", this.getParameter( "roleId" ) );
+		getHolder().setValue( "user_id", u.getId() );
+		getHolder().setValue( "application_id", this.getParameter( "applicationId" ) );
+		getHolder().setValue( "action", this.getParameter( "usertype" ) );
+		
 		getHolder().render(object, request, response, translator);
 	}
 

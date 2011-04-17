@@ -77,6 +77,22 @@ import javax.persistence.OrderBy;
    			"WHERE r.id = :roleId"
    ),
    @NamedQuery( 
+           name="AllGroupsWithoutRoleId",
+           query=          
+        	"SELECT g " +
+   			"FROM Groups g " +
+   			"LEFT JOIN g.roleList AS r "+
+   			"WHERE ( r IS NULL OR r.id <> :roleId ) AND g.application.id = :appId"
+   ),
+   @NamedQuery( 
+           name="AllGroupsWithoutRoleIdCount",
+           query=          
+        	"SELECT count(g) " +
+   			"FROM Groups g " +
+   			"LEFT JOIN g.roleList AS r "+
+   			"WHERE ( r IS NULL OR r.id <> :roleId ) AND g.application.id = :appId"
+   ),
+   @NamedQuery( 
            name="AllGroupsByUserId",
            query=          
         	"SELECT g " +

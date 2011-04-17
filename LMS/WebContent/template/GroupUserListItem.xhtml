@@ -1,4 +1,13 @@
 @Class:de.uplinkgmbh.lms.webtemplate.groups.GroupUserListItem
 <tr>
-<td><a href="__link__">__name__</a></td>
+<td>
+	<!-- <a href="__link__">__name__</a> -->
+	<form method="post" name="GroupUser__action__" class="GroupUser__action__" id="GroupUser__action__-__user_id__" action="?">
+		<input type="hidden" name="application_id" value="__application_id__">
+		<input type="hidden" name="user_id" value="__user_id__">
+		<input type="hidden" name="group_id" value="__group_id__">
+		<input type="hidden" name="action" value="__action__">
+		<input type="submit" value="__name__">
+	</form>
+</td>
 </tr>

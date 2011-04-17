@@ -60,6 +60,22 @@ import org.hibernate.annotations.Type;
    			"WHERE g.id = :groupId "
    ),
    @NamedQuery( 
+           name="AllUserWithoutGroupId",
+           query=          
+        	"SELECT u " +
+   			"FROM User AS u "+
+   			"LEFT JOIN u.groupList AS g "+
+   			"WHERE g IS NULL OR g.id <> :groupId "
+   ),
+   @NamedQuery( 
+           name="AllUserWithoutGroupIdCount",
+           query=          
+        	"SELECT count(u) " +
+   			"FROM User AS u "+
+        	"LEFT JOIN u.groupList AS g "+
+   			"WHERE g IS NULL OR g.id <> :groupId "
+   ),
+   @NamedQuery( 
            name="AllUserByRoleId",
            query=          
         	"SELECT u " +
@@ -74,6 +90,22 @@ import org.hibernate.annotations.Type;
    			"FROM User AS u "+
         	"LEFT JOIN u.roleList AS r "+
    			"WHERE r.id = :roleId "
+   ),
+   @NamedQuery( 
+           name="AllUserWithoutRoleId",
+           query=          
+        	"SELECT u " +
+   			"FROM User AS u "+
+   			"LEFT JOIN u.roleList AS r "+
+   			"WHERE r IS NULL OR r.id <> :roleId "
+   ),
+   @NamedQuery( 
+           name="AllUserWithoutRoleIdCount",
+           query=          
+        	"SELECT count(u) " +
+   			"FROM User AS u "+
+        	"LEFT JOIN u.roleList AS r "+
+   			"WHERE r IS NULL OR r.id <> :roleId "
    ),
    @NamedQuery( 
            name="AllTemplateUser",

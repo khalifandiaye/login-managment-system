@@ -500,7 +500,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						roleuserList2Temp.setParameter( "usertype", "activateuser" );
 						
 						DefaultPager UserPager1 = new DefaultPager();
-						User2ListProvider up1 = new User2ListProvider();
+						User2ListProvider up1 = new User2ListProvider( r.getId() );
 						UserList ul1 = new UserList( request, "roleuserlist2", 10, up1, roleuserList2Temp );
 						ul1.initPager( UserPager1 );
 						
@@ -534,7 +534,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						groupList2Temp.setParameter( "usertype", "activategroup" );
 						
 						DefaultPager GroupPager1 = new DefaultPager();
-						Group2ListProvider gp1 = new Group2ListProvider( app.getId() );
+						Group2ListProvider gp1 = new Group2ListProvider( app.getId(), r.getId() );
 						GroupList gl1 = new GroupList( request, "grouplist2", 10, gp1, groupList2Temp );
 						gl1.initPager( GroupPager1 );
 						
@@ -617,7 +617,7 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 						HashMap<String, String> parameters = new HashMap<String,String>();
 						parameters.put( "role_id", ""+request.getParameter( "role_id" ) );
 						parameters.put( "application_id", ""+app.getId() );
-						parameters.put( "action", "show" );;
+						parameters.put( "action", "show" );
 						String listpage = HttpLinkBuilder.makeLink( request, true, false, parameters );
 						listpage = listpage.replaceFirst( "[a-zA-Z_0-9]*\\.html", "Role.html" );
 						
@@ -930,12 +930,15 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		private Query query = null;
 		private Long maxResults = 0L;
 
+		private long roleId;
 		
-		public User2ListProvider(){
+		public User2ListProvider( long roleId ){
+			this.roleId = roleId;
 			em = pm.getEntityManager();
 			try{
 			em.getTransaction().begin();
-			countQuery = em.createNamedQuery( "AllUserCount" );
+			countQuery = em.createNamedQuery( "AllUserWithoutRoleIdCount" );
+			countQuery.setParameter( "roleId", roleId );
 			maxResults = (Long) countQuery.getSingleResult();
 			em.getTransaction().commit();
 			}finally{
@@ -949,7 +952,8 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			em = pm.getEntityManager();
 			try{
 			em.getTransaction().begin();
-			query = em.createNamedQuery( "AllUser" );
+			query = em.createNamedQuery( "AllUserWithoutRoleId" );
+			query.setParameter( "roleId", roleId );
 			query.setFirstResult( beginIndex );
 			query.setMaxResults( count );
 			list = query.getResultList();
@@ -1025,15 +1029,17 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		private Query countQuery = null;
 		private Query query = null;
 		private Long maxResults = 0L;
-		private long appId;
+		private long appId, roleId;
 		
-		public Group2ListProvider( long appId ){
+		public Group2ListProvider( long appId, long roleId ){
 			this.appId = appId;
+			this.roleId = roleId;
 			em = pm.getEntityManager();
 			try{
 			em.getTransaction().begin();
-			countQuery = em.createNamedQuery( "AllGroupsByApplicationIdCount" );
+			countQuery = em.createNamedQuery( "AllGroupsWithoutRoleIdCount" );
 			countQuery.setParameter( "appId", appId );
+			countQuery.setParameter( "roleId", roleId );
 			maxResults = (Long) countQuery.getSingleResult();
 			em.getTransaction().commit();
 			}finally{
@@ -1047,8 +1053,9 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 			em = pm.getEntityManager();
 			try{
 			em.getTransaction().begin();
-			query = em.createNamedQuery( "AllGroupsByApplicationId" );
+			query = em.createNamedQuery( "AllGroupsWithoutRoleId" );
 			query.setParameter( "appId", appId );
+			query.setParameter( "roleId", roleId );
 			query.setFirstResult( beginIndex );
 			query.setMaxResults( count );
 			list = query.getResultList();
