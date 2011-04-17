@@ -62,18 +62,16 @@ import org.hibernate.annotations.Type;
    @NamedQuery( 
            name="AllUserWithoutGroupId",
            query=          
-        	"SELECT u " +
+        	"SELECT DISTINCT u " +
    			"FROM User AS u "+
-   			"LEFT JOIN u.groupList AS g "+
-   			"WHERE g IS NULL OR g.id <> :groupId "
+   			"WHERE u NOT IN ( SELECT us FROM User AS us LEFT JOIN us.groupList AS g WHERE g.id = :groupId )"
    ),
    @NamedQuery( 
            name="AllUserWithoutGroupIdCount",
            query=          
         	"SELECT count(u) " +
    			"FROM User AS u "+
-        	"LEFT JOIN u.groupList AS g "+
-   			"WHERE g IS NULL OR g.id <> :groupId "
+   			"WHERE u NOT IN ( SELECT us FROM User AS us LEFT JOIN us.groupList AS g WHERE g.id = :groupId )"
    ),
    @NamedQuery( 
            name="AllUserByRoleId",
@@ -96,16 +94,14 @@ import org.hibernate.annotations.Type;
            query=          
         	"SELECT u " +
    			"FROM User AS u "+
-   			"LEFT JOIN u.roleList AS r "+
-   			"WHERE r IS NULL OR r.id <> :roleId "
+   			"WHERE u NOT IN ( SELECT us FROM User AS us LEFT JOIN us.roleList AS r WHERE r.id = :roleId )"
    ),
    @NamedQuery( 
            name="AllUserWithoutRoleIdCount",
            query=          
         	"SELECT count(u) " +
    			"FROM User AS u "+
-        	"LEFT JOIN u.roleList AS r "+
-   			"WHERE r IS NULL OR r.id <> :roleId "
+        	"WHERE u NOT IN ( SELECT us FROM User AS us LEFT JOIN us.roleList AS r WHERE r.id = :roleId )"
    ),
    @NamedQuery( 
            name="AllTemplateUser",
