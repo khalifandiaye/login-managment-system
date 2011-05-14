@@ -123,7 +123,12 @@ public class UserService implements Service{
 				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
 				return result;
 			}
-			
+			if( ! Tokenaizer.isTokenActive( token ) ){
+				result = new DefaultWash();
+				result.addField( "STATUS", Type.BOOLEAN, false );
+				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
+				return result;
+			}
 
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 
@@ -177,7 +182,13 @@ public class UserService implements Service{
 				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
 				return result;
 			}
-		
+			if( ! Tokenaizer.isTokenActive( token ) ){
+				result = new DefaultWash();
+				result.addField( "STATUS", Type.BOOLEAN, false );
+				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
+				return result;
+			}
+			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			
 			if( !AuthorizationsChecker.isAllowed( token, "APPLICATION", "user.getUsers", token.application ) ){
@@ -316,6 +327,12 @@ public class UserService implements Service{
 				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
 				return result;
 			}
+			if( ! Tokenaizer.isTokenActive( token ) ){
+				result = new DefaultWash();
+				result.addField( "STATUS", Type.BOOLEAN, false );
+				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
+				return result;
+			}
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			
@@ -436,6 +453,12 @@ public class UserService implements Service{
 				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
 				return result;
 			}
+			if( ! Tokenaizer.isTokenActive( token ) ){
+				result = new DefaultWash();
+				result.addField( "STATUS", Type.BOOLEAN, false );
+				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
+				return result;
+			}
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			EntityManager em = pm.getEntityManager();
@@ -537,7 +560,12 @@ public class UserService implements Service{
 				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
 				return result;
 			}
-
+			if( ! Tokenaizer.isTokenActive( token ) ){
+				result = new DefaultWash();
+				result.addField( "STATUS", Type.BOOLEAN, false );
+				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
+				return result;
+			}
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 
@@ -681,6 +709,12 @@ public class UserService implements Service{
 				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
 				return result;
 			}
+			if( ! Tokenaizer.isTokenActive( token ) ){
+				result = new DefaultWash();
+				result.addField( "STATUS", Type.BOOLEAN, false );
+				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
+				return result;
+			}
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			EntityManager em = pm.getEntityManager();
@@ -739,6 +773,12 @@ public class UserService implements Service{
 			
 			LMSToken token = Tokenaizer.restoreLMSToken( request.getString( "LMSTOKEN" ).getBytes() );
 			if( token == null ){
+				result = new DefaultWash();
+				result.addField( "STATUS", Type.BOOLEAN, false );
+				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
+				return result;
+			}
+			if( ! Tokenaizer.isTokenActive( token ) ){
 				result = new DefaultWash();
 				result.addField( "STATUS", Type.BOOLEAN, false );
 				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );

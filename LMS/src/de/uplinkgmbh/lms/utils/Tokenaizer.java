@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -15,8 +16,14 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 
 import com.Ostermiller.util.Base64;
+
+import de.uplinkgmbh.lms.entitys.Token;
+import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
 
 public abstract class Tokenaizer {
 
@@ -116,5 +123,53 @@ public abstract class Tokenaizer {
 			lmstoken = null;
 		}
 		return lmstoken;
+	}
+	
+	public static boolean isTokenActive( byte[] serializedAESToken ){
+		return isTokenActive( Tokenaizer.restoreLMSToken( serializedAESToken ) );
+	}
+	
+	public static boolean isTokenActive( LMSToken token ){
+		
+		MyPersistenceManager pm = MyPersistenceManager.getInstance();
+		EntityManager em = pm.getEntityManager();
+		Token dbtoken = new Token();
+		dbtoken.setToken( token );
+		
+		try{
+		em.getTransaction().begin();
+		try{
+			dbtoken = em.find( Token.class, dbtoken.getUuid() );
+		}catch( NoResultException e ){
+			em.close();
+			return false;
+		}
+		em.getTransaction().commit();
+		return true;
+		}finally{
+			pm.closeEntityManager( em );
+		}
+	}
+	
+	public static long killTokenByTime( long minutes ){
+		
+		long millsec = minutes*60*1000;
+		Date date = new Date( System.currentTimeMillis()-millsec );
+		long rows = 0;
+		
+		MyPersistenceManager pm = MyPersistenceManager.getInstance();
+		EntityManager em = pm.getEntityManager();
+		
+		try{
+		em.getTransaction().begin();
+		Query q = em.createNamedQuery( "DeleteTokenByTime" );
+		q.setParameter( "date", date );
+		rows = q.executeUpdate();	
+		em.getTransaction().commit();
+		}finally{
+			pm.closeEntityManager( em );
+		}
+		
+		return rows;
 	}
 }

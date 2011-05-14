@@ -29,6 +29,7 @@ import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
 import de.uplinkgmbh.lms.servlets.forms.OrganisationForm;
 import de.uplinkgmbh.lms.user.AuthorizationsChecker;
 import de.uplinkgmbh.lms.utils.LMSToken;
+import de.uplinkgmbh.lms.utils.Tokenaizer;
 import de.uplinkgmbh.lms.webtemplate.Context;
 import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
 
@@ -73,6 +74,12 @@ import de.uplinkgmbh.lms.webtemplate.organisation.OrganisationList;
 			response.sendRedirect( request.getContextPath()+"/" );
 			return;
 		}
+		if( ! Tokenaizer.isTokenActive( token ) ){
+			request.getSession().invalidate();
+			response.sendRedirect( request.getContextPath()+"/Login.html" );
+			return;
+		}
+		
 		if( AuthorizationsChecker.isAllowed( token, "SYSTEMADMIN", "DOALL", "User" ) ){
 			
 		}else{

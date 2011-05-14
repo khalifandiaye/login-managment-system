@@ -9,6 +9,7 @@ import javax.persistence.Query;
 
 import de.uplinkgmbh.lms.entitys.Groups;
 import de.uplinkgmbh.lms.entitys.Role;
+import de.uplinkgmbh.lms.entitys.Token;
 import de.uplinkgmbh.lms.entitys.User;
 import de.uplinkgmbh.lms.exceptions.LoginException;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
@@ -107,59 +108,57 @@ public class Login {
 			user.setLastlogin(  new Date( System.currentTimeMillis() ) );
 			user.setLogincounter( user.getLogincounter()+1 );
 			
+			String token = Tokenaizer.buildAESToken( application, user.getId() );
+			Token dbtoken = new Token();
+			dbtoken.setToken( token );
+			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			EntityManager em = pm.getEntityManager();
 		try{	
 			em.getTransaction().begin();
 			em.merge( user );
+			em.persist( dbtoken );
 			em.getTransaction().commit();
 		}finally{
 			if( em != null && em.isOpen() ) em.close();
 		}
-			return Tokenaizer.buildAESToken( application, user.getId() );
+			return token;
 			
 		}else return null;
 	}
 	
-	public void logOut(){
-		
-		if( user != null ){
-			
-			user.setLastlogout( new Date( System.currentTimeMillis() ) );
-			
-			MyPersistenceManager pm = MyPersistenceManager.getInstance();
-			EntityManager em = pm.getEntityManager();
-		try{	
-			em.getTransaction().begin();
-			em.merge( user );
-			em.getTransaction().commit();
-		}finally{
-			pm.closeEntityManager( em );
-		}
-		}
-	}
-	
 	public boolean logOut( String AESToken ){
 		
-		LMSToken token = Tokenaizer.restoreLMSToken( AESToken.getBytes() );
+		return logOut( Tokenaizer.restoreLMSToken( AESToken.getBytes() ) );
+	}	
+	public boolean logOut( LMSToken token ){
+		
 		if( token == null ){
 			return false;
 		}
 		MyPersistenceManager pm = MyPersistenceManager.getInstance();
 		EntityManager em = pm.getEntityManager();
+		Token dbtoken = new Token();
+		dbtoken.setToken( token );
+		
 		try{
 		em.getTransaction().begin();
 		try{
 			user = em.find( User.class, token.userId );
+			user.setLastlogout( new Date( System.currentTimeMillis() ) );
+			em.merge( user );
+			dbtoken = em.find( Token.class, dbtoken.getUuid() );
+			em.remove( dbtoken );
 		}catch( NoResultException e ){
 			em.close();
 			return false;
 		}
+	
 		em.getTransaction().commit();
 		}finally{
 			pm.closeEntityManager( em );
 		}
-		logOut();
+
 		return true;
 	}
 	

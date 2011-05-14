@@ -107,6 +107,12 @@ public class OrganisationService implements Service{
 				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
 				return result;
 			}
+			if( ! Tokenaizer.isTokenActive( token ) ){
+				result = new DefaultWash();
+				result.addField( "STATUS", Type.BOOLEAN, false );
+				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
+				return result;
+			}
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			
@@ -180,7 +186,12 @@ public class OrganisationService implements Service{
 				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
 				return result;
 			}
-			
+			if( ! Tokenaizer.isTokenActive( token ) ){
+				result = new DefaultWash();
+				result.addField( "STATUS", Type.BOOLEAN, false );
+				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
+				return result;
+			}
 
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			

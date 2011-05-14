@@ -36,6 +36,7 @@ import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
 import de.uplinkgmbh.lms.servlets.forms.ActionForm;
 import de.uplinkgmbh.lms.user.AuthorizationsChecker;
 import de.uplinkgmbh.lms.utils.LMSToken;
+import de.uplinkgmbh.lms.utils.Tokenaizer;
 import de.uplinkgmbh.lms.utils.UserStatus;
 import de.uplinkgmbh.lms.webtemplate.Context;
 import de.uplinkgmbh.lms.webtemplate.FVFactory;
@@ -82,6 +83,11 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 		LMSToken token = (LMSToken)request.getSession().getAttribute( "token" );
 		if( token == null ){
 			response.sendRedirect( request.getContextPath()+"/" );
+			return;
+		}
+		if( ! Tokenaizer.isTokenActive( token ) ){
+			request.getSession().invalidate();
+			response.sendRedirect( request.getContextPath()+"/Login.html" );
 			return;
 		}
 		

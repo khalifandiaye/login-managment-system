@@ -54,12 +54,13 @@ public class LoginTest {
 			assertFalse( LoginException.WRONGUSERNAME == e.status );
 		}
 		assertTrue( login.isAllowed() );
-		
-		assertNotNull( login.logIn() );
+		String token = login.logIn();
+		assertNotNull( token );
 		long counter = login.getUser().getLogincounter();
-		login.logIn();
+		login.logOut( token );
+		token = login.logIn();
 		assertTrue( counter == login.getUser().getLogincounter()-1 );
-		login.logOut();
+		login.logOut( token );
 	
 	}
 }

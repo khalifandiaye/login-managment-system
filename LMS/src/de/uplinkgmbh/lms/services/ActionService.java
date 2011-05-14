@@ -107,6 +107,12 @@ public class ActionService implements Service{
 				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
 				return result;
 			}
+			if( ! Tokenaizer.isTokenActive( token ) ){
+				result = new DefaultWash();
+				result.addField( "STATUS", Type.BOOLEAN, false );
+				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
+				return result;
+			}
 			
 			MyPersistenceManager pm = MyPersistenceManager.getInstance();
 			EntityManager em = pm.getEntityManager();
@@ -169,6 +175,12 @@ public class ActionService implements Service{
 				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
 				return result;
 			}
+			if( ! Tokenaizer.isTokenActive( token ) ){
+				result = new DefaultWash();
+				result.addField( "STATUS", Type.BOOLEAN, false );
+				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
+				return result;
+			}
 			
 			if( AuthorizationsChecker.isAllowed( token,
 					request.getString( "STATE" ),
@@ -200,6 +212,12 @@ public class ActionService implements Service{
 		if( !request.getString( "LMSTOKEN" ).equals( "" ) ){
 			LMSToken token = Tokenaizer.restoreLMSToken( request.getString( "LMSTOKEN" ).getBytes() );
 			if( token == null ){
+				result = new DefaultWash();
+				result.addField( "STATUS", Type.BOOLEAN, false );
+				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
+				return result;
+			}
+			if( ! Tokenaizer.isTokenActive( token ) ){
 				result = new DefaultWash();
 				result.addField( "STATUS", Type.BOOLEAN, false );
 				result.addField( "REASON", Type.STRING, "WRONG LMSTOKEN" );
