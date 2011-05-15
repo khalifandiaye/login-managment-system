@@ -1,6 +1,5 @@
 package de.uplinkgmbh.lms.services;
 
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 
 import de.axone.logging.Log;
@@ -16,8 +15,8 @@ import de.axone.wash.handler.Handler.HandlerException;
 import de.axone.wash.handler.Handler.OperationNotFoundException;
 import de.axone.wash.service.Service;
 import de.uplinkgmbh.lms.exceptions.LoginException;
-import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
 import de.uplinkgmbh.lms.user.Login;
+import de.uplinkgmbh.lms.utils.Tokenaizer;
 
 public class LoginService implements Service{
 	
@@ -41,6 +40,8 @@ public class LoginService implements Service{
 			result = login( request );
 		else if( "logout".equals( operation ) )
 			result = logout( request );
+		else if( "checktoken".equals( operation ) )
+			result = checktoken( request );
 		else
 			throw new OperationNotFoundException();
 
@@ -175,4 +176,31 @@ public class LoginService implements Service{
 	
 		return result;
 	} 
+	
+	private Wash checktoken( Wash request ) throws NotFoundException, WrongTypeException, DuplicateEntryException{
+		
+		Wash result = null;
+
+		if( !request.getString( "LMSTOKEN" ).equals( "" ) ){
+			
+			boolean res = Tokenaizer.isTokenActive( request.getString( "LMSTOKEN" ).getBytes() );
+		
+			if( res ){
+				result = new DefaultWash();
+				result.addField( "STATUS", Type.BOOLEAN, true );
+				result.addField( "REASON", Type.STRING, "ACTIV TOKEN" );
+			}else{
+				result = new DefaultWash();
+				result.addField( "STATUS", Type.BOOLEAN, false );
+				result.addField( "REASON", Type.STRING, "DEAD TOKEN" );
+			}
+			
+		}else{
+			result = new DefaultWash();
+			result.addField( "ERROR", Type.STRING, "EMPTY PARAMETERS" );
+		
+		}
+	
+		return result;
+	}
 }

@@ -264,6 +264,8 @@ public class UserService implements Service{
 				else
 					result.addField( "User-"+i+".LASTLOGOUT", Type.INTEGER );
 				result.addField( "User-"+i+".LOGINCOUNTER", Type.INTEGER, u.getLogincounter() );
+				result.addField( "User-"+i+".ACTIV", Type.BOOLEAN, u.isActiv() );
+				result.addField( "User-"+i+".TEMPLATE", Type.BOOLEAN, u.isTemplate() );
 				result.addField( "User-"+i+".WASHSTORE", Type.STRING, u.getWashstore() );
 				
 				if( u.getOrganisation() != null ){

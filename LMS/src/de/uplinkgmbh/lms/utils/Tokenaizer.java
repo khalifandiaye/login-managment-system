@@ -145,7 +145,8 @@ public abstract class Tokenaizer {
 			return false;
 		}
 		em.getTransaction().commit();
-		return true;
+		if( dbtoken == null ) return false;
+		else return true;
 		}finally{
 			pm.closeEntityManager( em );
 		}
