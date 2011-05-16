@@ -35,7 +35,9 @@ public class Token {
 	public Date getCreationdate() {
 		return creationdate;
 	}
-	protected void setCreationdate() {}
+	public void setCreationdate( Date date ) {
+		this.creationdate = date;
+	}
 	
 	public void setToken( String token ){
 		this.uuid = Tokenaizer.restoreLMSToken( token.getBytes() ).uuid;	

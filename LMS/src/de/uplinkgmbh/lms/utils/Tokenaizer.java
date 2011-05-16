@@ -146,7 +146,15 @@ public abstract class Tokenaizer {
 		}
 		em.getTransaction().commit();
 		if( dbtoken == null ) return false;
-		else return true;
+		else{
+			if( System.currentTimeMillis()-dbtoken.getCreationdate().getTime() > 300*1000 ){
+				em.getTransaction().begin();
+				dbtoken.setCreationdate( new Date( System.currentTimeMillis() ) );
+				em.merge( dbtoken );
+				em.getTransaction().commit();
+			}
+			return true;
+		}
 		}finally{
 			pm.closeEntityManager( em );
 		}
