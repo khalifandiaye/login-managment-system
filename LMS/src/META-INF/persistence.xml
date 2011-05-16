@@ -9,9 +9,7 @@
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<properties>
 			<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
-			<!--<property name="hibernate.connection.username" value="hvm-lms" /> -->
-			<!--<property name="hibernate.connection.password" value="fKioG8HV" /> -->
-			<!--<property name="hibernate.connection.url" value="jdbc:mysql://mysql.axone.de/hvm-lms" /> -->
+			
 			<property name="hibernate.connection.username" value="lms" />
 			<property name="hibernate.connection.password" value="lms" />
 			<property name="hibernate.connection.url" value="jdbc:mysql://localhost/lms" />
