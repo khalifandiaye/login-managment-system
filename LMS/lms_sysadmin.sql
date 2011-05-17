@@ -265,7 +265,21 @@ INSERT INTO `user` (`id`,`activ`,`city`,`country`,`email`,`fax`,`firstname`,`lan
  (1,0x01,NULL,'de_DE',NULL,NULL,'Admin','de',NULL,NULL,0,'admin',NULL,'wrLRIqHU',NULL,NULL,NULL,NULL,NULL,'Admin',0x00,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 
+-- --------------------------------------------------------
 
+--
+-- Tabellenstruktur für Tabelle `Token`
+--
+
+CREATE TABLE IF NOT EXISTS `Token` (
+  `uuid` bigint(20) NOT NULL,
+  `creationdate` datetime NOT NULL,
+  PRIMARY KEY (`uuid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Daten für Tabelle `Token`
+--
 
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
