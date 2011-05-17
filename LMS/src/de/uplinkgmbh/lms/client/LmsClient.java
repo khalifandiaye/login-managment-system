@@ -2,8 +2,9 @@ package de.uplinkgmbh.lms.client;
 
 import java.net.URL;
 
-import de.axone.logging.Log;
-import de.axone.logging.Logging;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.axone.wash.Wash;
 import de.axone.wash.Wash.NotFoundException;
 import de.axone.wash.Wash.WashException;
@@ -13,7 +14,7 @@ import de.axone.wash.client.WashClient.ClientException;
 
 public class LmsClient {
 	
-	private static final Log log = Logging.getLog( LmsClient.class );
+	private static final Logger log = LoggerFactory.getLogger( LmsClient.class );
 	
 	private final WashClient wc;
 	private final String application;

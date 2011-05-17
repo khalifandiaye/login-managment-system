@@ -10,8 +10,9 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 
-import de.axone.logging.Log;
-import de.axone.logging.Logging;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.axone.wash.DefaultWash;
 import de.axone.wash.Wash;
 import de.axone.wash.Wash.DuplicateEntryException;
@@ -30,7 +31,7 @@ import de.uplinkgmbh.lms.utils.Tokenaizer;
 
 public class OrganisationService implements Service{
 	
-	private static Log log = Logging.getLog( OrganisationService.class );
+	private static Logger log = LoggerFactory.getLogger( OrganisationService.class );
 
 	@Override
 	public Wash service( Wash request, HttpServletRequest httpRequest ) throws HandlerException {

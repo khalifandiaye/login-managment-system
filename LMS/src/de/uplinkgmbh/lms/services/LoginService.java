@@ -2,8 +2,9 @@ package de.uplinkgmbh.lms.services;
 
 import javax.servlet.http.HttpServletRequest;
 
-import de.axone.logging.Log;
-import de.axone.logging.Logging;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.axone.wash.DefaultWash;
 import de.axone.wash.Wash;
 import de.axone.wash.Wash.DuplicateEntryException;
@@ -20,7 +21,7 @@ import de.uplinkgmbh.lms.utils.Tokenaizer;
 
 public class LoginService implements Service{
 	
-	private static Log log = Logging.getLog( LoginService.class );
+	private static Logger log = LoggerFactory.getLogger( LoginService.class );
 
 	@Override
 	public Wash service( Wash request, HttpServletRequest httpRequest ) throws HandlerException {
