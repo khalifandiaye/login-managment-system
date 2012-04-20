@@ -12,7 +12,7 @@
 			
 			<property name="hibernate.connection.username" value="lms" />
 			<property name="hibernate.connection.password" value="lms" />
-			<property name="hibernate.connection.url" value="jdbc:mysql://localhost/lms" />
+			<property name="hibernate.connection.url" value="jdbc:mysql://HOST/lms?autoReconnect=true" />
 
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
 			<!--<property name="hibernate.max_fetch_depth" value="3"/> -->

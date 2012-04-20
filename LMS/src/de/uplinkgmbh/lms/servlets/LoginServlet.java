@@ -70,7 +70,7 @@ import de.uplinkgmbh.lms.webtemplate.FVFactory;
 				String username = form.getUsername();
 				String password = form.getPassword();
 				
-				E.rr( username, password );
+				//E.rr( username, password );
 				
 				// DO WHATEVER NEEDS TO BE DONE
 				

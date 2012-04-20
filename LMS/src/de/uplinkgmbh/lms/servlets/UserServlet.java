@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import de.axone.tools.E;
 import de.axone.web.HttpLinkBuilder;
 import de.axone.webtemplate.WebTemplate;
 import de.axone.webtemplate.WebTemplateException;
@@ -127,7 +128,10 @@ import de.uplinkgmbh.lms.webtemplate.user.UserList;
 							user.setOrganisation( orga );
 
 							user.setLoginname( form.getLoginname() );
-							user.setPassword( form.getPassword() );
+							
+							if( form.getPassword().length() > 40 ){
+								user.setPassword( form.getPassword() );
+							}
 							user.setFirstname( form.getFirstname() );
 							user.setSurename( form.getSurename() );
 							user.setZip( form.getZip() );

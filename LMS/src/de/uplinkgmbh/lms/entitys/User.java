@@ -21,6 +21,8 @@ import javax.persistence.NamedQuery;
 
 import org.hibernate.annotations.Type;
 
+import de.axone.tools.PasswordBuilder;
+
 
 @Entity
 @NamedQueries( {
@@ -217,7 +219,8 @@ public class User {
 	}
 
 	public void setPassword(String password) {
-		this.password = password;
+		PasswordBuilder pb = new PasswordBuilder();
+		this.password = pb.hashPassword( password );
 	}
 
 	public String getFirstname() {

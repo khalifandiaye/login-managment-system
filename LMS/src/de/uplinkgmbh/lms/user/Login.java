@@ -7,6 +7,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import de.axone.tools.E;
+import de.axone.tools.PasswordBuilder;
 import de.uplinkgmbh.lms.entitys.Groups;
 import de.uplinkgmbh.lms.entitys.Role;
 import de.uplinkgmbh.lms.entitys.Token;
@@ -14,7 +16,6 @@ import de.uplinkgmbh.lms.entitys.User;
 import de.uplinkgmbh.lms.exceptions.LoginException;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
 import de.uplinkgmbh.lms.utils.LMSToken;
-import de.uplinkgmbh.lms.utils.Password;
 import de.uplinkgmbh.lms.utils.Tokenaizer;
 
 public class Login {
@@ -53,8 +54,10 @@ public class Login {
 				throw new LoginException( LoginException.WRONGUSERNAME );
 			}
 			em.getTransaction().commit();
+
+			PasswordBuilder pb = new PasswordBuilder();
+			if( ! pb.checkPassword( password, user.getPassword() ) ){
 			
-			if( ! user.getPassword().equals( Password.processIt( password ) ) ){
 				allowed = false;
 			
 				throw new LoginException( LoginException.WRONGPASSWORD );
