@@ -20,8 +20,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import com.Ostermiller.util.Base64;
+import org.apache.commons.codec.binary.Base64;
 
+
+import de.axone.tools.E;
 import de.uplinkgmbh.lms.entitys.Token;
 import de.uplinkgmbh.lms.presistence.MyPersistenceManager;
 
@@ -46,7 +48,7 @@ public abstract class Tokenaizer {
 		Cipher cipher = null;
 		
 		try {
-			cipher = Cipher.getInstance( "AES/CBC/PKCS5Padding" );
+			cipher = Cipher.getInstance( "AES/CBC/PKCS5PADDING" );
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		} catch (NoSuchPaddingException e) {
@@ -71,8 +73,10 @@ public abstract class Tokenaizer {
 		}
 	
 		String AESToken = "";
+		Base64 decoder = new Base64(true);
 		try {
-			AESToken = new String( Base64.encode( cipher.doFinal( bout.toByteArray() ) ) );
+			AESToken = new String( decoder.encode( cipher.doFinal( bout.toByteArray() ) ) );
+			//E.rr( AESToken );
 		} catch (IllegalBlockSizeException e) {
 			e.printStackTrace();
 		} catch (BadPaddingException e) {
@@ -88,7 +92,7 @@ public abstract class Tokenaizer {
 		Cipher cipher = null;
 		
 		try {
-			cipher = Cipher.getInstance( "AES/CBC/PKCS5Padding" );
+			cipher = Cipher.getInstance( "AES/CBC/PKCS5PADDING" );
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		} catch (NoSuchPaddingException e) {
@@ -105,7 +109,8 @@ public abstract class Tokenaizer {
 		
 		LMSToken lmstoken = null;
 		try {
-			byte[] token = cipher.doFinal( Base64.decode( serializedAESToken ) );
+			Base64 decoder = new Base64(true);
+			byte[] token = cipher.doFinal( decoder.decode( serializedAESToken ) );
 			ByteArrayInputStream in = new ByteArrayInputStream( token );
 			ObjectInputStream is = new ObjectInputStream( in );
 			lmstoken = (LMSToken)is.readObject();

@@ -6,11 +6,7 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Tools"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/WebTemplates"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/base64encoding">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/base64encoding"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hibernate_old">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
@@ -36,23 +32,31 @@
 	<classpathentry exported="true" kind="lib" path="lib/hibernate_old/Tidy.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hibernate_old/xml-apis.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/junit-4.3.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/ostermillerutils_1_06_01.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ostermillerutils_1_06_01.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="lib/c3p0-0.9.1.jar"/>
 	<classpathentry kind="lib" path="/Tools/lib/servlet-api.jar" sourcepath="/Tools/C:/Java/apache-tomcat-6.0.18-src/java/javax/servlet/http">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="/Tools/lib/log4j-1.2.14.jar"/>
 	<classpathentry kind="lib" path="lib/wash.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-api-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-simple-1.6.1-sources.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v6">
+	<classpathentry kind="lib" path="lib/commons-codec-1.4.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v7.0">
 		<attributes>
 			<attribute name="owner.project.facets" value="jst.web"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-6-sun-1.6.0.24">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.7.0_01">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>

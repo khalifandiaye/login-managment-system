@@ -132,6 +132,7 @@ public class Login {
 	
 	public boolean logOut( String AESToken ){
 		
+		AESToken.replaceAll("\n", "").trim();
 		return logOut( Tokenaizer.restoreLMSToken( AESToken.getBytes() ) );
 	}	
 	public boolean logOut( LMSToken token ){
